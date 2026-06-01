@@ -1,0 +1,9 @@
+{
+  "description": "Overlay manifest for modifications. New modules are declared here with their insertion point.",
+  "new_modules": {
+    "030_extensions.frag": {
+      "source": "ai-character-chat-html",
+      "insert_after": "html_028_module_reply_as_and_input_ux"
+    }
+  }
+}
