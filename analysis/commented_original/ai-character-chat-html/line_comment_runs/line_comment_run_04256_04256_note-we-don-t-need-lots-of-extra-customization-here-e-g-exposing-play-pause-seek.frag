@@ -1,0 +1,1 @@
+    // note: we don't need lots of extra customization here (e.g. exposing play/pause/seek api), because devs can do whatever they want in custom code - this is just for *end-users* to easily add music to their characters/stories in the character editor

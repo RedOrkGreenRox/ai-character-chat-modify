@@ -1,0 +1,1 @@
+      // name = name.replace(/[^A-Za-z0-9_\-]/g, ""); // <-- we need to replace invalid characters here since the name could have been set with custom code, and in that case it wouldn't have been validated as happens when name is set in the character editor UI

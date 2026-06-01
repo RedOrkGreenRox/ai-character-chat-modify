@@ -1,0 +1,1 @@
+                  // note: entries lose their original id if they are edited, which means references from message.loreIdsUsed are lost - that's okay, since it's just used for 'debugging' anyway - we just indicate to the user (in the 'brain icon modal') that the lore entry no longer exists.

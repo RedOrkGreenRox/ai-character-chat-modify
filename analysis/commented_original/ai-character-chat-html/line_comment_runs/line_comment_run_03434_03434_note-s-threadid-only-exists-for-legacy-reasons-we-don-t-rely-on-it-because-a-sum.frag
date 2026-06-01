@@ -1,0 +1,1 @@
+      // Note: s.threadId only exists for 'legacy' reasons (we don't rely on it because a summary can be used by multiple threads), but it's useful here because currentSummaryHashChain is a new property and may not exist for old threads, so we can use the threadId as a backup check

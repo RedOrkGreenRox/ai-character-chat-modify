@@ -1,0 +1,1 @@
+  /* hide message feed scrollbar */

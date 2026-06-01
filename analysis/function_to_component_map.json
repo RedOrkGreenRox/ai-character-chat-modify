@@ -1,0 +1,1546 @@
+{
+  "html": [
+    {
+      "function": "emergencyDeleteAllDataClickHandler",
+      "line_start": 32,
+      "line_end_guess": 50,
+      "component_id": "html_002_emergency_export_script",
+      "component_file": "analysis/exact_components/ai-character-chat-html/002_emergency_export_script.frag"
+    },
+    {
+      "function": "emergencyExportClickHandler",
+      "line_start": 51,
+      "line_end_guess": 96,
+      "component_id": "html_002_emergency_export_script",
+      "component_file": "analysis/exact_components/ai-character-chat-html/002_emergency_export_script.frag"
+    },
+    {
+      "function": "exportRawDb",
+      "line_start": 97,
+      "line_end_guess": 225,
+      "component_id": "html_002_emergency_export_script",
+      "component_file": "analysis/exact_components/ai-character-chat-html/002_emergency_export_script.frag"
+    },
+    {
+      "function": "setTimeout",
+      "line_start": 226,
+      "line_end_guess": 292,
+      "component_id": "html_002_emergency_export_script",
+      "component_file": "analysis/exact_components/ai-character-chat-html/002_emergency_export_script.frag"
+    },
+    {
+      "function": "createFloatingWindow",
+      "line_start": 293,
+      "line_end_guess": 392,
+      "component_id": "html_004_utility_foundations",
+      "component_file": "analysis/exact_components/ai-character-chat-html/004_utility_foundations.frag"
+    },
+    {
+      "function": "sanitizeHtml",
+      "line_start": 393,
+      "line_end_guess": 403,
+      "component_id": "html_005_utility_formatting_io",
+      "component_file": "analysis/exact_components/ai-character-chat-html/005_utility_formatting_io.frag"
+    },
+    {
+      "function": "textToSpeech",
+      "line_start": 404,
+      "line_end_guess": 423,
+      "component_id": "html_005_utility_formatting_io",
+      "component_file": "analysis/exact_components/ai-character-chat-html/005_utility_formatting_io.frag"
+    },
+    {
+      "function": "sha256Text",
+      "line_start": 424,
+      "line_end_guess": 432,
+      "component_id": "html_005_utility_formatting_io",
+      "component_file": "analysis/exact_components/ai-character-chat-html/005_utility_formatting_io.frag"
+    },
+    {
+      "function": "dedent",
+      "line_start": 433,
+      "line_end_guess": 446,
+      "component_id": "html_005_utility_formatting_io",
+      "component_file": "analysis/exact_components/ai-character-chat-html/005_utility_formatting_io.frag"
+    },
+    {
+      "function": "downloadTextOrBlob",
+      "line_start": 447,
+      "line_end_guess": 457,
+      "component_id": "html_005_utility_formatting_io",
+      "component_file": "analysis/exact_components/ai-character-chat-html/005_utility_formatting_io.frag"
+    },
+    {
+      "function": "setTimeout",
+      "line_start": 458,
+      "line_end_guess": 461,
+      "component_id": "html_005_utility_formatting_io",
+      "component_file": "analysis/exact_components/ai-character-chat-html/005_utility_formatting_io.frag"
+    },
+    {
+      "function": "cosineDistance",
+      "line_start": 462,
+      "line_end_guess": 473,
+      "component_id": "html_005_utility_formatting_io",
+      "component_file": "analysis/exact_components/ai-character-chat-html/005_utility_formatting_io.frag"
+    },
+    {
+      "function": "createLoadingModal",
+      "line_start": 474,
+      "line_end_guess": 521,
+      "component_id": "html_005_utility_formatting_io",
+      "component_file": "analysis/exact_components/ai-character-chat-html/005_utility_formatting_io.frag"
+    },
+    {
+      "function": "applyObjectOverrides",
+      "line_start": 522,
+      "line_end_guess": 537,
+      "component_id": "html_006_utility_background_and_json",
+      "component_file": "analysis/exact_components/ai-character-chat-html/006_utility_background_and_json.frag"
+    },
+    {
+      "function": "objectKeysAndTypesAreValid",
+      "line_start": 538,
+      "line_end_guess": 571,
+      "component_id": "html_006_utility_background_and_json",
+      "component_file": "analysis/exact_components/ai-character-chat-html/006_utility_background_and_json.frag"
+    },
+    {
+      "function": "addBackgroundToElement",
+      "line_start": 572,
+      "line_end_guess": 591,
+      "component_id": "html_006_utility_background_and_json",
+      "component_file": "analysis/exact_components/ai-character-chat-html/006_utility_background_and_json.frag"
+    },
+    {
+      "function": "isVideoUrl",
+      "line_start": 592,
+      "line_end_guess": 595,
+      "component_id": "html_006_utility_background_and_json",
+      "component_file": "analysis/exact_components/ai-character-chat-html/006_utility_background_and_json.frag"
+    },
+    {
+      "function": "getMediaType",
+      "line_start": 596,
+      "line_end_guess": 612,
+      "component_id": "html_006_utility_background_and_json",
+      "component_file": "analysis/exact_components/ai-character-chat-html/006_utility_background_and_json.frag"
+    },
+    {
+      "function": "nextMediaIndex",
+      "line_start": 613,
+      "line_end_guess": 647,
+      "component_id": "html_006_utility_background_and_json",
+      "component_file": "analysis/exact_components/ai-character-chat-html/006_utility_background_and_json.frag"
+    },
+    {
+      "function": "importStylesheet",
+      "line_start": 648,
+      "line_end_guess": 659,
+      "component_id": "html_006_utility_background_and_json",
+      "component_file": "analysis/exact_components/ai-character-chat-html/006_utility_background_and_json.frag"
+    },
+    {
+      "function": "htmlToElement",
+      "line_start": 660,
+      "line_end_guess": 668,
+      "component_id": "html_006_utility_background_and_json",
+      "component_file": "analysis/exact_components/ai-character-chat-html/006_utility_background_and_json.frag"
+    },
+    {
+      "function": "jsonToBlob",
+      "line_start": 669,
+      "line_end_guess": 675,
+      "component_id": "html_006_utility_background_and_json",
+      "component_file": "analysis/exact_components/ai-character-chat-html/006_utility_background_and_json.frag"
+    },
+    {
+      "function": "ensureCapacity",
+      "line_start": 676,
+      "line_end_guess": 685,
+      "component_id": "html_006_utility_background_and_json",
+      "component_file": "analysis/exact_components/ai-character-chat-html/006_utility_background_and_json.frag"
+    },
+    {
+      "function": "writeToBuffer",
+      "line_start": 686,
+      "line_end_guess": 692,
+      "component_id": "html_006_utility_background_and_json",
+      "component_file": "analysis/exact_components/ai-character-chat-html/006_utility_background_and_json.frag"
+    },
+    {
+      "function": "flushStringBuffer",
+      "line_start": 693,
+      "line_end_guess": 699,
+      "component_id": "html_006_utility_background_and_json",
+      "component_file": "analysis/exact_components/ai-character-chat-html/006_utility_background_and_json.frag"
+    },
+    {
+      "function": "processValue",
+      "line_start": 700,
+      "line_end_guess": 745,
+      "component_id": "html_006_utility_background_and_json",
+      "component_file": "analysis/exact_components/ai-character-chat-html/006_utility_background_and_json.frag"
+    },
+    {
+      "function": "applyCodeMirror5ToTextarea",
+      "line_start": 746,
+      "line_end_guess": 806,
+      "component_id": "html_007_utility_editor_prompt_modal",
+      "component_file": "analysis/exact_components/ai-character-chat-html/007_utility_editor_prompt_modal.frag"
+    },
+    {
+      "function": "uploadDataUrlToTextInput",
+      "line_start": 807,
+      "line_end_guess": 849,
+      "component_id": "html_007_utility_editor_prompt_modal",
+      "component_file": "analysis/exact_components/ai-character-chat-html/007_utility_editor_prompt_modal.frag"
+    },
+    {
+      "function": "prompt2",
+      "line_start": 850,
+      "line_end_guess": 855,
+      "component_id": "html_007_utility_editor_prompt_modal",
+      "component_file": "analysis/exact_components/ai-character-chat-html/007_utility_editor_prompt_modal.frag"
+    },
+    {
+      "function": "sanitizeHtml",
+      "line_start": 856,
+      "line_end_guess": 983,
+      "component_id": "html_007_utility_editor_prompt_modal",
+      "component_file": "analysis/exact_components/ai-character-chat-html/007_utility_editor_prompt_modal.frag"
+    },
+    {
+      "function": "updateFitHeights",
+      "line_start": 984,
+      "line_end_guess": 1076,
+      "component_id": "html_007_utility_editor_prompt_modal",
+      "component_file": "analysis/exact_components/ai-character-chat-html/007_utility_editor_prompt_modal.frag"
+    },
+    {
+      "function": "setTimeout",
+      "line_start": 1077,
+      "line_end_guess": 1091,
+      "component_id": "html_007_utility_editor_prompt_modal",
+      "component_file": "analysis/exact_components/ai-character-chat-html/007_utility_editor_prompt_modal.frag"
+    },
+    {
+      "function": "getAllValues",
+      "line_start": 1092,
+      "line_end_guess": 1110,
+      "component_id": "html_007_utility_editor_prompt_modal",
+      "component_file": "analysis/exact_components/ai-character-chat-html/007_utility_editor_prompt_modal.frag"
+    },
+    {
+      "function": "updateInputVisibilies",
+      "line_start": 1111,
+      "line_end_guess": 1779,
+      "component_id": "html_007_utility_editor_prompt_modal",
+      "component_file": "analysis/exact_components/ai-character-chat-html/007_utility_editor_prompt_modal.frag"
+    },
+    {
+      "function": "toggleFeedbackModal",
+      "line_start": 1780,
+      "line_end_guess": 1795,
+      "component_id": "html_010_app_shell_dom",
+      "component_file": "analysis/exact_components/ai-character-chat-html/010_app_shell_dom.frag"
+    },
+    {
+      "function": "showFeedbackModal",
+      "line_start": 1796,
+      "line_end_guess": 1812,
+      "component_id": "html_010_app_shell_dom",
+      "component_file": "analysis/exact_components/ai-character-chat-html/010_app_shell_dom.frag"
+    },
+    {
+      "function": "beforeSubmit",
+      "line_start": 1813,
+      "line_end_guess": 1837,
+      "component_id": "html_010_app_shell_dom",
+      "component_file": "analysis/exact_components/ai-character-chat-html/010_app_shell_dom.frag"
+    },
+    {
+      "function": "showCommentsModal",
+      "line_start": 1838,
+      "line_end_guess": 2020,
+      "component_id": "html_010_app_shell_dom",
+      "component_file": "analysis/exact_components/ai-character-chat-html/010_app_shell_dom.frag"
+    },
+    {
+      "function": "setTimeout",
+      "line_start": 2021,
+      "line_end_guess": 2024,
+      "component_id": "html_011_module_bootstrap_core",
+      "component_file": "analysis/exact_components/ai-character-chat-html/011_module_bootstrap_core.frag"
+    },
+    {
+      "function": "toggleAvatarPicDisplay",
+      "line_start": 2025,
+      "line_end_guess": 2068,
+      "component_id": "html_011_module_bootstrap_core",
+      "component_file": "analysis/exact_components/ai-character-chat-html/011_module_bootstrap_core.frag"
+    },
+    {
+      "function": "blobToDataUrl",
+      "line_start": 2069,
+      "line_end_guess": 2076,
+      "component_id": "html_011_module_bootstrap_core",
+      "component_file": "analysis/exact_components/ai-character-chat-html/011_module_bootstrap_core.frag"
+    },
+    {
+      "function": "processAvatarImageUrl",
+      "line_start": 2077,
+      "line_end_guess": 2097,
+      "component_id": "html_011_module_bootstrap_core",
+      "component_file": "analysis/exact_components/ai-character-chat-html/011_module_bootstrap_core.frag"
+    },
+    {
+      "function": "startX",
+      "line_start": 2098,
+      "line_end_guess": 2108,
+      "component_id": "html_011_module_bootstrap_core",
+      "component_file": "analysis/exact_components/ai-character-chat-html/011_module_bootstrap_core.frag"
+    },
+    {
+      "function": "generateCharacterFromUrl",
+      "line_start": 2109,
+      "line_end_guess": 2123,
+      "component_id": "html_012_module_generate_character_from_url",
+      "component_file": "analysis/exact_components/ai-character-chat-html/012_module_generate_character_from_url.frag"
+    },
+    {
+      "function": "tidyUp",
+      "line_start": 2124,
+      "line_end_guess": 2559,
+      "component_id": "html_012_module_generate_character_from_url",
+      "component_file": "analysis/exact_components/ai-character-chat-html/012_module_generate_character_from_url.frag"
+    },
+    {
+      "function": "setTimeout",
+      "line_start": 2560,
+      "line_end_guess": 2593,
+      "component_id": "html_012_module_generate_character_from_url",
+      "component_file": "analysis/exact_components/ai-character-chat-html/012_module_generate_character_from_url.frag"
+    },
+    {
+      "function": "tryPersistBrowserStorageData",
+      "line_start": 2594,
+      "line_end_guess": 2655,
+      "component_id": "html_012_module_generate_character_from_url",
+      "component_file": "analysis/exact_components/ai-character-chat-html/012_module_generate_character_from_url.frag"
+    },
+    {
+      "function": "onerror",
+      "line_start": 2656,
+      "line_end_guess": 2727,
+      "component_id": "html_013_module_sanitization_markdown_scaffolding",
+      "component_file": "analysis/exact_components/ai-character-chat-html/013_module_sanitization_markdown_scaffolding.frag"
+    },
+    {
+      "function": "addToDebugLog",
+      "line_start": 2728,
+      "line_end_guess": 2756,
+      "component_id": "html_013_module_sanitization_markdown_scaffolding",
+      "component_file": "analysis/exact_components/ai-character-chat-html/013_module_sanitization_markdown_scaffolding.frag"
+    },
+    {
+      "function": "showMessageFeedHeaderBar",
+      "line_start": 2757,
+      "line_end_guess": 2761,
+      "component_id": "html_014_module_layout_navigation",
+      "component_file": "analysis/exact_components/ai-character-chat-html/014_module_layout_navigation.frag"
+    },
+    {
+      "function": "hideMessageFeedHeaderBar",
+      "line_start": 2762,
+      "line_end_guess": 2767,
+      "component_id": "html_014_module_layout_navigation",
+      "component_file": "analysis/exact_components/ai-character-chat-html/014_module_layout_navigation.frag"
+    },
+    {
+      "function": "openLeftColumn",
+      "line_start": 2768,
+      "line_end_guess": 2778,
+      "component_id": "html_014_module_layout_navigation",
+      "component_file": "analysis/exact_components/ai-character-chat-html/014_module_layout_navigation.frag"
+    },
+    {
+      "function": "closeLeftColumn",
+      "line_start": 2779,
+      "line_end_guess": 2807,
+      "component_id": "html_014_module_layout_navigation",
+      "component_file": "analysis/exact_components/ai-character-chat-html/014_module_layout_navigation.frag"
+    },
+    {
+      "function": "showMessageFeedTopMenu",
+      "line_start": 2808,
+      "line_end_guess": 2812,
+      "component_id": "html_014_module_layout_navigation",
+      "component_file": "analysis/exact_components/ai-character-chat-html/014_module_layout_navigation.frag"
+    },
+    {
+      "function": "hideMessageFeedTopMenu",
+      "line_start": 2813,
+      "line_end_guess": 3030,
+      "component_id": "html_014_module_layout_navigation",
+      "component_file": "analysis/exact_components/ai-character-chat-html/014_module_layout_navigation.frag"
+    },
+    {
+      "function": "upgradeCharacterInitialMessagesArrayIfNeeded",
+      "line_start": 3031,
+      "line_end_guess": 3057,
+      "component_id": "html_015_module_db_bootstrap_upgrades",
+      "component_file": "analysis/exact_components/ai-character-chat-html/015_module_db_bootstrap_upgrades.frag"
+    },
+    {
+      "function": "upgradeCharacterFromOldVersion",
+      "line_start": 3058,
+      "line_end_guess": 3101,
+      "component_id": "html_015_module_db_bootstrap_upgrades",
+      "component_file": "analysis/exact_components/ai-character-chat-html/015_module_db_bootstrap_upgrades.frag"
+    },
+    {
+      "function": "upgradeMessageFromOldVersion",
+      "line_start": 3102,
+      "line_end_guess": 3121,
+      "component_id": "html_015_module_db_bootstrap_upgrades",
+      "component_file": "analysis/exact_components/ai-character-chat-html/015_module_db_bootstrap_upgrades.frag"
+    },
+    {
+      "function": "upgradeThreadFromOldVersion",
+      "line_start": 3122,
+      "line_end_guess": 3168,
+      "component_id": "html_015_module_db_bootstrap_upgrades",
+      "component_file": "analysis/exact_components/ai-character-chat-html/015_module_db_bootstrap_upgrades.frag"
+    },
+    {
+      "function": "sanitizeExportJson",
+      "line_start": 3169,
+      "line_end_guess": 3240,
+      "component_id": "html_015_module_db_bootstrap_upgrades",
+      "component_file": "analysis/exact_components/ai-character-chat-html/015_module_db_bootstrap_upgrades.frag"
+    },
+    {
+      "function": "upgradeMemoryFromOldVersion",
+      "line_start": 3241,
+      "line_end_guess": 3261,
+      "component_id": "html_015_module_db_bootstrap_upgrades",
+      "component_file": "analysis/exact_components/ai-character-chat-html/015_module_db_bootstrap_upgrades.frag"
+    },
+    {
+      "function": "upgradeLoreFromOldVersion",
+      "line_start": 3262,
+      "line_end_guess": 3306,
+      "component_id": "html_015_module_db_bootstrap_upgrades",
+      "component_file": "analysis/exact_components/ai-character-chat-html/015_module_db_bootstrap_upgrades.frag"
+    },
+    {
+      "function": "createMemoryIdToIndexMapForIncorrectlyIndexedOrUnindexedMemories",
+      "line_start": 3307,
+      "line_end_guess": 3483,
+      "component_id": "html_015_module_db_bootstrap_upgrades",
+      "component_file": "analysis/exact_components/ai-character-chat-html/015_module_db_bootstrap_upgrades.frag"
+    },
+    {
+      "function": "renderThreadList",
+      "line_start": 3484,
+      "line_end_guess": 3921,
+      "component_id": "html_017_module_thread_list_and_thread_export",
+      "component_file": "analysis/exact_components/ai-character-chat-html/017_module_thread_list_and_thread_export.frag"
+    },
+    {
+      "function": "getThreadJSONById",
+      "line_start": 3922,
+      "line_end_guess": 4003,
+      "component_id": "html_017_module_thread_list_and_thread_export",
+      "component_file": "analysis/exact_components/ai-character-chat-html/017_module_thread_list_and_thread_export.frag"
+    },
+    {
+      "function": "renderMessageFeed",
+      "line_start": 4004,
+      "line_end_guess": 4015,
+      "component_id": "html_018_module_message_feed_and_scene",
+      "component_file": "analysis/exact_components/ai-character-chat-html/018_module_message_feed_and_scene.frag"
+    },
+    {
+      "function": "threadCharacter",
+      "line_start": 4016,
+      "line_end_guess": 4124,
+      "component_id": "html_018_module_message_feed_and_scene",
+      "component_file": "analysis/exact_components/ai-character-chat-html/018_module_message_feed_and_scene.frag"
+    },
+    {
+      "function": "setTimeout",
+      "line_start": 4125,
+      "line_end_guess": 4145,
+      "component_id": "html_018_module_message_feed_and_scene",
+      "component_file": "analysis/exact_components/ai-character-chat-html/018_module_message_feed_and_scene.frag"
+    },
+    {
+      "function": "setTimeout",
+      "line_start": 4146,
+      "line_end_guess": 4193,
+      "component_id": "html_018_module_message_feed_and_scene",
+      "component_file": "analysis/exact_components/ai-character-chat-html/018_module_message_feed_and_scene.frag"
+    },
+    {
+      "function": "updateThreadScene",
+      "line_start": 4194,
+      "line_end_guess": 4260,
+      "component_id": "html_018_module_message_feed_and_scene",
+      "component_file": "analysis/exact_components/ai-character-chat-html/018_module_message_feed_and_scene.frag"
+    },
+    {
+      "function": "prependEarlierMessagesToFeed",
+      "line_start": 4261,
+      "line_end_guess": 4272,
+      "component_id": "html_018_module_message_feed_and_scene",
+      "component_file": "analysis/exact_components/ai-character-chat-html/018_module_message_feed_and_scene.frag"
+    },
+    {
+      "function": "thread",
+      "line_start": 4273,
+      "line_end_guess": 4273,
+      "component_id": "html_018_module_message_feed_and_scene",
+      "component_file": "analysis/exact_components/ai-character-chat-html/018_module_message_feed_and_scene.frag"
+    },
+    {
+      "function": "threadCharacter",
+      "line_start": 4274,
+      "line_end_guess": 4338,
+      "component_id": "html_018_module_message_feed_and_scene",
+      "component_file": "analysis/exact_components/ai-character-chat-html/018_module_message_feed_and_scene.frag"
+    },
+    {
+      "function": "createInlineReminderMessage",
+      "line_start": 4339,
+      "line_end_guess": 4381,
+      "component_id": "html_018_module_message_feed_and_scene",
+      "component_file": "analysis/exact_components/ai-character-chat-html/018_module_message_feed_and_scene.frag"
+    },
+    {
+      "function": "updateInlineReminderMessage",
+      "line_start": 4382,
+      "line_end_guess": 4444,
+      "component_id": "html_018_module_message_feed_and_scene",
+      "component_file": "analysis/exact_components/ai-character-chat-html/018_module_message_feed_and_scene.frag"
+    },
+    {
+      "function": "createCharacterCardHtml",
+      "line_start": 4445,
+      "line_end_guess": 4870,
+      "component_id": "html_019_module_character_catalog_and_crud",
+      "component_file": "analysis/exact_components/ai-character-chat-html/019_module_character_catalog_and_crud.frag"
+    },
+    {
+      "function": "filterAndRenderCharacterList",
+      "line_start": 4871,
+      "line_end_guess": 4882,
+      "component_id": "html_019_module_character_catalog_and_crud",
+      "component_file": "analysis/exact_components/ai-character-chat-html/019_module_character_catalog_and_crud.frag"
+    },
+    {
+      "function": "renderCharacterList",
+      "line_start": 4883,
+      "line_end_guess": 5033,
+      "component_id": "html_019_module_character_catalog_and_crud",
+      "component_file": "analysis/exact_components/ai-character-chat-html/019_module_character_catalog_and_crud.frag"
+    },
+    {
+      "function": "character",
+      "line_start": 5034,
+      "line_end_guess": 5141,
+      "component_id": "html_019_module_character_catalog_and_crud",
+      "component_file": "analysis/exact_components/ai-character-chat-html/019_module_character_catalog_and_crud.frag"
+    },
+    {
+      "function": "safelyDeleteCharacterById",
+      "line_start": 5142,
+      "line_end_guess": 5187,
+      "component_id": "html_019_module_character_catalog_and_crud",
+      "component_file": "analysis/exact_components/ai-character-chat-html/019_module_character_catalog_and_crud.frag"
+    },
+    {
+      "function": "safelyDeleteThreadById",
+      "line_start": 5188,
+      "line_end_guess": 5206,
+      "component_id": "html_019_module_character_catalog_and_crud",
+      "component_file": "analysis/exact_components/ai-character-chat-html/019_module_character_catalog_and_crud.frag"
+    },
+    {
+      "function": "safelyDeleteMessagesByIds",
+      "line_start": 5207,
+      "line_end_guess": 5255,
+      "component_id": "html_019_module_character_catalog_and_crud",
+      "component_file": "analysis/exact_components/ai-character-chat-html/019_module_character_catalog_and_crud.frag"
+    },
+    {
+      "function": "editCharacterById",
+      "line_start": 5256,
+      "line_end_guess": 5293,
+      "component_id": "html_019_module_character_catalog_and_crud",
+      "component_file": "analysis/exact_components/ai-character-chat-html/019_module_character_catalog_and_crud.frag"
+    },
+    {
+      "function": "createNewThreadWithCharacterId",
+      "line_start": 5294,
+      "line_end_guess": 5339,
+      "component_id": "html_020_module_thread_entry_shortcuts_character_prompt",
+      "component_file": "analysis/exact_components/ai-character-chat-html/020_module_thread_entry_shortcuts_character_prompt.frag"
+    },
+    {
+      "function": "renderMessageInputPlaceholder",
+      "line_start": 5340,
+      "line_end_guess": 5353,
+      "component_id": "html_020_module_thread_entry_shortcuts_character_prompt",
+      "component_file": "analysis/exact_components/ai-character-chat-html/020_module_thread_entry_shortcuts_character_prompt.frag"
+    },
+    {
+      "function": "showThread",
+      "line_start": 5354,
+      "line_end_guess": 5459,
+      "component_id": "html_020_module_thread_entry_shortcuts_character_prompt",
+      "component_file": "analysis/exact_components/ai-character-chat-html/020_module_thread_entry_shortcuts_character_prompt.frag"
+    },
+    {
+      "function": "shortcutsFromTextFormat",
+      "line_start": 5460,
+      "line_end_guess": 5485,
+      "component_id": "html_020_module_thread_entry_shortcuts_character_prompt",
+      "component_file": "analysis/exact_components/ai-character-chat-html/020_module_thread_entry_shortcuts_character_prompt.frag"
+    },
+    {
+      "function": "shortcutsToTextFormat",
+      "line_start": 5486,
+      "line_end_guess": 5489,
+      "component_id": "html_020_module_thread_entry_shortcuts_character_prompt",
+      "component_file": "analysis/exact_components/ai-character-chat-html/020_module_thread_entry_shortcuts_character_prompt.frag"
+    },
+    {
+      "function": "showAddCharacterShortcutToThreadPopup",
+      "line_start": 5490,
+      "line_end_guess": 5499,
+      "component_id": "html_020_module_thread_entry_shortcuts_character_prompt",
+      "component_file": "analysis/exact_components/ai-character-chat-html/020_module_thread_entry_shortcuts_character_prompt.frag"
+    },
+    {
+      "function": "handleCharChoiceButtonClick",
+      "line_start": 5500,
+      "line_end_guess": 5569,
+      "component_id": "html_020_module_thread_entry_shortcuts_character_prompt",
+      "component_file": "analysis/exact_components/ai-character-chat-html/020_module_thread_entry_shortcuts_character_prompt.frag"
+    },
+    {
+      "function": "renderShortcutButtons",
+      "line_start": 5570,
+      "line_end_guess": 5622,
+      "component_id": "html_020_module_thread_entry_shortcuts_character_prompt",
+      "component_file": "analysis/exact_components/ai-character-chat-html/020_module_thread_entry_shortcuts_character_prompt.frag"
+    },
+    {
+      "function": "handleChoiceButtonClick",
+      "line_start": 5623,
+      "line_end_guess": 5669,
+      "component_id": "html_020_module_thread_entry_shortcuts_character_prompt",
+      "component_file": "analysis/exact_components/ai-character-chat-html/020_module_thread_entry_shortcuts_character_prompt.frag"
+    },
+    {
+      "function": "characterDetailsPrompt",
+      "line_start": 5670,
+      "line_end_guess": 5689,
+      "component_id": "html_020_module_thread_entry_shortcuts_character_prompt",
+      "component_file": "analysis/exact_components/ai-character-chat-html/020_module_thread_entry_shortcuts_character_prompt.frag"
+    },
+    {
+      "function": "setTimeout",
+      "line_start": 5690,
+      "line_end_guess": 5697,
+      "component_id": "html_020_module_thread_entry_shortcuts_character_prompt",
+      "component_file": "analysis/exact_components/ai-character-chat-html/020_module_thread_entry_shortcuts_character_prompt.frag"
+    },
+    {
+      "function": "showMessageStyleExamples",
+      "line_start": 5698,
+      "line_end_guess": 6203,
+      "component_id": "html_020_module_thread_entry_shortcuts_character_prompt",
+      "component_file": "analysis/exact_components/ai-character-chat-html/020_module_thread_entry_shortcuts_character_prompt.frag"
+    },
+    {
+      "function": "generateTextFormatFromMessages",
+      "line_start": 6204,
+      "line_end_guess": 6225,
+      "component_id": "html_020_module_thread_entry_shortcuts_character_prompt",
+      "component_file": "analysis/exact_components/ai-character-chat-html/020_module_thread_entry_shortcuts_character_prompt.frag"
+    },
+    {
+      "function": "parseMessagesFromTextFormat",
+      "line_start": 6226,
+      "line_end_guess": 6284,
+      "component_id": "html_020_module_thread_entry_shortcuts_character_prompt",
+      "component_file": "analysis/exact_components/ai-character-chat-html/020_module_thread_entry_shortcuts_character_prompt.frag"
+    },
+    {
+      "function": "addCharacter",
+      "line_start": 6285,
+      "line_end_guess": 6312,
+      "component_id": "html_020_module_thread_entry_shortcuts_character_prompt",
+      "component_file": "analysis/exact_components/ai-character-chat-html/020_module_thread_entry_shortcuts_character_prompt.frag"
+    },
+    {
+      "function": "createMessageObj",
+      "line_start": 6313,
+      "line_end_guess": 6342,
+      "component_id": "html_021_module_message_models_lore_embeddings",
+      "component_file": "analysis/exact_components/ai-character-chat-html/021_module_message_models_lore_embeddings.frag"
+    },
+    {
+      "function": "addMessageToDb",
+      "line_start": 6343,
+      "line_end_guess": 6373,
+      "component_id": "html_021_module_message_models_lore_embeddings",
+      "component_file": "analysis/exact_components/ai-character-chat-html/021_module_message_models_lore_embeddings.frag"
+    },
+    {
+      "function": "addThread",
+      "line_start": 6374,
+      "line_end_guess": 6439,
+      "component_id": "html_021_module_message_models_lore_embeddings",
+      "component_file": "analysis/exact_components/ai-character-chat-html/021_module_message_models_lore_embeddings.frag"
+    },
+    {
+      "function": "ensureLoreUrlsAreLoaded",
+      "line_start": 6440,
+      "line_end_guess": 6521,
+      "component_id": "html_021_module_message_models_lore_embeddings",
+      "component_file": "analysis/exact_components/ai-character-chat-html/021_module_message_models_lore_embeddings.frag"
+    },
+    {
+      "function": "getTokenizerByModelName",
+      "line_start": 6522,
+      "line_end_guess": 6530,
+      "component_id": "html_021_module_message_models_lore_embeddings",
+      "component_file": "analysis/exact_components/ai-character-chat-html/021_module_message_models_lore_embeddings.frag"
+    },
+    {
+      "function": "textToTokenIds",
+      "line_start": 6531,
+      "line_end_guess": 6538,
+      "component_id": "html_021_module_message_models_lore_embeddings",
+      "component_file": "analysis/exact_components/ai-character-chat-html/021_module_message_models_lore_embeddings.frag"
+    },
+    {
+      "function": "countTokensInMessages",
+      "line_start": 6539,
+      "line_end_guess": 6592,
+      "component_id": "html_021_module_message_models_lore_embeddings",
+      "component_file": "analysis/exact_components/ai-character-chat-html/021_module_message_models_lore_embeddings.frag"
+    },
+    {
+      "function": "loadModel",
+      "line_start": 6593,
+      "line_end_guess": 6602,
+      "component_id": "html_021_module_message_models_lore_embeddings",
+      "component_file": "analysis/exact_components/ai-character-chat-html/021_module_message_models_lore_embeddings.frag"
+    },
+    {
+      "function": "extractFeatures",
+      "line_start": 6603,
+      "line_end_guess": 6617,
+      "component_id": "html_021_module_message_models_lore_embeddings",
+      "component_file": "analysis/exact_components/ai-character-chat-html/021_module_message_models_lore_embeddings.frag"
+    },
+    {
+      "function": "textEmbedderFunction",
+      "line_start": 6618,
+      "line_end_guess": 6629,
+      "component_id": "html_021_module_message_models_lore_embeddings",
+      "component_file": "analysis/exact_components/ai-character-chat-html/021_module_message_models_lore_embeddings.frag"
+    },
+    {
+      "function": "embedTextWithLocalModel",
+      "line_start": 6630,
+      "line_end_guess": 6649,
+      "component_id": "html_021_module_message_models_lore_embeddings",
+      "component_file": "analysis/exact_components/ai-character-chat-html/021_module_message_models_lore_embeddings.frag"
+    },
+    {
+      "function": "embedTexts",
+      "line_start": 6650,
+      "line_end_guess": 6724,
+      "component_id": "html_021_module_message_models_lore_embeddings",
+      "component_file": "analysis/exact_components/ai-character-chat-html/021_module_message_models_lore_embeddings.frag"
+    },
+    {
+      "function": "prepareMessagesForBot",
+      "line_start": 6725,
+      "line_end_guess": 6789,
+      "component_id": "html_022_module_prepare_messages_and_custom_code_format",
+      "component_file": "analysis/exact_components/ai-character-chat-html/022_module_prepare_messages_and_custom_code_format.frag"
+    },
+    {
+      "function": "renderMessagesForReader",
+      "line_start": 6790,
+      "line_end_guess": 6837,
+      "component_id": "html_022_module_prepare_messages_and_custom_code_format",
+      "component_file": "analysis/exact_components/ai-character-chat-html/022_module_prepare_messages_and_custom_code_format.frag"
+    },
+    {
+      "function": "messageObjToCharacterName",
+      "line_start": 6838,
+      "line_end_guess": 6863,
+      "component_id": "html_022_module_prepare_messages_and_custom_code_format",
+      "component_file": "analysis/exact_components/ai-character-chat-html/022_module_prepare_messages_and_custom_code_format.frag"
+    },
+    {
+      "function": "messageObjToCharacterAvatar",
+      "line_start": 6864,
+      "line_end_guess": 6909,
+      "component_id": "html_022_module_prepare_messages_and_custom_code_format",
+      "component_file": "analysis/exact_components/ai-character-chat-html/022_module_prepare_messages_and_custom_code_format.frag"
+    },
+    {
+      "function": "messagesToCustomCodeFormat",
+      "line_start": 6910,
+      "line_end_guess": 6955,
+      "component_id": "html_022_module_prepare_messages_and_custom_code_format",
+      "component_file": "analysis/exact_components/ai-character-chat-html/022_module_prepare_messages_and_custom_code_format.frag"
+    },
+    {
+      "function": "messagesFromCustomCodeFormat",
+      "line_start": 6956,
+      "line_end_guess": 7123,
+      "component_id": "html_022_module_prepare_messages_and_custom_code_format",
+      "component_file": "analysis/exact_components/ai-character-chat-html/022_module_prepare_messages_and_custom_code_format.frag"
+    },
+    {
+      "function": "updateFavicon",
+      "line_start": 7124,
+      "line_end_guess": 7139,
+      "component_id": "html_022_module_prepare_messages_and_custom_code_format",
+      "component_file": "analysis/exact_components/ai-character-chat-html/022_module_prepare_messages_and_custom_code_format.frag"
+    },
+    {
+      "function": "startX",
+      "line_start": 7140,
+      "line_end_guess": 7140,
+      "component_id": "html_022_module_prepare_messages_and_custom_code_format",
+      "component_file": "analysis/exact_components/ai-character-chat-html/022_module_prepare_messages_and_custom_code_format.frag"
+    },
+    {
+      "function": "startY",
+      "line_start": 7141,
+      "line_end_guess": 7157,
+      "component_id": "html_022_module_prepare_messages_and_custom_code_format",
+      "component_file": "analysis/exact_components/ai-character-chat-html/022_module_prepare_messages_and_custom_code_format.frag"
+    },
+    {
+      "function": "getBotReply",
+      "line_start": 7158,
+      "line_end_guess": 7261,
+      "component_id": "html_023_module_reply_generation_pipeline",
+      "component_file": "analysis/exact_components/ai-character-chat-html/023_module_reply_generation_pipeline.frag"
+    },
+    {
+      "function": "getRoleInstructionText",
+      "line_start": 7262,
+      "line_end_guess": 7459,
+      "component_id": "html_023_module_reply_generation_pipeline",
+      "component_file": "analysis/exact_components/ai-character-chat-html/023_module_reply_generation_pipeline.frag"
+    },
+    {
+      "function": "messageArrayToMessagesText",
+      "line_start": 7460,
+      "line_end_guess": 7566,
+      "component_id": "html_023_module_reply_generation_pipeline",
+      "component_file": "analysis/exact_components/ai-character-chat-html/023_module_reply_generation_pipeline.frag"
+    },
+    {
+      "function": "explainMemLoreQueryPrompt",
+      "line_start": 7567,
+      "line_end_guess": 7782,
+      "component_id": "html_023_module_reply_generation_pipeline",
+      "component_file": "analysis/exact_components/ai-character-chat-html/023_module_reply_generation_pipeline.frag"
+    },
+    {
+      "function": "createMemoriesAndLoreMessageContent",
+      "line_start": 7783,
+      "line_end_guess": 7815,
+      "component_id": "html_023_module_reply_generation_pipeline",
+      "component_file": "analysis/exact_components/ai-character-chat-html/023_module_reply_generation_pipeline.frag"
+    },
+    {
+      "function": "countTokensInRetrievalText",
+      "line_start": 7816,
+      "line_end_guess": 7825,
+      "component_id": "html_023_module_reply_generation_pipeline",
+      "component_file": "analysis/exact_components/ai-character-chat-html/023_module_reply_generation_pipeline.frag"
+    },
+    {
+      "function": "dropBatchOrMemoryFromBatch",
+      "line_start": 7826,
+      "line_end_guess": 7946,
+      "component_id": "html_023_module_reply_generation_pipeline",
+      "component_file": "analysis/exact_components/ai-character-chat-html/023_module_reply_generation_pipeline.frag"
+    },
+    {
+      "function": "streamId",
+      "line_start": 7947,
+      "line_end_guess": 8070,
+      "component_id": "html_023_module_reply_generation_pipeline",
+      "component_file": "analysis/exact_components/ai-character-chat-html/023_module_reply_generation_pipeline.frag"
+    },
+    {
+      "function": "getChatCompletion",
+      "line_start": 8071,
+      "line_end_guess": 8097,
+      "component_id": "html_023_module_reply_generation_pipeline",
+      "component_file": "analysis/exact_components/ai-character-chat-html/023_module_reply_generation_pipeline.frag"
+    },
+    {
+      "function": "messageArrayToMessagesText",
+      "line_start": 8098,
+      "line_end_guess": 8133,
+      "component_id": "html_023_module_reply_generation_pipeline",
+      "component_file": "analysis/exact_components/ai-character-chat-html/023_module_reply_generation_pipeline.frag"
+    },
+    {
+      "function": "dotProduct",
+      "line_start": 8134,
+      "line_end_guess": 8149,
+      "component_id": "html_023_module_reply_generation_pipeline",
+      "component_file": "analysis/exact_components/ai-character-chat-html/023_module_reply_generation_pipeline.frag"
+    },
+    {
+      "function": "highlightCodeBlocks",
+      "line_start": 8150,
+      "line_end_guess": 8171,
+      "component_id": "html_023_module_reply_generation_pipeline",
+      "component_file": "analysis/exact_components/ai-character-chat-html/023_module_reply_generation_pipeline.frag"
+    },
+    {
+      "function": "handleStreamingReplyChunk",
+      "line_start": 8172,
+      "line_end_guess": 8194,
+      "component_id": "html_023_module_reply_generation_pipeline",
+      "component_file": "analysis/exact_components/ai-character-chat-html/023_module_reply_generation_pipeline.frag"
+    },
+    {
+      "function": "autoNameThreadIfNeeded",
+      "line_start": 8195,
+      "line_end_guess": 8235,
+      "component_id": "html_023_module_reply_generation_pipeline",
+      "component_file": "analysis/exact_components/ai-character-chat-html/023_module_reply_generation_pipeline.frag"
+    },
+    {
+      "function": "doBotReplyIfNeeded",
+      "line_start": 8236,
+      "line_end_guess": 8337,
+      "component_id": "html_024_module_streaming_regen_message_controls",
+      "component_file": "analysis/exact_components/ai-character-chat-html/024_module_streaming_regen_message_controls.frag"
+    },
+    {
+      "function": "onStreamingReplyChunk",
+      "line_start": 8338,
+      "line_end_guess": 8342,
+      "component_id": "html_024_module_streaming_regen_message_controls",
+      "component_file": "analysis/exact_components/ai-character-chat-html/024_module_streaming_regen_message_controls.frag"
+    },
+    {
+      "function": "onProgressMessage",
+      "line_start": 8343,
+      "line_end_guess": 8434,
+      "component_id": "html_024_module_streaming_regen_message_controls",
+      "component_file": "analysis/exact_components/ai-character-chat-html/024_module_streaming_regen_message_controls.frag"
+    },
+    {
+      "function": "regenerateMessage",
+      "line_start": 8435,
+      "line_end_guess": 8496,
+      "component_id": "html_024_module_streaming_regen_message_controls",
+      "component_file": "analysis/exact_components/ai-character-chat-html/024_module_streaming_regen_message_controls.frag"
+    },
+    {
+      "function": "onStreamingReplyChunk",
+      "line_start": 8497,
+      "line_end_guess": 8513,
+      "component_id": "html_024_module_streaming_regen_message_controls",
+      "component_file": "analysis/exact_components/ai-character-chat-html/024_module_streaming_regen_message_controls.frag"
+    },
+    {
+      "function": "onProgressMessage",
+      "line_start": 8514,
+      "line_end_guess": 8594,
+      "component_id": "html_024_module_streaming_regen_message_controls",
+      "component_file": "analysis/exact_components/ai-character-chat-html/024_module_streaming_regen_message_controls.frag"
+    },
+    {
+      "function": "createPaddedTypingIndicatorHtml",
+      "line_start": 8595,
+      "line_end_guess": 8597,
+      "component_id": "html_024_module_streaming_regen_message_controls",
+      "component_file": "analysis/exact_components/ai-character-chat-html/024_module_streaming_regen_message_controls.frag"
+    },
+    {
+      "function": "createTypingIndicatorHtml",
+      "line_start": 8598,
+      "line_end_guess": 8601,
+      "component_id": "html_024_module_streaming_regen_message_controls",
+      "component_file": "analysis/exact_components/ai-character-chat-html/024_module_streaming_regen_message_controls.frag"
+    },
+    {
+      "function": "messageFeedIsNearBottom",
+      "line_start": 8602,
+      "line_end_guess": 8605,
+      "component_id": "html_024_module_streaming_regen_message_controls",
+      "component_file": "analysis/exact_components/ai-character-chat-html/024_module_streaming_regen_message_controls.frag"
+    },
+    {
+      "function": "addMessageToFeed",
+      "line_start": 8606,
+      "line_end_guess": 8664,
+      "component_id": "html_024_module_streaming_regen_message_controls",
+      "component_file": "analysis/exact_components/ai-character-chat-html/024_module_streaming_regen_message_controls.frag"
+    },
+    {
+      "function": "switchMessageVariant",
+      "line_start": 8665,
+      "line_end_guess": 8691,
+      "component_id": "html_024_module_streaming_regen_message_controls",
+      "component_file": "analysis/exact_components/ai-character-chat-html/024_module_streaming_regen_message_controls.frag"
+    },
+    {
+      "function": "hasHorizontalScrollableAncestor",
+      "line_start": 8692,
+      "line_end_guess": 8707,
+      "component_id": "html_024_module_streaming_regen_message_controls",
+      "component_file": "analysis/exact_components/ai-character-chat-html/024_module_streaming_regen_message_controls.frag"
+    },
+    {
+      "function": "addHorizontalSwipeHandler",
+      "line_start": 8708,
+      "line_end_guess": 8748,
+      "component_id": "html_024_module_streaming_regen_message_controls",
+      "component_file": "analysis/exact_components/ai-character-chat-html/024_module_streaming_regen_message_controls.frag"
+    },
+    {
+      "function": "resetElementPosition",
+      "line_start": 8749,
+      "line_end_guess": 8755,
+      "component_id": "html_024_module_streaming_regen_message_controls",
+      "component_file": "analysis/exact_components/ai-character-chat-html/024_module_streaming_regen_message_controls.frag"
+    },
+    {
+      "function": "attachEventHandlersToMessageEl",
+      "line_start": 8756,
+      "line_end_guess": 8784,
+      "component_id": "html_024_module_streaming_regen_message_controls",
+      "component_file": "analysis/exact_components/ai-character-chat-html/024_module_streaming_regen_message_controls.frag"
+    },
+    {
+      "function": "addHorizontalSwipeHandler",
+      "line_start": 8785,
+      "line_end_guess": 9001,
+      "component_id": "html_024_module_streaming_regen_message_controls",
+      "component_file": "analysis/exact_components/ai-character-chat-html/024_module_streaming_regen_message_controls.frag"
+    },
+    {
+      "function": "showHiddenMessageClickHandler",
+      "line_start": 9002,
+      "line_end_guess": 9010,
+      "component_id": "html_024_module_streaming_regen_message_controls",
+      "component_file": "analysis/exact_components/ai-character-chat-html/024_module_streaming_regen_message_controls.frag"
+    },
+    {
+      "function": "dataUrlToCachedBlobUrl",
+      "line_start": 9011,
+      "line_end_guess": 9026,
+      "component_id": "html_025_module_message_render_edit_delete_user_system_chars",
+      "component_file": "analysis/exact_components/ai-character-chat-html/025_module_message_render_edit_delete_user_system_chars.frag"
+    },
+    {
+      "function": "loadGoogleWebFontsInMessageWrapperStyleIfNeccessary",
+      "line_start": 9027,
+      "line_end_guess": 9046,
+      "component_id": "html_025_module_message_render_edit_delete_user_system_chars",
+      "component_file": "analysis/exact_components/ai-character-chat-html/025_module_message_render_edit_delete_user_system_chars.frag"
+    },
+    {
+      "function": "createMessageElement",
+      "line_start": 9047,
+      "line_end_guess": 9405,
+      "component_id": "html_025_module_message_render_edit_delete_user_system_chars",
+      "component_file": "analysis/exact_components/ai-character-chat-html/025_module_message_render_edit_delete_user_system_chars.frag"
+    },
+    {
+      "function": "setTimeout",
+      "line_start": 9406,
+      "line_end_guess": 9429,
+      "component_id": "html_025_module_message_render_edit_delete_user_system_chars",
+      "component_file": "analysis/exact_components/ai-character-chat-html/025_module_message_render_edit_delete_user_system_chars.frag"
+    },
+    {
+      "function": "messageEditButtonClickHandler",
+      "line_start": 9430,
+      "line_end_guess": 9442,
+      "component_id": "html_025_module_message_render_edit_delete_user_system_chars",
+      "component_file": "analysis/exact_components/ai-character-chat-html/025_module_message_render_edit_delete_user_system_chars.frag"
+    },
+    {
+      "function": "insertMessageHandler",
+      "line_start": 9443,
+      "line_end_guess": 9478,
+      "component_id": "html_025_module_message_render_edit_delete_user_system_chars",
+      "component_file": "analysis/exact_components/ai-character-chat-html/025_module_message_render_edit_delete_user_system_chars.frag"
+    },
+    {
+      "function": "editCharacter",
+      "line_start": 9479,
+      "line_end_guess": 9531,
+      "component_id": "html_025_module_message_render_edit_delete_user_system_chars",
+      "component_file": "analysis/exact_components/ai-character-chat-html/025_module_message_render_edit_delete_user_system_chars.frag"
+    },
+    {
+      "function": "messageQuickEditButtonClickHandler",
+      "line_start": 9532,
+      "line_end_guess": 9591,
+      "component_id": "html_025_module_message_render_edit_delete_user_system_chars",
+      "component_file": "analysis/exact_components/ai-character-chat-html/025_module_message_render_edit_delete_user_system_chars.frag"
+    },
+    {
+      "function": "clickAnywhereHandler",
+      "line_start": 9592,
+      "line_end_guess": 9630,
+      "component_id": "html_025_module_message_render_edit_delete_user_system_chars",
+      "component_file": "analysis/exact_components/ai-character-chat-html/025_module_message_render_edit_delete_user_system_chars.frag"
+    },
+    {
+      "function": "messageDeleteButtonClickHandler",
+      "line_start": 9631,
+      "line_end_guess": 9677,
+      "component_id": "html_025_module_message_render_edit_delete_user_system_chars",
+      "component_file": "analysis/exact_components/ai-character-chat-html/025_module_message_render_edit_delete_user_system_chars.frag"
+    },
+    {
+      "function": "getUserCharacterObj",
+      "line_start": 9678,
+      "line_end_guess": 9710,
+      "component_id": "html_025_module_message_render_edit_delete_user_system_chars",
+      "component_file": "analysis/exact_components/ai-character-chat-html/025_module_message_render_edit_delete_user_system_chars.frag"
+    },
+    {
+      "function": "getSystemCharacterObj",
+      "line_start": 9711,
+      "line_end_guess": 9749,
+      "component_id": "html_025_module_message_render_edit_delete_user_system_chars",
+      "component_file": "analysis/exact_components/ai-character-chat-html/025_module_message_render_edit_delete_user_system_chars.frag"
+    },
+    {
+      "function": "sendButtonClickHandler",
+      "line_start": 9750,
+      "line_end_guess": 10279,
+      "component_id": "html_026_module_send_button_commands",
+      "component_file": "analysis/exact_components/ai-character-chat-html/026_module_send_button_commands.frag"
+    },
+    {
+      "function": "reloadButtonClickHandler",
+      "line_start": 10280,
+      "line_end_guess": 10511,
+      "component_id": "html_026_module_send_button_commands",
+      "component_file": "analysis/exact_components/ai-character-chat-html/026_module_send_button_commands.frag"
+    },
+    {
+      "function": "queueUpAutoReplies",
+      "line_start": 10512,
+      "line_end_guess": 10518,
+      "component_id": "html_026_module_send_button_commands",
+      "component_file": "analysis/exact_components/ai-character-chat-html/026_module_send_button_commands.frag"
+    },
+    {
+      "function": "getDateTimeString",
+      "line_start": 10519,
+      "line_end_guess": 10554,
+      "component_id": "html_026_module_send_button_commands",
+      "component_file": "analysis/exact_components/ai-character-chat-html/026_module_send_button_commands.frag"
+    },
+    {
+      "function": "createNewCustomCodeIframeForThread",
+      "line_start": 10555,
+      "line_end_guess": 10569,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "handler",
+      "line_start": 10570,
+      "line_end_guess": 10820,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "callParentWindow",
+      "line_start": 10821,
+      "line_end_guess": 10824,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "handler",
+      "line_start": 10825,
+      "line_end_guess": 10893,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "createDeepOnChangeProxy",
+      "line_start": 10894,
+      "line_end_guess": 10924,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "___setDataWithoutTriggeringChange",
+      "line_start": 10925,
+      "line_end_guess": 10943,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "getCurrentData",
+      "line_start": 10944,
+      "line_end_guess": 10950,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "getChangedData",
+      "line_start": 10951,
+      "line_end_guess": 10976,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "_do_not_use_this_use_oc_dot_pushDataChanges_instead___sendBackDataUpdatesIfNeeded",
+      "line_start": 10977,
+      "line_end_guess": 10981,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "sendBackDataUpdatesIfNeeded",
+      "line_start": 10982,
+      "line_end_guess": 11100,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "applyObjectOverrides",
+      "line_start": 11101,
+      "line_end_guess": 11163,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "await",
+      "line_start": 11164,
+      "line_end_guess": 11248,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "updateCustomCodeIframeVisibility",
+      "line_start": 11249,
+      "line_end_guess": 11484,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "surgicallyRerenderStreamingMessageEl",
+      "line_start": 11485,
+      "line_end_guess": 11491,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "sendCustomCodeIframeMessage",
+      "line_start": 11492,
+      "line_end_guess": 11502,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "runCodeInCustomCodeIframe",
+      "line_start": 11503,
+      "line_end_guess": 11512,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "getDataForCustomCode",
+      "line_start": 11513,
+      "line_end_guess": 11554,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "triggerInitCustomCodeEvent",
+      "line_start": 11555,
+      "line_end_guess": 11560,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "triggerMessageActionCustomCodeEvent",
+      "line_start": 11561,
+      "line_end_guess": 11585,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "triggerStreamingMessageChunkCustomCodeEvent",
+      "line_start": 11586,
+      "line_end_guess": 11595,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "updateDbWithNewDataFromCustomCode",
+      "line_start": 11596,
+      "line_end_guess": 11799,
+      "component_id": "html_027_module_custom_code_iframe_api",
+      "component_file": "analysis/exact_components/ai-character-chat-html/027_module_custom_code_iframe_api.frag"
+    },
+    {
+      "function": "doBotReplyInPlaceOfUser",
+      "line_start": 11800,
+      "line_end_guess": 11849,
+      "component_id": "html_028_module_reply_as_and_input_ux",
+      "component_file": "analysis/exact_components/ai-character-chat-html/028_module_reply_as_and_input_ux.frag"
+    },
+    {
+      "function": "onStreamingReplyChunk",
+      "line_start": 11850,
+      "line_end_guess": 11854,
+      "component_id": "html_028_module_reply_as_and_input_ux",
+      "component_file": "analysis/exact_components/ai-character-chat-html/028_module_reply_as_and_input_ux.frag"
+    },
+    {
+      "function": "onProgressMessage",
+      "line_start": 11855,
+      "line_end_guess": 11926,
+      "component_id": "html_028_module_reply_as_and_input_ux",
+      "component_file": "analysis/exact_components/ai-character-chat-html/028_module_reply_as_and_input_ux.frag"
+    },
+    {
+      "function": "showAddShortcutButtonModal",
+      "line_start": 11927,
+      "line_end_guess": 11948,
+      "component_id": "html_028_module_reply_as_and_input_ux",
+      "component_file": "analysis/exact_components/ai-character-chat-html/028_module_reply_as_and_input_ux.frag"
+    },
+    {
+      "function": "updateCustomCodePropIfNeeded",
+      "line_start": 11949,
+      "line_end_guess": 11959,
+      "component_id": "html_028_module_reply_as_and_input_ux",
+      "component_file": "analysis/exact_components/ai-character-chat-html/028_module_reply_as_and_input_ux.frag"
+    },
+    {
+      "function": "changeThreadUserNameHandler",
+      "line_start": 11960,
+      "line_end_guess": 12034,
+      "component_id": "html_028_module_reply_as_and_input_ux",
+      "component_file": "analysis/exact_components/ai-character-chat-html/028_module_reply_as_and_input_ux.frag"
+    },
+    {
+      "function": "renderThreadReplyAsCharacterListPopup",
+      "line_start": 12035,
+      "line_end_guess": 12096,
+      "component_id": "html_028_module_reply_as_and_input_ux",
+      "component_file": "analysis/exact_components/ai-character-chat-html/028_module_reply_as_and_input_ux.frag"
+    },
+    {
+      "function": "setThreadCurrentReplyAsCharacterId",
+      "line_start": 12097,
+      "line_end_guess": 12277,
+      "component_id": "html_028_module_reply_as_and_input_ux",
+      "component_file": "analysis/exact_components/ai-character-chat-html/028_module_reply_as_and_input_ux.frag"
+    },
+    {
+      "function": "resizeMessageInputTextAreaToFitContent",
+      "line_start": 12278,
+      "line_end_guess": 12287,
+      "component_id": "html_028_module_reply_as_and_input_ux",
+      "component_file": "analysis/exact_components/ai-character-chat-html/028_module_reply_as_and_input_ux.frag"
+    },
+    {
+      "function": "isTouchDevice",
+      "line_start": 12288,
+      "line_end_guess": 12342,
+      "component_id": "html_028_module_reply_as_and_input_ux",
+      "component_file": "analysis/exact_components/ai-character-chat-html/028_module_reply_as_and_input_ux.frag"
+    },
+    {
+      "function": "handleDoubleTap",
+      "line_start": 12343,
+      "line_end_guess": 12352,
+      "component_id": "html_028_module_reply_as_and_input_ux",
+      "component_file": "analysis/exact_components/ai-character-chat-html/028_module_reply_as_and_input_ux.frag"
+    },
+    {
+      "function": "handleDoubleClick",
+      "line_start": 12353,
+      "line_end_guess": 12363,
+      "component_id": "html_028_module_reply_as_and_input_ux",
+      "component_file": "analysis/exact_components/ai-character-chat-html/028_module_reply_as_and_input_ux.frag"
+    },
+    {
+      "function": "onDoubleTapOrClick",
+      "line_start": 12364,
+      "line_end_guess": 12419,
+      "component_id": "html_028_module_reply_as_and_input_ux",
+      "component_file": "analysis/exact_components/ai-character-chat-html/028_module_reply_as_and_input_ux.frag"
+    },
+    {
+      "function": "clickAnywhereElseHandler",
+      "line_start": 12420,
+      "line_end_guess": 12473,
+      "component_id": "html_028_module_reply_as_and_input_ux",
+      "component_file": "analysis/exact_components/ai-character-chat-html/028_module_reply_as_and_input_ux.frag"
+    },
+    {
+      "function": "getCharacterHash",
+      "line_start": 12474,
+      "line_end_guess": 12605,
+      "component_id": "html_029_module_import_hash_startup",
+      "component_file": "analysis/exact_components/ai-character-chat-html/029_module_import_hash_startup.frag"
+    },
+    {
+      "function": "tryImportingRawDbExport",
+      "line_start": 12606,
+      "line_end_guess": 12667,
+      "component_id": "html_029_module_import_hash_startup",
+      "component_file": "analysis/exact_components/ai-character-chat-html/029_module_import_hash_startup.frag"
+    },
+    {
+      "function": "tryImportingDexieFile",
+      "line_start": 12668,
+      "line_end_guess": 13153,
+      "component_id": "html_029_module_import_hash_startup",
+      "component_file": "analysis/exact_components/ai-character-chat-html/029_module_import_hash_startup.frag"
+    },
+    {
+      "function": "base64DecodeUnicode",
+      "line_start": 13154,
+      "line_end_guess": 13165,
+      "component_id": "html_029_module_import_hash_startup",
+      "component_file": "analysis/exact_components/ai-character-chat-html/029_module_import_hash_startup.frag"
+    },
+    {
+      "function": "tryImportingExternalCharacterFileFormat",
+      "line_start": 13166,
+      "line_end_guess": 13344,
+      "component_id": "html_029_module_import_hash_startup",
+      "component_file": "analysis/exact_components/ai-character-chat-html/029_module_import_hash_startup.frag"
+    },
+    {
+      "function": "tryImportingTavernAIThreadFile",
+      "line_start": 13345,
+      "line_end_guess": 13392,
+      "component_id": "html_029_module_import_hash_startup",
+      "component_file": "analysis/exact_components/ai-character-chat-html/029_module_import_hash_startup.frag"
+    },
+    {
+      "function": "handleInvalidCharacterShareLink",
+      "line_start": 13393,
+      "line_end_guess": 13396,
+      "component_id": "html_029_module_import_hash_startup",
+      "component_file": "analysis/exact_components/ai-character-chat-html/029_module_import_hash_startup.frag"
+    },
+    {
+      "function": "setTimeout",
+      "line_start": 13397,
+      "line_end_guess": 13400,
+      "component_id": "html_029_module_import_hash_startup",
+      "component_file": "analysis/exact_components/ai-character-chat-html/029_module_import_hash_startup.frag"
+    },
+    {
+      "function": "checkForHashCommand",
+      "line_start": 13401,
+      "line_end_guess": 13619,
+      "component_id": "html_029_module_import_hash_startup",
+      "component_file": "analysis/exact_components/ai-character-chat-html/029_module_import_hash_startup.frag"
+    }
+  ],
+  "list": [
+    {
+      "function": "generateShareLinkForCharacter",
+      "line_start": 21,
+      "line_end_guess": 59,
+      "component_id": "list_002_share_link_generation",
+      "component_file": "analysis/exact_components/ai-character-chat-list/002_share_link_generation.frag"
+    },
+    {
+      "function": "compressBlobWithGzip",
+      "line_start": 60,
+      "line_end_guess": 65,
+      "component_id": "list_002_share_link_generation",
+      "component_file": "analysis/exact_components/ai-character-chat-list/002_share_link_generation.frag"
+    },
+    {
+      "function": "loadDataFromUrlThatReferencesCloudStorageFile",
+      "line_start": 66,
+      "line_end_guess": 112,
+      "component_id": "list_003_url_loading_and_sandbox",
+      "component_file": "analysis/exact_components/ai-character-chat-list/003_url_loading_and_sandbox.frag"
+    },
+    {
+      "function": "decompressBlobWithGzip",
+      "line_start": 113,
+      "line_end_guess": 117,
+      "component_id": "list_003_url_loading_and_sandbox",
+      "component_file": "analysis/exact_components/ai-character-chat-list/003_url_loading_and_sandbox.frag"
+    },
+    {
+      "function": "evaluatePerchanceTextInSandbox",
+      "line_start": 118,
+      "line_end_guess": 149,
+      "component_id": "list_003_url_loading_and_sandbox",
+      "component_file": "analysis/exact_components/ai-character-chat-list/003_url_loading_and_sandbox.frag"
+    },
+    {
+      "function": "setTimeout",
+      "line_start": 150,
+      "line_end_guess": 170,
+      "component_id": "list_003_url_loading_and_sandbox",
+      "component_file": "analysis/exact_components/ai-character-chat-list/003_url_loading_and_sandbox.frag"
+    },
+    {
+      "function": "dynamic",
+      "line_start": 171,
+      "line_end_guess": 221,
+      "component_id": "list_004_named_characters_and_meta",
+      "component_file": "analysis/exact_components/ai-character-chat-list/004_named_characters_and_meta.frag"
+    },
+    {
+      "function": "getMessageObjsWithoutSummarizedOnes",
+      "line_start": 222,
+      "line_end_guess": 242,
+      "component_id": "list_005_summary_selection_helper",
+      "component_file": "analysis/exact_components/ai-character-chat-list/005_summary_selection_helper.frag"
+    },
+    {
+      "function": "injectHierarchicalSummariesAndComputeNextSummariesInBackgroundIfNeeded",
+      "line_start": 243,
+      "line_end_guess": 648,
+      "component_id": "list_006_summary_injection_and_budget",
+      "component_file": "analysis/exact_components/ai-character-chat-list/006_summary_injection_and_budget.frag"
+    },
+    {
+      "function": "confirmAsync",
+      "line_start": 649,
+      "line_end_guess": 691,
+      "component_id": "list_008_confirm_async",
+      "component_file": "analysis/exact_components/ai-character-chat-list/008_confirm_async.frag"
+    }
+  ]
+}

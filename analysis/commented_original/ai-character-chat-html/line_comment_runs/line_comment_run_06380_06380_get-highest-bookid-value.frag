@@ -1,0 +1,1 @@
+    // get highest bookId value:

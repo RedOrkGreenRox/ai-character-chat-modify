@@ -1,0 +1,1 @@
+    // Since this is async, it should come *before* HTML modification, since we want that to be "instant", especially due to other things potentially referencing e.g. currentlyStreamingMessages elements - i.e. we don't want code that expects the message feed to be rendered properly to execute in between deletion and creation.

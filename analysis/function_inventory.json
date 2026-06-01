@@ -1,0 +1,3600 @@
+{
+  "html": [
+    {
+      "name": "emergencyDeleteAllDataClickHandler",
+      "line_start": 32,
+      "signature": "  async function emergencyDeleteAllDataClickHandler() {",
+      "source_id": "html",
+      "line_end_guess": 50,
+      "calls_internal": [
+        "setTimeout"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "emergencyExportClickHandler",
+      "line_start": 51,
+      "signature": "  async function emergencyExportClickHandler() {",
+      "source_id": "html",
+      "line_end_guess": 96,
+      "calls_internal": [
+        "exportRawDb",
+        "setTimeout"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "exportRawDb",
+      "line_start": 97,
+      "signature": "  async function exportRawDb(dbName, opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 225,
+      "calls_internal": [
+        "setTimeout"
+      ],
+      "uses_root": [
+        "superFetch"
+      ],
+      "uses_db_tables": [
+        "name",
+        "objectStoreNames",
+        "transaction"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "setTimeout",
+      "line_start": 226,
+      "signature": "    setTimeout(() => URL.revokeObjectURL(url), 1000*60*2);",
+      "source_id": "html",
+      "line_end_guess": 292,
+      "calls_internal": [],
+      "uses_root": [
+        "aiTextPlugin",
+        "loadDependencies"
+      ],
+      "uses_db_tables": [
+        "close"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "createFloatingWindow",
+      "line_start": 293,
+      "signature": "  window.createFloatingWindow = function(opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 392,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "sanitizeHtml",
+      "line_start": 393,
+      "signature": "  window.sanitizeHtml = function(text) {",
+      "source_id": "html",
+      "line_end_guess": 403,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "textToSpeech",
+      "line_start": 404,
+      "signature": "  window.textToSpeech = function({text, voiceName}) {",
+      "source_id": "html",
+      "line_end_guess": 423,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "sha256Text",
+      "line_start": 424,
+      "signature": "  window.sha256Text = async function(text) {",
+      "source_id": "html",
+      "line_end_guess": 432,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "dedent",
+      "line_start": 433,
+      "signature": "  window.dedent = function(str) {",
+      "source_id": "html",
+      "line_end_guess": 446,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "downloadTextOrBlob",
+      "line_start": 447,
+      "signature": "  window.downloadTextOrBlob = function(textOrBlob, filename) {",
+      "source_id": "html",
+      "line_end_guess": 457,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "setTimeout",
+      "line_start": 458,
+      "signature": "    setTimeout(() => URL.revokeObjectURL(dataUri), 30*1000);",
+      "source_id": "html",
+      "line_end_guess": 461,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "cosineDistance",
+      "line_start": 462,
+      "signature": "  window.cosineDistance = function(vector1, vector2) {",
+      "source_id": "html",
+      "line_end_guess": 473,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "createLoadingModal",
+      "line_start": 474,
+      "signature": "  window.createLoadingModal = function(initialContent, parentElement) {",
+      "source_id": "html",
+      "line_end_guess": 521,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "applyObjectOverrides",
+      "line_start": 522,
+      "signature": "  window.applyObjectOverrides = function({object, overrides}) {",
+      "source_id": "html",
+      "line_end_guess": 537,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "objectKeysAndTypesAreValid",
+      "line_start": 538,
+      "signature": "  window.objectKeysAndTypesAreValid = function(obj, validStructure, opts={}) { // if you don't set opts.requireAllKeys=true, it allows missing keys in the obj",
+      "source_id": "html",
+      "line_end_guess": 571,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "addBackgroundToElement",
+      "line_start": 572,
+      "signature": "  window.addBackgroundToElement = function(element) {",
+      "source_id": "html",
+      "line_end_guess": 591,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "isVideoUrl",
+      "line_start": 592,
+      "signature": "    function isVideoUrl(url) {",
+      "source_id": "html",
+      "line_end_guess": 595,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "getMediaType",
+      "line_start": 596,
+      "signature": "    function getMediaType(url) {",
+      "source_id": "html",
+      "line_end_guess": 612,
+      "calls_internal": [
+        "isVideoUrl"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "nextMediaIndex",
+      "line_start": 613,
+      "signature": "        const nextMediaIndex = (currentMedia + 1) % 4;",
+      "source_id": "html",
+      "line_end_guess": 647,
+      "calls_internal": [
+        "getMediaType"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "importStylesheet",
+      "line_start": 648,
+      "signature": "  window.importStylesheet = function(src) {",
+      "source_id": "html",
+      "line_end_guess": 659,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "htmlToElement",
+      "line_start": 660,
+      "signature": "  window.htmlToElement = function(html) {",
+      "source_id": "html",
+      "line_end_guess": 668,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "jsonToBlob",
+      "line_start": 669,
+      "signature": "  window.jsonToBlob = function(json) {",
+      "source_id": "html",
+      "line_end_guess": 675,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "ensureCapacity",
+      "line_start": 676,
+      "signature": "    function ensureCapacity(additionalBytes) {",
+      "source_id": "html",
+      "line_end_guess": 685,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "writeToBuffer",
+      "line_start": 686,
+      "signature": "    function writeToBuffer(str) {",
+      "source_id": "html",
+      "line_end_guess": 692,
+      "calls_internal": [
+        "ensureCapacity"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "flushStringBuffer",
+      "line_start": 693,
+      "signature": "    function flushStringBuffer() {",
+      "source_id": "html",
+      "line_end_guess": 699,
+      "calls_internal": [
+        "writeToBuffer"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "processValue",
+      "line_start": 700,
+      "signature": "    function processValue(value) {",
+      "source_id": "html",
+      "line_end_guess": 745,
+      "calls_internal": [
+        "flushStringBuffer"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "applyCodeMirror5ToTextarea",
+      "line_start": 746,
+      "signature": "  window.applyCodeMirror5ToTextarea = async function(textarea, opts={}) { // opts.mode can be javascript, htmlmixed, etc.",
+      "source_id": "html",
+      "line_end_guess": 806,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "uploadDataUrlToTextInput",
+      "line_start": 807,
+      "signature": "  window.uploadDataUrlToTextInput = function(inputEl, opts = {}) {",
+      "source_id": "html",
+      "line_end_guess": 849,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "prompt2",
+      "line_start": 850,
+      "signature": "  window.prompt2 = async function(specs, opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 855,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "sanitizeHtml",
+      "line_start": 856,
+      "signature": "    function sanitizeHtml(text) {",
+      "source_id": "html",
+      "line_end_guess": 983,
+      "calls_internal": [
+        "uploadDataUrlToTextInput"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "updateFitHeights",
+      "line_start": 984,
+      "signature": "    function updateFitHeights() { // settimeout to ensure rendered",
+      "source_id": "html",
+      "line_end_guess": 1076,
+      "calls_internal": [
+        "applyCodeMirror5ToTextarea",
+        "setTimeout",
+        "updateInputVisibilies"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "setTimeout",
+      "line_start": 1077,
+      "signature": "    setTimeout(() => {",
+      "source_id": "html",
+      "line_end_guess": 1091,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "getAllValues",
+      "line_start": 1092,
+      "signature": "    function getAllValues() {",
+      "source_id": "html",
+      "line_end_guess": 1110,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "updateInputVisibilies",
+      "line_start": 1111,
+      "signature": "    function updateInputVisibilies() {",
+      "source_id": "html",
+      "line_end_guess": 1779,
+      "calls_internal": [
+        "getAllValues",
+        "toggleFeedbackModal"
+      ],
+      "uses_root": [
+        "light"
+      ],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "toggleFeedbackModal",
+      "line_start": 1780,
+      "signature": "        function toggleFeedbackModal() {",
+      "source_id": "html",
+      "line_end_guess": 1795,
+      "calls_internal": [
+        "showCommentsModal",
+        "showFeedbackModal"
+      ],
+      "uses_root": [
+        "commentsPlugin"
+      ],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "showFeedbackModal",
+      "line_start": 1796,
+      "signature": "        function showFeedbackModal() {",
+      "source_id": "html",
+      "line_end_guess": 1812,
+      "calls_internal": [
+        "createFloatingWindow"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "beforeSubmit",
+      "line_start": 1813,
+      "signature": "          async function beforeSubmit({inputText}) {",
+      "source_id": "html",
+      "line_end_guess": 1837,
+      "calls_internal": [],
+      "uses_root": [
+        "commentsPlugin"
+      ],
+      "uses_db_tables": [
+        "characters",
+        "messages",
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "showCommentsModal",
+      "line_start": 1838,
+      "signature": "        function showCommentsModal() {",
+      "source_id": "html",
+      "line_end_guess": 2020,
+      "calls_internal": [
+        "character",
+        "createFloatingWindow",
+        "filterAndRenderCharacterList",
+        "generateCharacterFromUrl",
+        "renderCharacterList",
+        "toggleAvatarPicDisplay"
+      ],
+      "uses_root": [
+        "commentChannels",
+        "commentsPlugin",
+        "commentsPluginOptions",
+        "defaultCommentOptions",
+        "superFetch"
+      ],
+      "uses_db_tables": [
+        "delete"
+      ],
+      "uses_dollar_ids": [
+        "clearDataButton"
+      ]
+    },
+    {
+      "name": "setTimeout",
+      "line_start": 2021,
+      "signature": "  setTimeout(() => {",
+      "source_id": "html",
+      "line_end_guess": 2024,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "toggleAvatarPicDisplay",
+      "line_start": 2025,
+      "signature": "  window.toggleAvatarPicDisplay = function() {",
+      "source_id": "html",
+      "line_end_guess": 2068,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "blobToDataUrl",
+      "line_start": 2069,
+      "signature": "  window.blobToDataUrl = function(blob) {",
+      "source_id": "html",
+      "line_end_guess": 2076,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "processAvatarImageUrl",
+      "line_start": 2077,
+      "signature": "  window.processAvatarImageUrl = async function(imageUrl, opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 2097,
+      "calls_internal": [],
+      "uses_root": [
+        "superFetch"
+      ],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "startX",
+      "line_start": 2098,
+      "signature": "      const startX = (imageBitmap.width - size) / 2;",
+      "source_id": "html",
+      "line_end_guess": 2108,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "generateCharacterFromUrl",
+      "line_start": 2109,
+      "signature": "  window.generateCharacterFromUrl = async function() {",
+      "source_id": "html",
+      "line_end_guess": 2123,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "tidyUp",
+      "line_start": 2124,
+      "signature": "    function tidyUp() {",
+      "source_id": "html",
+      "line_end_guess": 2559,
+      "calls_internal": [
+        "addCharacter",
+        "blobToDataUrl",
+        "characterDetailsPrompt",
+        "createNewThreadWithCharacterId",
+        "processAvatarImageUrl",
+        "tryImportingExternalCharacterFileFormat"
+      ],
+      "uses_root": [
+        "aiTextPlugin",
+        "superFetch"
+      ],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "setTimeout",
+      "line_start": 2560,
+      "signature": "      setTimeout(() => notifyCtn.classList.remove(\"rotate-jiggle\"), 3000);",
+      "source_id": "html",
+      "line_end_guess": 2593,
+      "calls_internal": [
+        "addCharacter",
+        "characterDetailsPrompt",
+        "createNewThreadWithCharacterId",
+        "tidyUp"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "tryPersistBrowserStorageData",
+      "line_start": 2594,
+      "signature": "  async function tryPersistBrowserStorageData() {",
+      "source_id": "html",
+      "line_end_guess": 2655,
+      "calls_internal": [
+        "runCodeInCustomCodeIframe",
+        "sanitizeHtml"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "misc"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "onerror",
+      "line_start": 2656,
+      "signature": "  window.onerror = function(error, url, lineNumber, columnNumber, errorObj) {",
+      "source_id": "html",
+      "line_end_guess": 2727,
+      "calls_internal": [
+        "addBackgroundToElement",
+        "createFloatingWindow"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": [
+        "chatBackgroundCtn",
+        "messageFeed"
+      ]
+    },
+    {
+      "name": "addToDebugLog",
+      "line_start": 2728,
+      "signature": "  function addToDebugLog(html) {",
+      "source_id": "html",
+      "line_end_guess": 2756,
+      "calls_internal": [
+        "setTimeout"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "showMessageFeedHeaderBar",
+      "line_start": 2757,
+      "signature": "  function showMessageFeedHeaderBar() {",
+      "source_id": "html",
+      "line_end_guess": 2761,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": [
+        "messageFeed",
+        "messageFeedHeaderBar"
+      ]
+    },
+    {
+      "name": "hideMessageFeedHeaderBar",
+      "line_start": 2762,
+      "signature": "  function hideMessageFeedHeaderBar() {",
+      "source_id": "html",
+      "line_end_guess": 2767,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": [
+        "messageFeed",
+        "messageFeedHeaderBar"
+      ]
+    },
+    {
+      "name": "openLeftColumn",
+      "line_start": 2768,
+      "signature": "  function openLeftColumn() {",
+      "source_id": "html",
+      "line_end_guess": 2778,
+      "calls_internal": [
+        "hideMessageFeedHeaderBar"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": [
+        "closeLeftColumnButton",
+        "leftColumn",
+        "middleColumnShadowOverlay",
+        "toggleRightColumnButton"
+      ]
+    },
+    {
+      "name": "closeLeftColumn",
+      "line_start": 2779,
+      "signature": "  function closeLeftColumn() {",
+      "source_id": "html",
+      "line_end_guess": 2807,
+      "calls_internal": [
+        "openLeftColumn",
+        "showMessageFeedHeaderBar"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": [
+        "closeLeftColumnButton",
+        "leftColumn",
+        "middleColumnShadowOverlay"
+      ]
+    },
+    {
+      "name": "showMessageFeedTopMenu",
+      "line_start": 2808,
+      "signature": "    function showMessageFeedTopMenu() {",
+      "source_id": "html",
+      "line_end_guess": 2812,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": [
+        "messageFeedHeaderBar"
+      ]
+    },
+    {
+      "name": "hideMessageFeedTopMenu",
+      "line_start": 2813,
+      "signature": "    function hideMessageFeedTopMenu() {",
+      "source_id": "html",
+      "line_end_guess": 3030,
+      "calls_internal": [
+        "createLoadingModal",
+        "createMemoryIdToIndexMapForIncorrectlyIndexedOrUnindexedMemories",
+        "downloadTextOrBlob",
+        "prompt2",
+        "setTimeout",
+        "showMessageFeedTopMenu",
+        "upgradeCharacterFromOldVersion",
+        "upgradeLoreFromOldVersion",
+        "upgradeMemoryFromOldVersion",
+        "upgradeMessageFromOldVersion",
+        "upgradeThreadFromOldVersion"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "apiUsage",
+        "characters",
+        "close",
+        "export",
+        "messages",
+        "open",
+        "threads",
+        "verno",
+        "version"
+      ],
+      "uses_dollar_ids": [
+        "customCodeColumn",
+        "customCodeIframeHorizontalResizeBar",
+        "exportDataButton",
+        "messageFeed",
+        "messageFeedHeaderBar",
+        "rightColumn",
+        "toggleRightColumnButton"
+      ]
+    },
+    {
+      "name": "upgradeCharacterInitialMessagesArrayIfNeeded",
+      "line_start": 3031,
+      "signature": "  function upgradeCharacterInitialMessagesArrayIfNeeded(character) {",
+      "source_id": "html",
+      "line_end_guess": 3057,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "upgradeCharacterFromOldVersion",
+      "line_start": 3058,
+      "signature": "  function upgradeCharacterFromOldVersion(character) {",
+      "source_id": "html",
+      "line_end_guess": 3101,
+      "calls_internal": [
+        "characterDetailsPrompt",
+        "upgradeCharacterInitialMessagesArrayIfNeeded"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "upgradeMessageFromOldVersion",
+      "line_start": 3102,
+      "signature": "  function upgradeMessageFromOldVersion(message) {",
+      "source_id": "html",
+      "line_end_guess": 3121,
+      "calls_internal": [
+        "messagesFromCustomCodeFormat"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "upgradeThreadFromOldVersion",
+      "line_start": 3122,
+      "signature": "  async function upgradeThreadFromOldVersion(thread, opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 3168,
+      "calls_internal": [
+        "getDataForCustomCode",
+        "updateDbWithNewDataFromCustomCode"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "sanitizeExportJson",
+      "line_start": 3169,
+      "signature": "  function sanitizeExportJson(json) {",
+      "source_id": "html",
+      "line_end_guess": 3240,
+      "calls_internal": [
+        "upgradeCharacterFromOldVersion"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "upgradeMemoryFromOldVersion",
+      "line_start": 3241,
+      "signature": "  function upgradeMemoryFromOldVersion(memory, opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 3261,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "upgradeLoreFromOldVersion",
+      "line_start": 3262,
+      "signature": "  function upgradeLoreFromOldVersion(entry) {",
+      "source_id": "html",
+      "line_end_guess": 3306,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "createMemoryIdToIndexMapForIncorrectlyIndexedOrUnindexedMemories",
+      "line_start": 3307,
+      "signature": "  function createMemoryIdToIndexMapForIncorrectlyIndexedOrUnindexedMemories(memories) {",
+      "source_id": "html",
+      "line_end_guess": 3483,
+      "calls_internal": [
+        "createLoadingModal",
+        "downloadTextOrBlob",
+        "prompt2",
+        "sanitizeExportJson",
+        "sha256Text"
+      ],
+      "uses_root": [
+        "compressBlobWithGzip"
+      ],
+      "uses_db_tables": [
+        "characters",
+        "export",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "exportDataButton"
+      ]
+    },
+    {
+      "name": "renderThreadList",
+      "line_start": 3484,
+      "signature": "  async function renderThreadList(opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 3921,
+      "calls_internal": [
+        "addThread",
+        "character",
+        "createLoadingModal",
+        "dataUrlToCachedBlobUrl",
+        "downloadTextOrBlob",
+        "editCharacterById",
+        "getThreadJSONById",
+        "prompt2",
+        "renderCharacterList",
+        "safelyDeleteCharacterById",
+        "safelyDeleteThreadById",
+        "sanitizeHtml",
+        "showThread"
+      ],
+      "uses_root": [
+        "combineEmojis"
+      ],
+      "uses_db_tables": [
+        "characters",
+        "lore",
+        "messages",
+        "misc",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "characterSelection",
+        "chatThreadFolders",
+        "chatThreads",
+        "messageFeed",
+        "newThreadButton",
+        "threadSearchCtn"
+      ]
+    },
+    {
+      "name": "getThreadJSONById",
+      "line_start": 3922,
+      "signature": "  async function getThreadJSONById(threadId, opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 4003,
+      "calls_internal": [
+        "sanitizeExportJson"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "export",
+        "messages",
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "renderMessageFeed",
+      "line_start": 4004,
+      "signature": "  async function renderMessageFeed(threadId, opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 4015,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [
+        "messages",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "messageFeed"
+      ]
+    },
+    {
+      "name": "threadCharacter",
+      "line_start": 4016,
+      "signature": "    const threadCharacter = (await db.characters.where(\"id\").equals(thread.characterId).toArray())[0];",
+      "source_id": "html",
+      "line_end_guess": 4124,
+      "calls_internal": [
+        "attachEventHandlersToMessageEl",
+        "createMessageElement",
+        "getSystemCharacterObj",
+        "getUserCharacterObj",
+        "renderMessagesForReader",
+        "sha256Text"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "misc"
+      ],
+      "uses_dollar_ids": [
+        "messageFeed"
+      ]
+    },
+    {
+      "name": "setTimeout",
+      "line_start": 4125,
+      "signature": "    setTimeout(() => {",
+      "source_id": "html",
+      "line_end_guess": 4145,
+      "calls_internal": [
+        "changeThreadUserNameHandler",
+        "editCharacterById"
+      ],
+      "uses_root": [
+        "combineEmojis"
+      ],
+      "uses_db_tables": [],
+      "uses_dollar_ids": [
+        "messageFeed",
+        "noMessagesNotice"
+      ]
+    },
+    {
+      "name": "setTimeout",
+      "line_start": 4146,
+      "signature": "      setTimeout(() => { // <-- do this in a set timeout so the message feed has time to render, else it might get triggered right away",
+      "source_id": "html",
+      "line_end_guess": 4193,
+      "calls_internal": [
+        "doBotReplyIfNeeded",
+        "prependEarlierMessagesToFeed",
+        "updateInlineReminderMessage",
+        "updateThreadScene"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": [
+        "messageFeed"
+      ]
+    },
+    {
+      "name": "updateThreadScene",
+      "line_start": 4194,
+      "signature": "  async function updateThreadScene() {",
+      "source_id": "html",
+      "line_end_guess": 4260,
+      "calls_internal": [
+        "applyObjectOverrides",
+        "prompt2"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "messages",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "messageFeed",
+        "musicPlayer",
+        "musicPlayerCtn"
+      ]
+    },
+    {
+      "name": "prependEarlierMessagesToFeed",
+      "line_start": 4261,
+      "signature": "  async function prependEarlierMessagesToFeed() {",
+      "source_id": "html",
+      "line_end_guess": 4272,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [
+        "messages"
+      ],
+      "uses_dollar_ids": [
+        "messageFeed"
+      ]
+    },
+    {
+      "name": "thread",
+      "line_start": 4273,
+      "signature": "    const thread = (await db.threads.where(\"id\").equals(threadId).toArray())[0];",
+      "source_id": "html",
+      "line_end_guess": 4273,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "threadCharacter",
+      "line_start": 4274,
+      "signature": "    const threadCharacter = (await db.characters.where(\"id\").equals(thread.characterId).toArray())[0];",
+      "source_id": "html",
+      "line_end_guess": 4338,
+      "calls_internal": [
+        "attachEventHandlersToMessageEl",
+        "createMessageElement",
+        "getSystemCharacterObj",
+        "getUserCharacterObj",
+        "prompt2"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "messages",
+        "summaries"
+      ],
+      "uses_dollar_ids": [
+        "messageFeed"
+      ]
+    },
+    {
+      "name": "createInlineReminderMessage",
+      "line_start": 4339,
+      "signature": "  function createInlineReminderMessage(reminderMessage) {",
+      "source_id": "html",
+      "line_end_guess": 4381,
+      "calls_internal": [
+        "prompt2",
+        "updateInlineReminderMessage"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "threads",
+        "transaction"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "updateInlineReminderMessage",
+      "line_start": 4382,
+      "signature": "  async function updateInlineReminderMessage(opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 4444,
+      "calls_internal": [
+        "createInlineReminderMessage",
+        "messageFeedIsNearBottom"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "misc",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "messageFeed"
+      ]
+    },
+    {
+      "name": "createCharacterCardHtml",
+      "line_start": 4445,
+      "signature": "  function createCharacterCardHtml(character) {",
+      "source_id": "html",
+      "line_end_guess": 4870,
+      "calls_internal": [
+        "dedent",
+        "sanitizeHtml"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "webp"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "filterAndRenderCharacterList",
+      "line_start": 4871,
+      "signature": "  window.filterAndRenderCharacterList = async function(searchString) {",
+      "source_id": "html",
+      "line_end_guess": 4882,
+      "calls_internal": [
+        "renderCharacterList"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "renderCharacterList",
+      "line_start": 4883,
+      "signature": "  window.renderCharacterList = async function(opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 5033,
+      "calls_internal": [
+        "addCharacter",
+        "character",
+        "characterDetailsPrompt",
+        "createCharacterCardHtml",
+        "createNewThreadWithCharacterId",
+        "prompt2",
+        "sanitizeHtml",
+        "upgradeCharacterFromOldVersion"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "misc"
+      ],
+      "uses_dollar_ids": [
+        "characterFoldersList",
+        "characterList",
+        "starterCharacterList"
+      ]
+    },
+    {
+      "name": "character",
+      "line_start": 5034,
+      "signature": "        const character = (await db.characters.where(\"id\").equals(characterId).toArray())[0];",
+      "source_id": "html",
+      "line_end_guess": 5141,
+      "calls_internal": [
+        "addCharacter",
+        "characterDetailsPrompt",
+        "createLoadingModal",
+        "createNewThreadWithCharacterId",
+        "dataUrlToCachedBlobUrl",
+        "editCharacterById",
+        "prompt2",
+        "renderCharacterList",
+        "renderThreadList",
+        "safelyDeleteCharacterById",
+        "setTimeout"
+      ],
+      "uses_root": [
+        "generateShareLinkForCharacter"
+      ],
+      "uses_db_tables": [
+        "characters"
+      ],
+      "uses_dollar_ids": [
+        "newCharacterButton",
+        "newFolderCharacterButton",
+        "topNotification",
+        "topNotificationContent"
+      ]
+    },
+    {
+      "name": "safelyDeleteCharacterById",
+      "line_start": 5142,
+      "signature": "  async function safelyDeleteCharacterById(characterId) {",
+      "source_id": "html",
+      "line_end_guess": 5187,
+      "calls_internal": [
+        "safelyDeleteThreadById"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "messages",
+        "textEmbeddingCache",
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "safelyDeleteThreadById",
+      "line_start": 5188,
+      "signature": "  window.safelyDeleteThreadById = async function safelyDeleteThreadById(threadId) {",
+      "source_id": "html",
+      "line_end_guess": 5206,
+      "calls_internal": [
+        "safelyDeleteMessagesByIds"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "memories",
+        "messages",
+        "summaries",
+        "textEmbeddingCache",
+        "threads",
+        "usageStats"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "safelyDeleteMessagesByIds",
+      "line_start": 5207,
+      "signature": "  async function safelyDeleteMessagesByIds(idsToDelete, opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 5255,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [
+        "messages"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "editCharacterById",
+      "line_start": 5256,
+      "signature": "  window.editCharacterById = async function(characterId) {",
+      "source_id": "html",
+      "line_end_guess": 5293,
+      "calls_internal": [
+        "characterDetailsPrompt",
+        "createNewCustomCodeIframeForThread",
+        "renderCharacterList",
+        "renderThreadList",
+        "showThread",
+        "updateThreadScene"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "messageFeed"
+      ]
+    },
+    {
+      "name": "createNewThreadWithCharacterId",
+      "line_start": 5294,
+      "signature": "  async function createNewThreadWithCharacterId(characterId) {",
+      "source_id": "html",
+      "line_end_guess": 5339,
+      "calls_internal": [
+        "addMessageToDb",
+        "addThread",
+        "createMessageObj",
+        "getUserCharacterObj",
+        "renderThreadList",
+        "showThread"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "chatThreads",
+        "threadModelSelector"
+      ]
+    },
+    {
+      "name": "renderMessageInputPlaceholder",
+      "line_start": 5340,
+      "signature": "  async function renderMessageInputPlaceholder(threadId, opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 5353,
+      "calls_internal": [
+        "getUserCharacterObj"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "messageInput"
+      ]
+    },
+    {
+      "name": "showThread",
+      "line_start": 5354,
+      "signature": "  async function showThread(threadId) {",
+      "source_id": "html",
+      "line_end_guess": 5459,
+      "calls_internal": [
+        "closeLeftColumn",
+        "createLoadingModal",
+        "createNewCustomCodeIframeForThread",
+        "getUserCharacterObj",
+        "renderMessageFeed",
+        "renderMessageInputPlaceholder",
+        "renderShortcutButtons",
+        "renderThreadList",
+        "setTimeout",
+        "shortcutsFromTextFormat",
+        "updateCustomCodeIframeVisibility",
+        "updateFavicon"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "chatInterface",
+        "chatThreads",
+        "messageFeed",
+        "messageInput",
+        "middleColumn",
+        "musicPlayer",
+        "threadModelSelector"
+      ]
+    },
+    {
+      "name": "shortcutsFromTextFormat",
+      "line_start": 5460,
+      "signature": "  function shortcutsFromTextFormat(text) {",
+      "source_id": "html",
+      "line_end_guess": 5485,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "shortcutsToTextFormat",
+      "line_start": 5486,
+      "signature": "  function shortcutsToTextFormat(shortcuts) {",
+      "source_id": "html",
+      "line_end_guess": 5489,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "showAddCharacterShortcutToThreadPopup",
+      "line_start": 5490,
+      "signature": "  async function showAddCharacterShortcutToThreadPopup() {",
+      "source_id": "html",
+      "line_end_guess": 5499,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "handleCharChoiceButtonClick",
+      "line_start": 5500,
+      "signature": "      function handleCharChoiceButtonClick(c) {",
+      "source_id": "html",
+      "line_end_guess": 5569,
+      "calls_internal": [
+        "addCharacter",
+        "characterDetailsPrompt",
+        "prompt2",
+        "renderShortcutButtons",
+        "updateCustomCodePropIfNeeded"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "renderShortcutButtons",
+      "line_start": 5570,
+      "signature": "  async function renderShortcutButtons(thread=null) {",
+      "source_id": "html",
+      "line_end_guess": 5622,
+      "calls_internal": [
+        "getUserCharacterObj",
+        "htmlToElement",
+        "sanitizeHtml",
+        "sendButtonClickHandler"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "messageInput"
+      ]
+    },
+    {
+      "name": "handleChoiceButtonClick",
+      "line_start": 5623,
+      "signature": "        function handleChoiceButtonClick(c) {",
+      "source_id": "html",
+      "line_end_guess": 5669,
+      "calls_internal": [
+        "prompt2",
+        "renderShortcutButtons",
+        "shortcutsFromTextFormat",
+        "shortcutsToTextFormat",
+        "showAddCharacterShortcutToThreadPopup",
+        "showAddShortcutButtonModal",
+        "updateCustomCodePropIfNeeded"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "characterDetailsPrompt",
+      "line_start": 5670,
+      "signature": "  async function characterDetailsPrompt(defaultValues={}, opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 5689,
+      "calls_internal": [
+        "generateTextFormatFromMessages",
+        "shortcutsToTextFormat"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "setTimeout",
+      "line_start": 5690,
+      "signature": "      setTimeout(async () => {",
+      "source_id": "html",
+      "line_end_guess": 5697,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "showMessageStyleExamples",
+      "line_start": 5698,
+      "signature": "    function showMessageStyleExamples({inputEl}) {",
+      "source_id": "html",
+      "line_end_guess": 6203,
+      "calls_internal": [
+        "ensureLoreUrlsAreLoaded",
+        "loadGoogleWebFontsInMessageWrapperStyleIfNeccessary",
+        "parseMessagesFromTextFormat",
+        "prompt2",
+        "shortcutsFromTextFormat",
+        "thread"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "generateTextFormatFromMessages",
+      "line_start": 6204,
+      "signature": "  function generateTextFormatFromMessages(messages) {",
+      "source_id": "html",
+      "line_end_guess": 6225,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "parseMessagesFromTextFormat",
+      "line_start": 6226,
+      "signature": "  window.parseMessagesFromTextFormat = function(text) {",
+      "source_id": "html",
+      "line_end_guess": 6284,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "addCharacter",
+      "line_start": 6285,
+      "signature": "  async function addCharacter(inputs) {",
+      "source_id": "html",
+      "line_end_guess": 6312,
+      "calls_internal": [
+        "prompt2"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "misc"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "createMessageObj",
+      "line_start": 6313,
+      "signature": "  function createMessageObj({threadId, message, characterId, hiddenFrom, variants, creationTime, expectsReply, memoryIdBatchesUsed, loreIdsUsed, summaryHashUsed, summariesUsed, summariesEndingHere, memoriesEndingHere, memoryQueriesUsed, messageIdsUsed, scene, avatar, name, customData, wrapperStyle, order, instruction}) {",
+      "source_id": "html",
+      "line_end_guess": 6342,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "addMessageToDb",
+      "line_start": 6343,
+      "signature": "  async function addMessageToDb(messageObj, opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 6373,
+      "calls_internal": [
+        "renderThreadList"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "messages",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "chatThreads"
+      ]
+    },
+    {
+      "name": "addThread",
+      "line_start": 6374,
+      "signature": "  async function addThread(opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 6439,
+      "calls_internal": [
+        "applyObjectOverrides",
+        "ensureLoreUrlsAreLoaded",
+        "thread"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "lore",
+        "misc",
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "ensureLoreUrlsAreLoaded",
+      "line_start": 6440,
+      "signature": "  async function ensureLoreUrlsAreLoaded({loreBookUrls, modelName}) {",
+      "source_id": "html",
+      "line_end_guess": 6521,
+      "calls_internal": [
+        "createLoadingModal",
+        "embedTexts",
+        "sha256Text"
+      ],
+      "uses_root": [
+        "decompressBlobWithGzip",
+        "superFetch"
+      ],
+      "uses_db_tables": [
+        "lore"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "getTokenizerByModelName",
+      "line_start": 6522,
+      "signature": "  async function getTokenizerByModelName(modelName) {",
+      "source_id": "html",
+      "line_end_guess": 6530,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "textToTokenIds",
+      "line_start": 6531,
+      "signature": "    function textToTokenIds(text) {",
+      "source_id": "html",
+      "line_end_guess": 6538,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "countTokensInMessages",
+      "line_start": 6539,
+      "signature": "  async function countTokensInMessages(messages, modelName) {",
+      "source_id": "html",
+      "line_end_guess": 6592,
+      "calls_internal": [
+        "setTimeout",
+        "sha256Text"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "loadModel",
+      "line_start": 6593,
+      "signature": "      async function loadModel(modelName) {",
+      "source_id": "html",
+      "line_end_guess": 6602,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "extractFeatures",
+      "line_start": 6603,
+      "signature": "      async function extractFeatures(text, modelName) {",
+      "source_id": "html",
+      "line_end_guess": 6617,
+      "calls_internal": [
+        "loadModel",
+        "textEmbedderFunction"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "textEmbedderFunction",
+      "line_start": 6618,
+      "signature": "    window.textEmbedderFunction = async function({textsToEmbed, modelName}) {",
+      "source_id": "html",
+      "line_end_guess": 6629,
+      "calls_internal": [
+        "extractFeatures"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "embedTextWithLocalModel",
+      "line_start": 6630,
+      "signature": "  window.embedTextWithLocalModel = async function embedTextWithLocalModel({textsToEmbed, modelName}) {",
+      "source_id": "html",
+      "line_end_guess": 6649,
+      "calls_internal": [
+        "createLoadingModal",
+        "textEmbedderFunction"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "embedTexts",
+      "line_start": 6650,
+      "signature": "  window.embedTexts = async function({textArr, modelName, onProgressMessage, shouldCache=false}={}) {",
+      "source_id": "html",
+      "line_end_guess": 6724,
+      "calls_internal": [
+        "embedTextWithLocalModel",
+        "onProgressMessage",
+        "setTimeout",
+        "sha256Text"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "textEmbeddingCache"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "prepareMessagesForBot",
+      "line_start": 6725,
+      "signature": "  window.prepareMessagesForBot = async function({messages, onProgressMessage}) {",
+      "source_id": "html",
+      "line_end_guess": 6789,
+      "calls_internal": [
+        "getSystemCharacterObj",
+        "getUserCharacterObj",
+        "messageObjToCharacterName",
+        "renderMessagesForReader"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "renderMessagesForReader",
+      "line_start": 6790,
+      "signature": "  async function renderMessagesForReader({messages, reader, threadId, onProgressMessage}) {",
+      "source_id": "html",
+      "line_end_guess": 6837,
+      "calls_internal": [
+        "createNewCustomCodeIframeForThread",
+        "getUserCharacterObj",
+        "messagesFromCustomCodeFormat",
+        "messagesToCustomCodeFormat",
+        "onProgressMessage",
+        "sendCustomCodeIframeMessage"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "messageObjToCharacterName",
+      "line_start": 6838,
+      "signature": "  function messageObjToCharacterName(m, opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 6863,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "messageObjToCharacterAvatar",
+      "line_start": 6864,
+      "signature": "  function messageObjToCharacterAvatar(m, opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 6909,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "messagesToCustomCodeFormat",
+      "line_start": 6910,
+      "signature": "  async function messagesToCustomCodeFormat(opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 6955,
+      "calls_internal": [
+        "getSystemCharacterObj",
+        "getUserCharacterObj",
+        "messageObjToCharacterName"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "messagesFromCustomCodeFormat",
+      "line_start": 6956,
+      "signature": "  async function messagesFromCustomCodeFormat({messages, originalMessages, threadId}) {",
+      "source_id": "html",
+      "line_end_guess": 7123,
+      "calls_internal": [
+        "createMessageObj",
+        "getSystemCharacterObj",
+        "getUserCharacterObj",
+        "messageObjToCharacterName",
+        "objectKeysAndTypesAreValid"
+      ],
+      "uses_root": [
+        "aiTextPlugin"
+      ],
+      "uses_db_tables": [
+        "characters",
+        "lore",
+        "memories",
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "updateFavicon",
+      "line_start": 7124,
+      "signature": "  async function updateFavicon(url) {",
+      "source_id": "html",
+      "line_end_guess": 7139,
+      "calls_internal": [],
+      "uses_root": [
+        "superFetch"
+      ],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "startX",
+      "line_start": 7140,
+      "signature": "      const startX = (imageBitmap.width - size) / 2;",
+      "source_id": "html",
+      "line_end_guess": 7140,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "startY",
+      "line_start": 7141,
+      "signature": "      const startY = (imageBitmap.height - size) / 2;",
+      "source_id": "html",
+      "line_end_guess": 7157,
+      "calls_internal": [
+        "regenerateMessage",
+        "updateFavicon"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "getBotReply",
+      "line_start": 7158,
+      "signature": "  async function getBotReply({messages, threadId, replyingCharacter=null, replyInstruction=null, startMessageWith=null, replyingCharacterNameOverride=null, extraStopSequences=null, onStreamingReplyChunk, onProgressMessage, signals={}, modelNameOverride}={}) {",
+      "source_id": "html",
+      "line_end_guess": 7261,
+      "calls_internal": [
+        "getUserCharacterObj",
+        "onProgressMessage",
+        "prepareMessagesForBot"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "sendButton"
+      ]
+    },
+    {
+      "name": "getRoleInstructionText",
+      "line_start": 7262,
+      "signature": "      function getRoleInstructionText(opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 7459,
+      "calls_internal": [
+        "character",
+        "parseMessagesFromTextFormat",
+        "regenerateMessage"
+      ],
+      "uses_root": [
+        "getMessageObjsWithoutSummarizedOnes",
+        "injectHierarchicalSummariesAndComputeNextSummariesInBackgroundIfNeeded"
+      ],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "messageArrayToMessagesText",
+      "line_start": 7460,
+      "signature": "      function messageArrayToMessagesText(messages) {",
+      "source_id": "html",
+      "line_end_guess": 7566,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [
+        "lore",
+        "memories",
+        "messages"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "explainMemLoreQueryPrompt",
+      "line_start": 7567,
+      "signature": "        window.explainMemLoreQueryPrompt = function() {",
+      "source_id": "html",
+      "line_end_guess": 7782,
+      "calls_internal": [
+        "addToDebugLog",
+        "dotProduct",
+        "embedTexts",
+        "messageArrayToMessagesText",
+        "onProgressMessage",
+        "prompt2"
+      ],
+      "uses_root": [
+        "aiTextPlugin"
+      ],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "createMemoriesAndLoreMessageContent",
+      "line_start": 7783,
+      "signature": "          const createMemoriesAndLoreMessageContent = () => {",
+      "source_id": "html",
+      "line_end_guess": 7815,
+      "calls_internal": [
+        "onProgressMessage"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "countTokensInRetrievalText",
+      "line_start": 7816,
+      "signature": "          function countTokensInRetrievalText() {",
+      "source_id": "html",
+      "line_end_guess": 7825,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "dropBatchOrMemoryFromBatch",
+      "line_start": 7826,
+      "signature": "          function dropBatchOrMemoryFromBatch() {",
+      "source_id": "html",
+      "line_end_guess": 7946,
+      "calls_internal": [
+        "countTokensInRetrievalText",
+        "createMemoriesAndLoreMessageContent",
+        "messageArrayToMessagesText",
+        "onProgressMessage"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "streamId",
+      "line_start": 7947,
+      "signature": "      const streamId = (await sha256Text(Math.random().toString()+Math.random().toString())).slice(0, 16);",
+      "source_id": "html",
+      "line_end_guess": 8070,
+      "calls_internal": [
+        "onProgressMessage",
+        "onStreamingReplyChunk",
+        "sha256Text",
+        "triggerStreamingMessageChunkCustomCodeEvent"
+      ],
+      "uses_root": [
+        "aiTextPlugin"
+      ],
+      "uses_db_tables": [],
+      "uses_dollar_ids": [
+        "sendButton"
+      ]
+    },
+    {
+      "name": "getChatCompletion",
+      "line_start": 8071,
+      "signature": "  async function getChatCompletion(opts) {",
+      "source_id": "html",
+      "line_end_guess": 8097,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "messageArrayToMessagesText",
+      "line_start": 8098,
+      "signature": "    function messageArrayToMessagesText(messagesArr) {",
+      "source_id": "html",
+      "line_end_guess": 8133,
+      "calls_internal": [
+        "getChatCompletion"
+      ],
+      "uses_root": [
+        "aiTextPlugin"
+      ],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "dotProduct",
+      "line_start": 8134,
+      "signature": "  function dotProduct(vec1, vec2) {",
+      "source_id": "html",
+      "line_end_guess": 8149,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "highlightCodeBlocks",
+      "line_start": 8150,
+      "signature": "  async function highlightCodeBlocks(el) {",
+      "source_id": "html",
+      "line_end_guess": 8171,
+      "calls_internal": [
+        "importStylesheet",
+        "setTimeout"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "handleStreamingReplyChunk",
+      "line_start": 8172,
+      "signature": "  function handleStreamingReplyChunk(chunk, messageEl) {",
+      "source_id": "html",
+      "line_end_guess": 8194,
+      "calls_internal": [
+        "highlightCodeBlocks",
+        "messageFeedIsNearBottom"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": [
+        "messageFeed"
+      ]
+    },
+    {
+      "name": "autoNameThreadIfNeeded",
+      "line_start": 8195,
+      "signature": "  async function autoNameThreadIfNeeded(threadId) {",
+      "source_id": "html",
+      "line_end_guess": 8235,
+      "calls_internal": [
+        "countTokensInMessages",
+        "getUserCharacterObj",
+        "prepareMessagesForBot",
+        "renderThreadList",
+        "thread"
+      ],
+      "uses_root": [
+        "aiTextPlugin"
+      ],
+      "uses_db_tables": [
+        "characters",
+        "messages",
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "doBotReplyIfNeeded",
+      "line_start": 8236,
+      "signature": "  async function doBotReplyIfNeeded({forceReply=false, replyInstruction=null, startMessageWith=null, signals=null, result={}, characterOverride=null, expectsReply=undefined, messageNameOverride=null, extraStopSequences=null, wrapInImageTags=null}={}) {",
+      "source_id": "html",
+      "line_end_guess": 8337,
+      "calls_internal": [
+        "addMessageToFeed",
+        "createMessageObj",
+        "createPaddedTypingIndicatorHtml",
+        "renderMessageFeed",
+        "updateInlineReminderMessage"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "messages"
+      ],
+      "uses_dollar_ids": [
+        "sendButton",
+        "statusNotifier"
+      ]
+    },
+    {
+      "name": "onStreamingReplyChunk",
+      "line_start": 8338,
+      "signature": "      function onStreamingReplyChunk(c) {",
+      "source_id": "html",
+      "line_end_guess": 8342,
+      "calls_internal": [
+        "handleStreamingReplyChunk"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "onProgressMessage",
+      "line_start": 8343,
+      "signature": "      const onProgressMessage = (e) => messageEl.querySelector(\".statusMessage\").innerHTML=e.message;",
+      "source_id": "html",
+      "line_end_guess": 8434,
+      "calls_internal": [
+        "addMessageToDb",
+        "addMessageToFeed",
+        "autoNameThreadIfNeeded",
+        "getBotReply",
+        "messageFeedIsNearBottom",
+        "triggerMessageActionCustomCodeEvent"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters"
+      ],
+      "uses_dollar_ids": [
+        "messageFeed",
+        "sendButton",
+        "statusNotifier"
+      ]
+    },
+    {
+      "name": "regenerateMessage",
+      "line_start": 8435,
+      "signature": "  async function regenerateMessage(messageEl, opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 8496,
+      "calls_internal": [
+        "createPaddedTypingIndicatorHtml",
+        "getSystemCharacterObj",
+        "getUserCharacterObj"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "messages",
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "onStreamingReplyChunk",
+      "line_start": 8497,
+      "signature": "      function onStreamingReplyChunk(c) {",
+      "source_id": "html",
+      "line_end_guess": 8513,
+      "calls_internal": [
+        "addMessageToFeed",
+        "handleStreamingReplyChunk"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": [
+        "statusNotifier"
+      ]
+    },
+    {
+      "name": "onProgressMessage",
+      "line_start": 8514,
+      "signature": "      const onProgressMessage = (e) => messageEl.querySelector(\".statusMessage\").innerHTML=e.message;",
+      "source_id": "html",
+      "line_end_guess": 8594,
+      "calls_internal": [
+        "addMessageToFeed",
+        "getBotReply",
+        "messageFeedIsNearBottom",
+        "renderThreadList",
+        "triggerMessageActionCustomCodeEvent"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "messages",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "chatThreads",
+        "messageFeed",
+        "statusNotifier"
+      ]
+    },
+    {
+      "name": "createPaddedTypingIndicatorHtml",
+      "line_start": 8595,
+      "signature": "  function createPaddedTypingIndicatorHtml() {",
+      "source_id": "html",
+      "line_end_guess": 8597,
+      "calls_internal": [
+        "createTypingIndicatorHtml"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "createTypingIndicatorHtml",
+      "line_start": 8598,
+      "signature": "  function createTypingIndicatorHtml() {",
+      "source_id": "html",
+      "line_end_guess": 8601,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "messageFeedIsNearBottom",
+      "line_start": 8602,
+      "signature": "  function messageFeedIsNearBottom() {",
+      "source_id": "html",
+      "line_end_guess": 8605,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": [
+        "messageFeed"
+      ]
+    },
+    {
+      "name": "addMessageToFeed",
+      "line_start": 8606,
+      "signature": "  async function addMessageToFeed(originalMessageObj, opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 8664,
+      "calls_internal": [
+        "attachEventHandlersToMessageEl",
+        "createMessageElement",
+        "getSystemCharacterObj",
+        "getUserCharacterObj",
+        "messageFeedIsNearBottom",
+        "renderMessagesForReader",
+        "updateInlineReminderMessage",
+        "updateThreadScene"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "messageFeed",
+        "noMessagesNotice"
+      ]
+    },
+    {
+      "name": "switchMessageVariant",
+      "line_start": 8665,
+      "signature": "  async function switchMessageVariant(messageEl, nextOrPrevious) {",
+      "source_id": "html",
+      "line_end_guess": 8691,
+      "calls_internal": [
+        "addMessageToFeed"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "messages"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "hasHorizontalScrollableAncestor",
+      "line_start": 8692,
+      "signature": "  function hasHorizontalScrollableAncestor(element) {",
+      "source_id": "html",
+      "line_end_guess": 8707,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "addHorizontalSwipeHandler",
+      "line_start": 8708,
+      "signature": "  function addHorizontalSwipeHandler(el, opts, callback) {",
+      "source_id": "html",
+      "line_end_guess": 8748,
+      "calls_internal": [
+        "hasHorizontalScrollableAncestor",
+        "resetElementPosition"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "resetElementPosition",
+      "line_start": 8749,
+      "signature": "    function resetElementPosition() {",
+      "source_id": "html",
+      "line_end_guess": 8755,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "attachEventHandlersToMessageEl",
+      "line_start": 8756,
+      "signature": "  function attachEventHandlersToMessageEl(messageEl, opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 8784,
+      "calls_internal": [
+        "regenerateMessage",
+        "setTimeout"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "addHorizontalSwipeHandler",
+      "line_start": 8785,
+      "signature": "    addHorizontalSwipeHandler(messageTextEl, {swipeTriggerDistance:$.messageFeed.offsetWidth*0.5}, async ({swipeDirection}) => {",
+      "source_id": "html",
+      "line_end_guess": 9001,
+      "calls_internal": [
+        "prepareMessagesForBot",
+        "prompt2",
+        "regenerateMessage",
+        "sanitizeHtml",
+        "setTimeout",
+        "switchMessageVariant"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "lore",
+        "memories",
+        "messages",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "messageFeed"
+      ]
+    },
+    {
+      "name": "showHiddenMessageClickHandler",
+      "line_start": 9002,
+      "signature": "  async function showHiddenMessageClickHandler() {",
+      "source_id": "html",
+      "line_end_guess": 9010,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [
+        "messages"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "dataUrlToCachedBlobUrl",
+      "line_start": 9011,
+      "signature": "  async function dataUrlToCachedBlobUrl(dataUrl) {",
+      "source_id": "html",
+      "line_end_guess": 9026,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "loadGoogleWebFontsInMessageWrapperStyleIfNeccessary",
+      "line_start": 9027,
+      "signature": "  function loadGoogleWebFontsInMessageWrapperStyleIfNeccessary(cssText) {",
+      "source_id": "html",
+      "line_end_guess": 9046,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "createMessageElement",
+      "line_start": 9047,
+      "signature": "  async function createMessageElement(messageObj, opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 9405,
+      "calls_internal": [
+        "dataUrlToCachedBlobUrl",
+        "dedent",
+        "getDateTimeString",
+        "getSystemCharacterObj",
+        "getUserCharacterObj",
+        "highlightCodeBlocks",
+        "loadGoogleWebFontsInMessageWrapperStyleIfNeccessary",
+        "messageObjToCharacterAvatar",
+        "messageObjToCharacterName",
+        "sanitizeHtml",
+        "setTimeout",
+        "sha256Text"
+      ],
+      "uses_root": [
+        "evaluatePerchanceTextInSandbox",
+        "textToImagePlugin"
+      ],
+      "uses_db_tables": [
+        "characters",
+        "messages",
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "setTimeout",
+      "line_start": 9406,
+      "signature": "        setTimeout(() => {",
+      "source_id": "html",
+      "line_end_guess": 9429,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "messageEditButtonClickHandler",
+      "line_start": 9430,
+      "signature": "  async function messageEditButtonClickHandler(e) {",
+      "source_id": "html",
+      "line_end_guess": 9442,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [
+        "messages",
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "insertMessageHandler",
+      "line_start": 9443,
+      "signature": "    async function insertMessageHandler(aboveOrBelow) {",
+      "source_id": "html",
+      "line_end_guess": 9478,
+      "calls_internal": [
+        "addMessageToDb",
+        "addMessageToFeed",
+        "createMessageObj",
+        "prompt2",
+        "triggerMessageActionCustomCodeEvent"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "messages"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "editCharacter",
+      "line_start": 9479,
+      "signature": "    async function editCharacter() {",
+      "source_id": "html",
+      "line_end_guess": 9531,
+      "calls_internal": [
+        "addMessageToFeed",
+        "editCharacterById",
+        "messageFeedIsNearBottom",
+        "prompt2",
+        "triggerMessageActionCustomCodeEvent"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "messages"
+      ],
+      "uses_dollar_ids": [
+        "messageFeed"
+      ]
+    },
+    {
+      "name": "messageQuickEditButtonClickHandler",
+      "line_start": 9532,
+      "signature": "  async function messageQuickEditButtonClickHandler(e) {",
+      "source_id": "html",
+      "line_end_guess": 9591,
+      "calls_internal": [
+        "setTimeout"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "messages",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "messageFeed"
+      ]
+    },
+    {
+      "name": "clickAnywhereHandler",
+      "line_start": 9592,
+      "signature": "    function clickAnywhereHandler(e) {",
+      "source_id": "html",
+      "line_end_guess": 9630,
+      "calls_internal": [
+        "addMessageToFeed",
+        "messageFeedIsNearBottom",
+        "regenerateMessage",
+        "triggerMessageActionCustomCodeEvent"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "messages"
+      ],
+      "uses_dollar_ids": [
+        "messageFeed"
+      ]
+    },
+    {
+      "name": "messageDeleteButtonClickHandler",
+      "line_start": 9631,
+      "signature": "  async function messageDeleteButtonClickHandler(e) {",
+      "source_id": "html",
+      "line_end_guess": 9677,
+      "calls_internal": [
+        "addMessageToFeed",
+        "safelyDeleteMessagesByIds",
+        "triggerMessageActionCustomCodeEvent",
+        "updateInlineReminderMessage",
+        "updateThreadScene"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "messages"
+      ],
+      "uses_dollar_ids": [
+        "messageFeed",
+        "noMessagesNotice"
+      ]
+    },
+    {
+      "name": "getUserCharacterObj",
+      "line_start": 9678,
+      "signature": "  window.getUserCharacterObj = async function() {",
+      "source_id": "html",
+      "line_end_guess": 9710,
+      "calls_internal": [
+        "applyObjectOverrides"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "misc",
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "getSystemCharacterObj",
+      "line_start": 9711,
+      "signature": "  async function getSystemCharacterObj() {",
+      "source_id": "html",
+      "line_end_guess": 9749,
+      "calls_internal": [
+        "applyObjectOverrides",
+        "setTimeout"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "messageInput"
+      ]
+    },
+    {
+      "name": "sendButtonClickHandler",
+      "line_start": 9750,
+      "signature": "  async function sendButtonClickHandler() {",
+      "source_id": "html",
+      "line_end_guess": 10279,
+      "calls_internal": [
+        "addCharacter",
+        "addMessageToDb",
+        "addToDebugLog",
+        "characterDetailsPrompt",
+        "createLoadingModal",
+        "createMessageObj",
+        "doBotReplyIfNeeded",
+        "doBotReplyInPlaceOfUser",
+        "embedTexts",
+        "getSystemCharacterObj",
+        "getUserCharacterObj",
+        "parseMessagesFromTextFormat",
+        "prompt2",
+        "renderMessageFeed"
+      ],
+      "uses_root": [
+        "getMessageObjsWithoutSummarizedOnes"
+      ],
+      "uses_db_tables": [
+        "characters",
+        "lore",
+        "memories",
+        "messages",
+        "misc",
+        "summaries",
+        "threads",
+        "transaction"
+      ],
+      "uses_dollar_ids": [
+        "messageInput",
+        "middleColumn",
+        "sendButton"
+      ]
+    },
+    {
+      "name": "reloadButtonClickHandler",
+      "line_start": 10280,
+      "signature": "            async function reloadButtonClickHandler() {",
+      "source_id": "html",
+      "line_end_guess": 10511,
+      "calls_internal": [
+        "addMessageToDb",
+        "addMessageToFeed",
+        "createLoadingModal",
+        "createMessageObj",
+        "dedent",
+        "doBotReplyIfNeeded",
+        "embedTexts",
+        "ensureLoreUrlsAreLoaded",
+        "getSystemCharacterObj",
+        "getUserCharacterObj",
+        "prompt2",
+        "renderMessageFeed",
+        "renderShortcutButtons",
+        "sendButtonClickHandler",
+        "triggerMessageActionCustomCodeEvent",
+        "tryPersistBrowserStorageData"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "lore",
+        "messages",
+        "summaries",
+        "threads",
+        "transaction"
+      ],
+      "uses_dollar_ids": [
+        "messageInput",
+        "middleColumn",
+        "sendButton"
+      ]
+    },
+    {
+      "name": "queueUpAutoReplies",
+      "line_start": 10512,
+      "signature": "  async function queueUpAutoReplies(replies) {",
+      "source_id": "html",
+      "line_end_guess": 10518,
+      "calls_internal": [
+        "sendButtonClickHandler"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": [
+        "messageInput"
+      ]
+    },
+    {
+      "name": "getDateTimeString",
+      "line_start": 10519,
+      "signature": "  function getDateTimeString(utcMs) {",
+      "source_id": "html",
+      "line_end_guess": 10554,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "createNewCustomCodeIframeForThread",
+      "line_start": 10555,
+      "signature": "  async function createNewCustomCodeIframeForThread(threadId) {",
+      "source_id": "html",
+      "line_end_guess": 10569,
+      "calls_internal": [
+        "getUserCharacterObj"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "handler",
+      "line_start": 10570,
+      "signature": "      function handler(e) {",
+      "source_id": "html",
+      "line_end_guess": 10820,
+      "calls_internal": [
+        "_do_not_use_this_use_oc_dot_pushDataChanges_instead___sendBackDataUpdatesIfNeeded",
+        "callParentWindow",
+        "createFloatingWindow",
+        "dedent"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": [
+        "customCodeIframeCtn"
+      ]
+    },
+    {
+      "name": "callParentWindow",
+      "line_start": 10821,
+      "signature": "        function callParentWindow(data) {",
+      "source_id": "html",
+      "line_end_guess": 10824,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "handler",
+      "line_start": 10825,
+      "signature": "            function handler(e) {",
+      "source_id": "html",
+      "line_end_guess": 10893,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "createDeepOnChangeProxy",
+      "line_start": 10894,
+      "signature": "        function createDeepOnChangeProxy(target, onChange) {",
+      "source_id": "html",
+      "line_end_guess": 10924,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "___setDataWithoutTriggeringChange",
+      "line_start": 10925,
+      "signature": "        window.___setDataWithoutTriggeringChange = function(propChain, value) {",
+      "source_id": "html",
+      "line_end_guess": 10943,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "getCurrentData",
+      "line_start": 10944,
+      "signature": "        function getCurrentData() {",
+      "source_id": "html",
+      "line_end_guess": 10950,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "getChangedData",
+      "line_start": 10951,
+      "signature": "        function getChangedData() {",
+      "source_id": "html",
+      "line_end_guess": 10976,
+      "calls_internal": [
+        "getCurrentData"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "_do_not_use_this_use_oc_dot_pushDataChanges_instead___sendBackDataUpdatesIfNeeded",
+      "line_start": 10977,
+      "signature": "        window._do_not_use_this_use_oc_dot_pushDataChanges_instead___sendBackDataUpdatesIfNeeded = async function() {",
+      "source_id": "html",
+      "line_end_guess": 10981,
+      "calls_internal": [
+        "sendBackDataUpdatesIfNeeded"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "sendBackDataUpdatesIfNeeded",
+      "line_start": 10982,
+      "signature": "        async function sendBackDataUpdatesIfNeeded() {",
+      "source_id": "html",
+      "line_end_guess": 11100,
+      "calls_internal": [
+        "callParentWindow",
+        "getChangedData",
+        "getCurrentData",
+        "handler",
+        "setTimeout"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "applyObjectOverrides",
+      "line_start": 11101,
+      "signature": "            function applyObjectOverrides({object, overrides}) {",
+      "source_id": "html",
+      "line_end_guess": 11163,
+      "calls_internal": [
+        "getCurrentData",
+        "setTimeout"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "await",
+      "line_start": 11164,
+      "signature": "        await (async () => {",
+      "source_id": "html",
+      "line_end_guess": 11248,
+      "calls_internal": [
+        "setTimeout",
+        "triggerInitCustomCodeEvent",
+        "updateCustomCodeIframeVisibility"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "rightColumn",
+        "toggleRightColumnButton"
+      ]
+    },
+    {
+      "name": "updateCustomCodeIframeVisibility",
+      "line_start": 11249,
+      "signature": "  async function updateCustomCodeIframeVisibility() {",
+      "source_id": "html",
+      "line_end_guess": 11484,
+      "calls_internal": [
+        "countTokensInMessages",
+        "getChatCompletion",
+        "renderMessageFeed",
+        "surgicallyRerenderStreamingMessageEl",
+        "updateDbWithNewDataFromCustomCode"
+      ],
+      "uses_root": [
+        "aiTextPlugin",
+        "superFetch",
+        "textToImagePlugin"
+      ],
+      "uses_db_tables": [
+        "characters",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "customCodeColumn",
+        "customCodeIframeCtn",
+        "customCodeIframeHorizontalResizeBar",
+        "messageFeed",
+        "rightColumn",
+        "toggleRightColumnButton"
+      ]
+    },
+    {
+      "name": "surgicallyRerenderStreamingMessageEl",
+      "line_start": 11485,
+      "signature": "  async function surgicallyRerenderStreamingMessageEl({el, messageObj, thread}) {",
+      "source_id": "html",
+      "line_end_guess": 11491,
+      "calls_internal": [
+        "createMessageElement"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "sendCustomCodeIframeMessage",
+      "line_start": 11492,
+      "signature": "  async function sendCustomCodeIframeMessage(threadId, data) {",
+      "source_id": "html",
+      "line_end_guess": 11502,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "runCodeInCustomCodeIframe",
+      "line_start": 11503,
+      "signature": "  window.runCodeInCustomCodeIframe = async function(code, opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 11512,
+      "calls_internal": [
+        "sendCustomCodeIframeMessage"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "getDataForCustomCode",
+      "line_start": 11513,
+      "signature": "  async function getDataForCustomCode(threadId, opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 11554,
+      "calls_internal": [
+        "getUserCharacterObj",
+        "messagesToCustomCodeFormat"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "messages",
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "triggerInitCustomCodeEvent",
+      "line_start": 11555,
+      "signature": "  async function triggerInitCustomCodeEvent(threadId) {",
+      "source_id": "html",
+      "line_end_guess": 11560,
+      "calls_internal": [
+        "getDataForCustomCode",
+        "sendCustomCodeIframeMessage"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "triggerMessageActionCustomCodeEvent",
+      "line_start": 11561,
+      "signature": "  async function triggerMessageActionCustomCodeEvent({threadId, eventData, eventName, triggerBotReply=true}={}) {",
+      "source_id": "html",
+      "line_end_guess": 11585,
+      "calls_internal": [
+        "createTypingIndicatorHtml",
+        "getDataForCustomCode",
+        "renderMessageFeed",
+        "sendCustomCodeIframeMessage",
+        "updateDbWithNewDataFromCustomCode"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "statusNotifier"
+      ]
+    },
+    {
+      "name": "triggerStreamingMessageChunkCustomCodeEvent",
+      "line_start": 11586,
+      "signature": "  async function triggerStreamingMessageChunkCustomCodeEvent(threadId, chunkData, threadCharacter) {",
+      "source_id": "html",
+      "line_end_guess": 11595,
+      "calls_internal": [
+        "sendCustomCodeIframeMessage"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "updateDbWithNewDataFromCustomCode",
+      "line_start": 11596,
+      "signature": "  async function updateDbWithNewDataFromCustomCode({threadId, receivedData, originalMessages}) {",
+      "source_id": "html",
+      "line_end_guess": 11799,
+      "calls_internal": [
+        "applyObjectOverrides",
+        "createNewCustomCodeIframeForThread",
+        "messagesFromCustomCodeFormat",
+        "renderMessageInputPlaceholder",
+        "renderShortcutButtons",
+        "renderThreadList",
+        "safelyDeleteMessagesByIds"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "messages",
+        "threads",
+        "transaction"
+      ],
+      "uses_dollar_ids": [
+        "sendButton"
+      ]
+    },
+    {
+      "name": "doBotReplyInPlaceOfUser",
+      "line_start": 11800,
+      "signature": "  async function doBotReplyInPlaceOfUser({replyInstruction=null, startMessageWith=null, signals=null, expectsReply=undefined, result={}}={}) {",
+      "source_id": "html",
+      "line_end_guess": 11849,
+      "calls_internal": [
+        "addMessageToFeed",
+        "createMessageObj",
+        "createPaddedTypingIndicatorHtml",
+        "getUserCharacterObj",
+        "messageObjToCharacterAvatar",
+        "messageObjToCharacterName"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "messages",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "statusNotifier"
+      ]
+    },
+    {
+      "name": "onStreamingReplyChunk",
+      "line_start": 11850,
+      "signature": "    function onStreamingReplyChunk(c) {",
+      "source_id": "html",
+      "line_end_guess": 11854,
+      "calls_internal": [
+        "handleStreamingReplyChunk"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "onProgressMessage",
+      "line_start": 11855,
+      "signature": "    const onProgressMessage = (e) => messageEl.querySelector(\".statusMessage\").innerHTML=e.message;",
+      "source_id": "html",
+      "line_end_guess": 11926,
+      "calls_internal": [
+        "addMessageToDb",
+        "addMessageToFeed",
+        "getBotReply",
+        "messageFeedIsNearBottom",
+        "triggerMessageActionCustomCodeEvent"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": [
+        "messageFeed",
+        "replyAsOptionsButton",
+        "statusNotifier",
+        "threadOptionsButton",
+        "threadOptionsPopup",
+        "threadReplyAsCharacterListPopup"
+      ]
+    },
+    {
+      "name": "showAddShortcutButtonModal",
+      "line_start": 11927,
+      "signature": "  window.showAddShortcutButtonModal = async function() {",
+      "source_id": "html",
+      "line_end_guess": 11948,
+      "calls_internal": [
+        "prompt2",
+        "renderShortcutButtons",
+        "updateCustomCodePropIfNeeded"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "addShortcutButton"
+      ]
+    },
+    {
+      "name": "updateCustomCodePropIfNeeded",
+      "line_start": 11949,
+      "signature": "  async function updateCustomCodePropIfNeeded({threadId, prop, value}) {",
+      "source_id": "html",
+      "line_end_guess": 11959,
+      "calls_internal": [
+        "___setDataWithoutTriggeringChange",
+        "runCodeInCustomCodeIframe"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "changeThreadUserNameHandler",
+      "line_start": 11960,
+      "signature": "  window.changeThreadUserNameHandler = async function() {",
+      "source_id": "html",
+      "line_end_guess": 12034,
+      "calls_internal": [
+        "editCharacterById",
+        "prompt2",
+        "renderMessageFeed",
+        "renderShortcutButtons",
+        "renderThreadReplyAsCharacterListPopup",
+        "showAddCharacterShortcutToThreadPopup"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "addCharacterOptionsButton",
+        "changeThreadUserAvatarUrlButton",
+        "changeThreadUserNameButton",
+        "editCharacterOptionsButton",
+        "replyAsOptionsButton",
+        "threadLevelResponseLengthButton",
+        "threadOptionsPopup",
+        "threadReplyAsCharacterListPopup",
+        "toggleAutoReplyToUserButton"
+      ]
+    },
+    {
+      "name": "renderThreadReplyAsCharacterListPopup",
+      "line_start": 12035,
+      "signature": "  async function renderThreadReplyAsCharacterListPopup() {",
+      "source_id": "html",
+      "line_end_guess": 12096,
+      "calls_internal": [
+        "getSystemCharacterObj",
+        "getUserCharacterObj",
+        "prompt2",
+        "setThreadCurrentReplyAsCharacterId"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "messageInput",
+        "threadReplyAsCharacterListPopup"
+      ]
+    },
+    {
+      "name": "setThreadCurrentReplyAsCharacterId",
+      "line_start": 12097,
+      "signature": "  window.setThreadCurrentReplyAsCharacterId = async function({threadId, characterId, characterName}) {",
+      "source_id": "html",
+      "line_end_guess": 12277,
+      "calls_internal": [
+        "closeLeftColumn",
+        "doBotReplyIfNeeded",
+        "doBotReplyInPlaceOfUser",
+        "prompt2",
+        "renderCharacterList",
+        "renderThreadList",
+        "textToSpeech",
+        "updateCustomCodeIframeVisibility"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters",
+        "messages",
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "characterSelection",
+        "characterSelectionOpenLeftColumnButton",
+        "messageInput",
+        "newThreadButton",
+        "replyLoopButton",
+        "replyWithButton",
+        "sendButton",
+        "threadReplyAsCharacterListPopup",
+        "threadSearchButton",
+        "threadSearchInput"
+      ]
+    },
+    {
+      "name": "resizeMessageInputTextAreaToFitContent",
+      "line_start": 12278,
+      "signature": "  function resizeMessageInputTextAreaToFitContent() {",
+      "source_id": "html",
+      "line_end_guess": 12287,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": [
+        "messageInput"
+      ]
+    },
+    {
+      "name": "isTouchDevice",
+      "line_start": 12288,
+      "signature": "  function isTouchDevice() {",
+      "source_id": "html",
+      "line_end_guess": 12342,
+      "calls_internal": [
+        "resizeMessageInputTextAreaToFitContent"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": [
+        "messageInput",
+        "sendButton"
+      ]
+    },
+    {
+      "name": "handleDoubleTap",
+      "line_start": 12343,
+      "signature": "    function handleDoubleTap(e) {",
+      "source_id": "html",
+      "line_end_guess": 12352,
+      "calls_internal": [
+        "onDoubleTapOrClick"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "handleDoubleClick",
+      "line_start": 12353,
+      "signature": "    function handleDoubleClick(e) {",
+      "source_id": "html",
+      "line_end_guess": 12363,
+      "calls_internal": [
+        "onDoubleTapOrClick"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "onDoubleTapOrClick",
+      "line_start": 12364,
+      "signature": "    async function onDoubleTapOrClick() {",
+      "source_id": "html",
+      "line_end_guess": 12419,
+      "calls_internal": [
+        "sanitizeHtml"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "threads"
+      ],
+      "uses_dollar_ids": [
+        "userMessagesSentHistoryCtn"
+      ]
+    },
+    {
+      "name": "clickAnywhereElseHandler",
+      "line_start": 12420,
+      "signature": "      function clickAnywhereElseHandler(e) {",
+      "source_id": "html",
+      "line_end_guess": 12473,
+      "calls_internal": [
+        "prompt2",
+        "renderMessageFeed"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "misc"
+      ],
+      "uses_dollar_ids": [
+        "messageFeed",
+        "messageInput",
+        "settingsButton"
+      ]
+    },
+    {
+      "name": "getCharacterHash",
+      "line_start": 12474,
+      "signature": "  async function getCharacterHash(characterObj) {",
+      "source_id": "html",
+      "line_end_guess": 12605,
+      "calls_internal": [
+        "createLoadingModal",
+        "prompt2",
+        "sha256Text",
+        "tryImportingDexieFile",
+        "tryImportingExternalCharacterFileFormat",
+        "tryImportingRawDbExport",
+        "tryImportingTavernAIThreadFile"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": [
+        "importDataFileInput"
+      ]
+    },
+    {
+      "name": "tryImportingRawDbExport",
+      "line_start": 12606,
+      "signature": "  async function tryImportingRawDbExport(file, opts={}) {",
+      "source_id": "html",
+      "line_end_guess": 12667,
+      "calls_internal": [
+        "setTimeout"
+      ],
+      "uses_root": [
+        "decompressBlobWithGzip",
+        "superFetch"
+      ],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "tryImportingDexieFile",
+      "line_start": 12668,
+      "signature": "  async function tryImportingDexieFile(file, options) {",
+      "source_id": "html",
+      "line_end_guess": 13153,
+      "calls_internal": [
+        "await",
+        "createMemoryIdToIndexMapForIncorrectlyIndexedOrUnindexedMemories",
+        "downloadTextOrBlob",
+        "getCharacterHash",
+        "jsonToBlob",
+        "renderCharacterList",
+        "renderThreadList",
+        "sha256Text",
+        "showThread",
+        "upgradeCharacterFromOldVersion",
+        "upgradeLoreFromOldVersion",
+        "upgradeMemoryFromOldVersion",
+        "upgradeMessageFromOldVersion",
+        "upgradeThreadFromOldVersion"
+      ],
+      "uses_root": [
+        "decompressBlobWithGzip"
+      ],
+      "uses_db_tables": [
+        "characters",
+        "delete",
+        "export",
+        "import",
+        "lore",
+        "memories",
+        "messages",
+        "misc",
+        "open",
+        "textCompressionCache",
+        "textEmbeddingCache",
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "base64DecodeUnicode",
+      "line_start": 13154,
+      "signature": "  function base64DecodeUnicode(str) {",
+      "source_id": "html",
+      "line_end_guess": 13165,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "tryImportingExternalCharacterFileFormat",
+      "line_start": 13166,
+      "signature": "  async function tryImportingExternalCharacterFileFormat(file, options={}) {",
+      "source_id": "html",
+      "line_end_guess": 13344,
+      "calls_internal": [
+        "addCharacter",
+        "base64DecodeUnicode",
+        "characterDetailsPrompt",
+        "createLoadingModal",
+        "createNewThreadWithCharacterId"
+      ],
+      "uses_root": [
+        "compressBlobWithGzip",
+        "uploadPlugin"
+      ],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "tryImportingTavernAIThreadFile",
+      "line_start": 13345,
+      "signature": "  async function tryImportingTavernAIThreadFile(file, options) {",
+      "source_id": "html",
+      "line_end_guess": 13392,
+      "calls_internal": [
+        "addMessageToDb",
+        "addThread",
+        "createMessageObj",
+        "prompt2",
+        "renderThreadList",
+        "showThread"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [
+        "characters"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "handleInvalidCharacterShareLink",
+      "line_start": 13393,
+      "signature": "  function handleInvalidCharacterShareLink(error) {",
+      "source_id": "html",
+      "line_end_guess": 13396,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "setTimeout",
+      "line_start": 13397,
+      "signature": "    setTimeout(() => ignoreHashChange = false, 0);",
+      "source_id": "html",
+      "line_end_guess": 13400,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "checkForHashCommand",
+      "line_start": 13401,
+      "signature": "  async function checkForHashCommand() {",
+      "source_id": "html",
+      "line_end_guess": 13619,
+      "calls_internal": [
+        "addCharacter",
+        "character",
+        "characterDetailsPrompt",
+        "createNewThreadWithCharacterId",
+        "handleInvalidCharacterShareLink",
+        "renderThreadList",
+        "setTimeout",
+        "showThread",
+        "thread",
+        "tryPersistBrowserStorageData",
+        "upgradeCharacterFromOldVersion"
+      ],
+      "uses_root": [
+        "aiTextPlugin",
+        "confirmAsync",
+        "loadDataFromUrlThatReferencesCloudStorageFile",
+        "urlNamedCharacters"
+      ],
+      "uses_db_tables": [
+        "characters",
+        "messages",
+        "misc",
+        "threads",
+        "upgrade"
+      ],
+      "uses_dollar_ids": [
+        "chatThreads",
+        "main",
+        "newThreadButton"
+      ]
+    }
+  ],
+  "list": [
+    {
+      "name": "generateShareLinkForCharacter",
+      "line_start": 21,
+      "signature": "async generateShareLinkForCharacter(json) =>",
+      "source_id": "list",
+      "line_end_guess": 59,
+      "calls_internal": [
+        "compressBlobWithGzip",
+        "setTimeout"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "compressBlobWithGzip",
+      "line_start": 60,
+      "signature": "async compressBlobWithGzip(blob) =>",
+      "source_id": "list",
+      "line_end_guess": 65,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "loadDataFromUrlThatReferencesCloudStorageFile",
+      "line_start": 66,
+      "signature": "async loadDataFromUrlThatReferencesCloudStorageFile() =>",
+      "source_id": "list",
+      "line_end_guess": 112,
+      "calls_internal": [
+        "confirmAsync",
+        "decompressBlobWithGzip"
+      ],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "decompressBlobWithGzip",
+      "line_start": 113,
+      "signature": "async decompressBlobWithGzip(blob) =>",
+      "source_id": "list",
+      "line_end_guess": 117,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "evaluatePerchanceTextInSandbox",
+      "line_start": 118,
+      "signature": "async evaluatePerchanceTextInSandbox(text, opts) =>",
+      "source_id": "list",
+      "line_end_guess": 149,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "setTimeout",
+      "line_start": 150,
+      "signature": "      setTimeout(() => {",
+      "source_id": "list",
+      "line_end_guess": 170,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "dynamic",
+      "line_start": 171,
+      "signature": "  async dynamic(inputs) => // note that $meta.dynamic function *cannot reference/use any variables/lists/etc. that are outside of itself*. In other words, its code must be *fully* self-contained (i.e. only use `inputs.urlParams`). It must also use pure JavaScript (i.e. no Perchance-specific features like `foo.selectOne`, `foo.titleCase`, etc.).",
+      "source_id": "list",
+      "line_end_guess": 221,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "getMessageObjsWithoutSummarizedOnes",
+      "line_start": 222,
+      "signature": "getMessageObjsWithoutSummarizedOnes(messages, opts) =>",
+      "source_id": "list",
+      "line_end_guess": 242,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "injectHierarchicalSummariesAndComputeNextSummariesInBackgroundIfNeeded",
+      "line_start": 243,
+      "signature": "async injectHierarchicalSummariesAndComputeNextSummariesInBackgroundIfNeeded(threadId, opts) =>",
+      "source_id": "list",
+      "line_end_guess": 648,
+      "calls_internal": [
+        "getMessageObjsWithoutSummarizedOnes"
+      ],
+      "uses_root": [
+        "aiTextPlugin",
+        "getMessageObjsWithoutSummarizedOnes"
+      ],
+      "uses_db_tables": [
+        "characters",
+        "messages",
+        "threads"
+      ],
+      "uses_dollar_ids": []
+    },
+    {
+      "name": "confirmAsync",
+      "line_start": 649,
+      "signature": "async confirmAsync(message, opts) =>",
+      "source_id": "list",
+      "line_end_guess": 691,
+      "calls_internal": [],
+      "uses_root": [],
+      "uses_db_tables": [],
+      "uses_dollar_ids": []
+    }
+  ]
+}

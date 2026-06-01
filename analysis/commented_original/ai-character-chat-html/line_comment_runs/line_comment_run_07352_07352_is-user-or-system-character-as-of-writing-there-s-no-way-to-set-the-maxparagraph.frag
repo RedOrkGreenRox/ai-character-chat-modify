@@ -1,0 +1,1 @@
+      // is user or system character (as of writing there's no way to set the maxParagraphCountPerMessage for them). this isn't ideal. but I think it's a sane default for now. if they want customization for now they have to create separate 'actual' characters (e.g. a Narrator character that they bring into their thread)

@@ -1,0 +1,1 @@
+          // NOTE: as of writing, we only do memory creation at a single level. But I'm making memoriesEndingHere a level-keyed object like summariesEndingHere just in case I end up adding 'multi-level' memories at some point.

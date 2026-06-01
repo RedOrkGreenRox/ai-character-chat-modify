@@ -1,0 +1,1 @@
+              // Debug info is encrypted with this public key to increase user privacy. IF you're developing your own version of this generator, you can generate your own public/private key pairs here:  https://perchance.org/public-key-encryption-tool

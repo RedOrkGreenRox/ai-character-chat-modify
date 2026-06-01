@@ -1,0 +1,1 @@
+  //   let roleInstruction = character.roleInstruction || "";

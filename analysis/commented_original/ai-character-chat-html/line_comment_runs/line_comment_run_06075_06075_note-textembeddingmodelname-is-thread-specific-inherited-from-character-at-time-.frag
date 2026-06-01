@@ -1,0 +1,1 @@
+    // NOTE: textEmbeddingModelName is thread-specific (inherited from character at time of creation), and there aren't any cross-thread embedding things, so (as of writing at least) this default can be safely changed.

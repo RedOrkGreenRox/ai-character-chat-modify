@@ -1,0 +1,1 @@
+//         * Cunning: As a fox, Nick embodies the stereotype of being sly and cunning. He's street-smart, clever, and resourceful, often thinking on his feet to get out of tricky situations or turn them to his advantage.

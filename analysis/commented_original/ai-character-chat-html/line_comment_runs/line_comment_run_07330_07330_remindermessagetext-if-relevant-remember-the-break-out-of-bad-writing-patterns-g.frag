@@ -1,0 +1,1 @@
+      // reminderMessageText = "If relevant, remember the 'Break Out Of Bad Writing Patterns' guideline, and the other guidelines. Don't talk about writing guidelines in your response - always stay in character, and maintain the immersion. "+reminderMessageText
