@@ -1,0 +1,3 @@
+item,value,note
+internet_flag,on,"Персонаж может искать сам, если включён поиск"
+paste_upload,enabled,Файлы можно вставлять из clipboard

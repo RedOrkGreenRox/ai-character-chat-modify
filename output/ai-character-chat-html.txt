@@ -12484,9 +12484,21 @@ Use this template for your response:
 
 // --- Constants ---
 const __AE_STORAGE_KEY = '__ae';
-const __AE_VERSION = '1.0.0';
+const __AE_VERSION = '1.1.0';
 const __AE_CHUNK_WORDS = 300;
 const __AE_EXT = '__ae'; // marker for our shortcut buttons
+const __AE_IMAGE_CAPTION_MODELS = ['Xenova/vit-gpt2-image-captioning']; // BLIP is gated/401 on HF, vit-gpt2 is public
+const __AE_SEARCH_CACHE = new Map(); // per-page cache for automatic web-search contexts
+const __AE_CONTEXT_PREVIEW_CHARS = 12000; // hidden-from-user, visible-to-AI upload context
+const __AE_FILE_REGISTRY_KEY = '__aeFileRegistry';
+const __AE_FILE_CONTEXT_BUFFER_CHARS = 60000;
+const __AE_MAX_ARCHIVE_FILES = 30;
+const __AE_MAX_ARCHIVE_FILE_BYTES = 8 * 1024 * 1024;
+const __AE_MAX_EMBEDDED_IMAGES = 10;
+const __AE_MAX_PDF_IMAGE_PAGES = 3;
+const __AE_MAX_LORE_CHUNKS_PER_FILE = 40;
+const __AE_MAX_VOICE_RECORDING_MS = 60 * 1000;
+const __AE_BEFORE_BOT_REPLY_HOOKS = [];
 
 const __AE_DEFAULTS = {
   fileUpload: true,
@@ -12494,6 +12506,11 @@ const __AE_DEFAULTS = {
   docxExtract: true,
   imageCaption: true,
   audioTranscribe: true,
+  spreadsheetExtract: true,
+  archiveExtract: true,
+  deepWebSearch: false,
+  advancedImageAnalysis: false,
+  voiceProfile: true,
   webSearch: true
 };
 
@@ -12515,22 +12532,47 @@ function __aeSaveSettings(s) {
 let __aePdfJsReady = false;
 let __aeMammothReady = false;
 let __aeTransformersReady = false;
+let __aeXlsxReady = false;
+let __aeJsZipReady = false;
 
 function __aeLoadScript(url) {
   return new Promise(function(resolve, reject) {
     var s = document.createElement('script');
     s.src = url;
     s.onload = resolve;
-    s.onerror = function() { reject(new Error('Failed to load: ' + url)); };
+    s.onerror = function() {
+      s.remove();
+      reject(new Error('Failed to load: ' + url));
+    };
     document.head.appendChild(s);
   });
+}
+
+async function __aeLoadScriptFromAny(urls, label) {
+  var errors = [];
+  for (var i = 0; i < urls.length; i++) {
+    try {
+      await __aeLoadScript(urls[i]);
+      return urls[i];
+    } catch(e) {
+      errors.push(e.message);
+      console.warn('[ae] ' + (label || 'script') + ' CDN failed:', urls[i], e);
+    }
+  }
+  throw new Error('Failed to load ' + (label || 'script') + ' from all mirrors:\n' + errors.join('\n'));
 }
 
 async function __aeLoadPdfJs() {
   if (__aePdfJsReady) return window.pdfjsLib;
   console.log('[ae] Loading pdf.js...');
-  await __aeLoadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
-  window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  var loadedUrl = await __aeLoadScriptFromAny([
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
+    'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js',
+    'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js'
+  ], 'pdf.js');
+  if (loadedUrl.indexOf('jsdelivr') !== -1) window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+  else if (loadedUrl.indexOf('unpkg') !== -1) window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+  else window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
   __aePdfJsReady = true;
   console.log('[ae] pdf.js loaded.');
   return window.pdfjsLib;
@@ -12539,16 +12581,56 @@ async function __aeLoadPdfJs() {
 async function __aeLoadMammoth() {
   if (__aeMammothReady) return window.mammoth;
   console.log('[ae] Loading mammoth.js...');
-  await __aeLoadScript('https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.min.js');
+  // mammoth.min.js does not exist in this package version; browser bundle is mammoth.browser.min.js
+  await __aeLoadScriptFromAny([
+    'https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js',
+    'https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.js',
+    'https://unpkg.com/mammoth@1.6.0/mammoth.browser.min.js',
+    'https://unpkg.com/mammoth@1.6.0/mammoth.browser.js'
+  ], 'mammoth.js');
+  if (!window.mammoth) throw new Error('mammoth.js loaded but window.mammoth is missing.');
   __aeMammothReady = true;
   console.log('[ae] mammoth.js loaded.');
   return window.mammoth;
+}
+
+
+async function __aeLoadXlsx() {
+  if (__aeXlsxReady) return window.XLSX;
+  console.log('[ae] Loading SheetJS/xlsx...');
+  await __aeLoadScriptFromAny([
+    'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js',
+    'https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js'
+  ], 'SheetJS/xlsx');
+  if (!window.XLSX) throw new Error('xlsx loaded but window.XLSX is missing.');
+  __aeXlsxReady = true;
+  console.log('[ae] SheetJS/xlsx loaded.');
+  return window.XLSX;
+}
+
+async function __aeLoadJsZip() {
+  if (__aeJsZipReady) return window.JSZip;
+  console.log('[ae] Loading JSZip...');
+  await __aeLoadScriptFromAny([
+    'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js',
+    'https://unpkg.com/jszip@3.10.1/dist/jszip.min.js'
+  ], 'JSZip');
+  if (!window.JSZip) throw new Error('JSZip loaded but window.JSZip is missing.');
+  __aeJsZipReady = true;
+  console.log('[ae] JSZip loaded.');
+  return window.JSZip;
 }
 
 async function __aeLoadTransformers() {
   if (__aeTransformersReady) return window.__aeTransformers;
   console.log('[ae] Loading Transformers.js...');
   var mod = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2');
+  try {
+    if (mod.env) {
+      mod.env.allowRemoteModels = true;
+      mod.env.allowLocalModels = false;
+    }
+  } catch(e) { console.warn('[ae] Could not configure Transformers env:', e); }
   window.__aeTransformers = mod;
   __aeTransformersReady = true;
   console.log('[ae] Transformers.js loaded.');
@@ -12575,8 +12657,8 @@ function __aeChunkText(text, wordsPerChunk) {
 // textEmbeddingCache is handled internally by embedTexts({shouldCache:true}).
 async function __aeAddLoreEntry(text, sourceLabel) {
   var tid = activeThreadId;
-  if (!tid) {
-    console.warn('[ae] No active thread for lore entry.');
+  if (typeof tid !== 'number' || !Number.isFinite(tid)) {
+    console.warn('[ae] No valid active thread for lore entry:', tid);
     return 0;
   }
   var thread = await db.threads.get(tid);
@@ -12585,7 +12667,7 @@ async function __aeAddLoreEntry(text, sourceLabel) {
     return 0;
   }
   var loreBookId = thread.loreBookId != null ? thread.loreBookId : tid;
-  var modelName = thread.textEmbeddingModelName || window.currentDefaultTextEmbeddingModelName || 'Xenova/bge-base-en-v1.5';
+  var modelName = thread.textEmbeddingModelName || 'Xenova/bge-base-en-v1.5';
 
   // Check for duplicate text in this lore book (compare by text content)
   var existingEntries = await db.lore.where({ bookId: loreBookId }).toArray();
@@ -12596,7 +12678,9 @@ async function __aeAddLoreEntry(text, sourceLabel) {
     }
   }
 
-  // Compute embedding via the built-in embedTexts (handles caching internally)
+  // Compute embedding via the built-in embedTexts (handles caching internally).
+  // IMPORTANT: do not store lore without embeddings — the original retrieval pipeline
+  // expects entry.embeddings[modelName] and can fail later if it is missing.
   var embedding = null;
   try {
     var embeddings = await embedTexts({ textArr: [text], modelName: modelName, shouldCache: true });
@@ -12604,7 +12688,11 @@ async function __aeAddLoreEntry(text, sourceLabel) {
       embedding = embeddings[0];
     }
   } catch(e) {
-    console.warn('[ae] Embedding failed (will fail on retrieval too):', e.message);
+    console.warn('[ae] Embedding failed; lore entry will NOT be saved:', e);
+    throw new Error('Could not compute lore embedding. Entry was not saved. ' + (e && e.message ? e.message : e));
+  }
+  if (!embedding) {
+    throw new Error('Could not compute lore embedding. Entry was not saved.');
   }
 
   // Build lore entry matching the original format exactly
@@ -12628,8 +12716,13 @@ async function __aeAddLoreEntry(text, sourceLabel) {
 async function __aeAddTextAsLore(text, sourceLabel) {
   var chunks = __aeChunkText(text);
   if (chunks.length === 0) return 0;
+  if (chunks.length > __AE_MAX_LORE_CHUNKS_PER_FILE) {
+    __aeToast('⚠️ File is very large; indexing only first ' + __AE_MAX_LORE_CHUNKS_PER_FILE + ' lore chunks to protect the page.', 8000);
+    chunks = chunks.slice(0, __AE_MAX_LORE_CHUNKS_PER_FILE);
+  }
   var added = 0;
   for (var i = 0; i < chunks.length; i++) {
+    __aeAssertNotCancelled();
     added += await __aeAddLoreEntry(
       chunks[i],
       sourceLabel + ' (chunk ' + (i + 1) + '/' + chunks.length + ')'
@@ -12663,8 +12756,8 @@ function __aeToast(text, durationMs) {
 // --- System message (hidden from AI so NPC doesn't see it) ---
 async function __aeAddSystemMessage(content, name) {
   var tid = activeThreadId;
-  if (!tid) {
-    console.warn('[ae] No active thread for system message.');
+  if (typeof tid !== 'number' || !Number.isFinite(tid)) {
+    console.warn('[ae] No valid active thread for system message:', tid);
     return;
   }
   var thread = await db.threads.get(tid);
@@ -12688,28 +12781,429 @@ async function __aeAddSystemMessage(content, name) {
 
 // --- File Processors ---
 
+
+function __aeBuildAiContextContent(kind, fileName, text, meta) {
+  text = (text || '').trim();
+  meta = meta || '';
+  var truncated = text.length > __AE_CONTEXT_PREVIEW_CHARS;
+  var preview = truncated ? text.slice(0, __AE_CONTEXT_PREVIEW_CHARS) + '\n\n[... content truncated; full text was stored in lore chunks when possible ...]' : text;
+  return [
+    'USER-UPLOADED ' + kind.toUpperCase() + ' CONTEXT',
+    'Filename: ' + fileName,
+    meta ? 'Metadata: ' + meta : null,
+    '',
+    'The user uploaded this file/image/audio for the current chat. Treat it as context. If the user asks about it, answer using this content.',
+    '',
+    'Extracted/recognized content:',
+    preview || '(No text content was extracted.)'
+  ].filter(function(x) { return x !== null; }).join('\n');
+}
+
+async function __aeAddAiContextMessage(content, name, customData) {
+  var tid = activeThreadId;
+  if (typeof tid !== 'number' || !Number.isFinite(tid)) {
+    console.warn('[ae] No valid active thread for AI context message:', tid);
+    return;
+  }
+  var msgObj = createMessageObj({
+    threadId: tid,
+    message: content,
+    characterId: -2,
+    name: name || 'Uploaded Context',
+    hiddenFrom: ['user'], // AI sees it; user feed stays clean/collapsed
+    expectsReply: false,
+    customData: customData || {}
+  });
+  var id = await addMessageToDb(msgObj, {doNotReRenderThreadList:true});
+  return id;
+}
+
+function __aeCreateId(prefix) {
+  return (prefix || 'ae') + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
+}
+
+function __aeNormalizeFileName(name) {
+  return String(name || '').trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+async function __aeLoadFileRegistry() {
+  var obj = await db.misc.get(__AE_FILE_REGISTRY_KEY).catch(function() { return null; });
+  if (!obj || !obj.value || !Array.isArray(obj.value.files)) return { version: 1, files: [] };
+  return obj.value;
+}
+
+async function __aeSaveFileRegistry(registry) {
+  registry.version = registry.version || 1;
+  if (!Array.isArray(registry.files)) registry.files = [];
+  await db.misc.put({ key: __AE_FILE_REGISTRY_KEY, value: registry });
+}
+
+async function __aeRegisterUploadedFile(meta) {
+  var registry = await __aeLoadFileRegistry();
+  var file = Object.assign({
+    id: __aeCreateId('ae_file'),
+    threadId: activeThreadId,
+    name: 'unnamed',
+    normalizedName: '',
+    uploadedAt: Date.now(),
+    status: 'ok',
+    error: null,
+    contextMessageId: null,
+    contextActive: true,
+    contextCharCount: 0,
+    preview: ''
+  }, meta || {});
+  file.normalizedName = __aeNormalizeFileName(file.normalizedName || file.name);
+  registry.files.push(file);
+  await __aeSaveFileRegistry(registry);
+  return file;
+}
+
+async function __aeUpdateUploadedFile(id, patch) {
+  var registry = await __aeLoadFileRegistry();
+  var file = registry.files.find(function(f) { return f.id === id; });
+  if (!file) return null;
+  Object.assign(file, patch || {});
+  if (patch && patch.name) file.normalizedName = __aeNormalizeFileName(file.name);
+  await __aeSaveFileRegistry(registry);
+  return file;
+}
+
+async function __aeGetUploadedFiles(opts) {
+  opts = opts || {};
+  var registry = await __aeLoadFileRegistry();
+  var files = registry.files.slice();
+  if (opts.threadId !== undefined && !opts.includeAllThreads) {
+    files = files.filter(function(f) { return f.threadId === opts.threadId; });
+  }
+  files.sort(function(a, b) { return (b.uploadedAt || 0) - (a.uploadedAt || 0); });
+  return files;
+}
+
+async function __aeFindUploadedFileByMention(name, threadId) {
+  var wanted = __aeNormalizeFileName(name);
+  var files = await __aeGetUploadedFiles({threadId: threadId});
+  var exact = files.filter(function(f) { return f.normalizedName === wanted || __aeNormalizeFileName(f.name) === wanted; });
+  if (exact.length === 1) return { file: exact[0], matches: exact };
+  if (exact.length > 1) return { file: null, matches: exact };
+  var fuzzy = files.filter(function(f) {
+    var n = f.normalizedName || __aeNormalizeFileName(f.name);
+    return n.includes(wanted) || wanted.includes(n);
+  }).slice(0, 10);
+  return { file: fuzzy.length === 1 ? fuzzy[0] : null, matches: fuzzy };
+}
+
+async function __aeSetContextMessageActive(messageId, active) {
+  if (typeof messageId !== 'number' || !Number.isFinite(messageId)) return;
+  var msg = await db.messages.get(messageId).catch(function() { return null; });
+  if (!msg) return;
+  var hiddenFrom = Array.isArray(msg.hiddenFrom) ? msg.hiddenFrom.slice() : [];
+  if (active) hiddenFrom = hiddenFrom.filter(function(x) { return x !== 'ai'; });
+  else if (!hiddenFrom.includes('ai')) hiddenFrom.push('ai');
+  if (!hiddenFrom.includes('user')) hiddenFrom.push('user');
+  await db.messages.update(messageId, { hiddenFrom: hiddenFrom });
+}
+
+
+async function __aeGetActiveFileContextCharCount(threadId) {
+  var registry = await __aeLoadFileRegistry();
+  return registry.files.filter(function(f) {
+    return f.threadId === threadId && f.contextActive !== false && typeof f.contextMessageId === 'number';
+  }).reduce(function(sum, f) { return sum + (f.contextCharCount || 0); }, 0);
+}
+
+async function __aeEnforceFileContextBuffer(threadId) {
+  var registry = await __aeLoadFileRegistry();
+  var files = registry.files.filter(function(f) {
+    return f.threadId === threadId && f.contextActive !== false && typeof f.contextMessageId === 'number';
+  }).sort(function(a, b) { return (a.uploadedAt || 0) - (b.uploadedAt || 0); });
+  var total = files.reduce(function(sum, f) { return sum + (f.contextCharCount || 0); }, 0);
+  var changed = false;
+  while (total > __AE_FILE_CONTEXT_BUFFER_CHARS && files.length > 1) {
+    var f = files.shift();
+    await __aeSetContextMessageActive(f.contextMessageId, false);
+    f.contextActive = false;
+    f.status = f.status === 'ok' ? 'buffered-out' : f.status;
+    total -= (f.contextCharCount || 0);
+    changed = true;
+  }
+  if (changed) await __aeSaveFileRegistry(registry);
+}
+
+async function __aeReactivateFileContext(file) {
+  if (!file) return null;
+  if (typeof file.contextMessageId === 'number') {
+    await __aeSetContextMessageActive(file.contextMessageId, true);
+    await __aeUpdateUploadedFile(file.id, { contextActive: true, status: file.status === 'buffered-out' ? 'ok' : file.status });
+    await __aeEnforceFileContextBuffer(file.threadId);
+    return file.contextMessageId;
+  }
+  if (file.fullText) {
+    var content = __aeBuildAiContextContent(file.kind || 'File', file.name, file.fullText, file.metaText || 'reactivated mention');
+    var messageId = await __aeAddAiContextMessage(content, 'File Mention', { __aeFileContext: true, fileId: file.id, source: 'mention' });
+    await __aeUpdateUploadedFile(file.id, { contextMessageId: messageId, contextActive: true, contextCharCount: content.length });
+    await __aeEnforceFileContextBuffer(file.threadId);
+    return messageId;
+  }
+  return null;
+}
+
+async function __aeForgetUploadedFile(id) {
+  var registry = await __aeLoadFileRegistry();
+  var file = registry.files.find(function(f) { return f.id === id; });
+  if (!file) return false;
+  if (typeof file.contextMessageId === 'number') await __aeSetContextMessageActive(file.contextMessageId, false);
+  registry.files = registry.files.filter(function(f) { return f.id !== id; });
+  await __aeSaveFileRegistry(registry);
+  return true;
+}
+
+async function __aeRememberExtractedContent(kind, fileName, text, meta) {
+  var added = 0;
+  if (text && text.trim()) {
+    __aeAssertNotCancelled();
+    var currentContextChars = await __aeGetActiveFileContextCharCount(activeThreadId);
+    if (currentContextChars >= __AE_FILE_CONTEXT_BUFFER_CHARS * 1.25) {
+      __aeAbortAllProcessing('File context buffer overloaded. Current uploads were interrupted.');
+      throw new Error('File context buffer overloaded. Processing interrupted.');
+    }
+    var content = __aeBuildAiContextContent(kind, fileName, text, meta);
+    var fileRecord = await __aeRegisterUploadedFile({
+      threadId: activeThreadId,
+      name: fileName,
+      kind: kind,
+      metaText: meta || '',
+      contextCharCount: content.length,
+      preview: text.slice(0, 1200),
+      fullText: text.length <= __AE_CONTEXT_PREVIEW_CHARS ? text : '',
+      status: 'ok'
+    });
+    var messageId = await __aeAddAiContextMessage(content, kind + ' Upload', { __aeFileContext: true, fileId: fileRecord.id, fileName: fileName, kind: kind });
+    await __aeUpdateUploadedFile(fileRecord.id, { contextMessageId: messageId, contextActive: true });
+    await __aeEnforceFileContextBuffer(activeThreadId);
+    try {
+      added = await __aeAddTextAsLore(text, kind + ': ' + fileName);
+    } catch(e) {
+      console.warn('[ae] Lore indexing failed, but AI context message was saved:', e);
+      await __aeUpdateUploadedFile(fileRecord.id, { status: 'partial', error: 'Lore indexing failed: ' + e.message });
+      __aeToast('⚠️ Saved upload as direct AI context, but lore indexing failed.', 6000);
+    }
+  }
+  return added;
+}
+
+
+
+// --- Processing task UI and cancellation ---
+const __AE_PROCESSING_TASKS = new Map();
+let __aeProcessingTaskSeq = 0;
+let __aeProcessingCancelled = false;
+let __aeTaskPanelEl = null;
+
+function __aeResetProcessingCancel() {
+  __aeProcessingCancelled = false;
+}
+
+function __aeAbortAllProcessing(reason) {
+  __aeProcessingCancelled = true;
+  reason = reason || 'Processing cancelled.';
+  __AE_PROCESSING_TASKS.forEach(function(task) {
+    task.status = 'cancelled';
+    task.detail = reason;
+  });
+  __aeRenderTaskPanel();
+  __aeToast('🛑 ' + reason, 6000);
+}
+
+function __aeAssertNotCancelled() {
+  if (__aeProcessingCancelled) throw new Error('Processing cancelled.');
+}
+
+function __aeRenderTaskPanel() {
+  if (!__aeTaskPanelEl) {
+    __aeTaskPanelEl = document.createElement('div');
+    __aeTaskPanelEl.id = '__aeTaskPanel';
+    __aeTaskPanelEl.style.cssText = 'position:fixed;right:12px;bottom:12px;max-width:min(420px,92vw);max-height:45vh;overflow:auto;z-index:999999;background:rgba(25,25,25,0.94);color:#fff;border:1px solid rgba(255,255,255,0.2);border-radius:10px;padding:10px;font-size:13px;box-shadow:0 6px 28px rgba(0,0,0,0.45);';
+    document.body.appendChild(__aeTaskPanelEl);
+  }
+  var tasks = Array.from(__AE_PROCESSING_TASKS.values());
+  if (tasks.length === 0) {
+    __aeTaskPanelEl.remove();
+    __aeTaskPanelEl = null;
+    return;
+  }
+  var html = '<div style="display:flex;justify-content:space-between;gap:0.75rem;align-items:center;margin-bottom:0.35rem;"><b>📎 Processing files</b><button id="__aeCancelTasksBtn" style="font-size:12px;">cancel all</button></div>';
+  html += tasks.map(function(t) {
+    var icon = t.status === 'done' ? '✅' : t.status === 'error' ? '❌' : t.status === 'cancelled' ? '🛑' : '⏳';
+    return '<div style="border-top:1px solid rgba(255,255,255,0.12);padding-top:0.3rem;margin-top:0.3rem;">' + icon + ' <span style="overflow-wrap:anywhere;">' + sanitizeHtml(t.label) + '</span>' + (t.detail ? '<div style="opacity:0.78;margin-left:1.25rem;">' + sanitizeHtml(t.detail) + '</div>' : '') + '</div>';
+  }).join('');
+  __aeTaskPanelEl.innerHTML = html;
+  __aeTaskPanelEl.querySelector('#__aeCancelTasksBtn')?.addEventListener('click', function() {
+    __aeAbortAllProcessing('User cancelled current file processing.');
+  });
+}
+
+function __aeBeginTask(label, detail) {
+  var id = ++__aeProcessingTaskSeq;
+  __AE_PROCESSING_TASKS.set(id, { id: id, label: label || 'task', detail: detail || '', status: 'running' });
+  __aeRenderTaskPanel();
+  return id;
+}
+
+function __aeUpdateTask(id, detail, status) {
+  var task = __AE_PROCESSING_TASKS.get(id);
+  if (!task) return;
+  if (detail !== undefined) task.detail = detail;
+  if (status) task.status = status;
+  __aeRenderTaskPanel();
+}
+
+function __aeEndTask(id, status, detail) {
+  var task = __AE_PROCESSING_TASKS.get(id);
+  if (!task) return;
+  task.status = status || 'done';
+  if (detail !== undefined) task.detail = detail;
+  __aeRenderTaskPanel();
+  setTimeout(function() {
+    var t = __AE_PROCESSING_TASKS.get(id);
+    if (t && (t.status === 'done' || t.status === 'error' || t.status === 'cancelled')) {
+      __AE_PROCESSING_TASKS.delete(id);
+      __aeRenderTaskPanel();
+    }
+  }, status === 'error' ? 9000 : 2500);
+}
+
+// --- Transient prompt message helper ---
+// Messages injected only into getBotReply(opts) still need IDs because the
+// original reply pipeline records messageIdsUsed and throws if any id is undefined.
+let __aeTransientMessageIdCounter = -1000000000;
+function __aeCreateTransientMessageObj(args) {
+  var msg = createMessageObj(args);
+  msg.id = __aeTransientMessageIdCounter--;
+  if (msg.order === undefined) msg.order = msg.id;
+  return msg;
+}
+
+// --- Extension hook bus ---
+// Later modules should register hooks instead of wrapping getBotReply directly.
+// A hook receives the current getBotReply opts and may return a modified opts object.
+function __aeRegisterBeforeBotReplyHook(name, fn, opts) {
+  if (typeof fn !== 'function') throw new Error('__aeRegisterBeforeBotReplyHook requires a function');
+  opts = opts || {};
+  __AE_BEFORE_BOT_REPLY_HOOKS.push({ name: name || 'unnamed', fn: fn, priority: Number(opts.priority || 500) });
+  __AE_BEFORE_BOT_REPLY_HOOKS.sort(function(a, b) { return a.priority - b.priority; });
+}
+
+var __aeOriginalGetBotReply = getBotReply;
+getBotReply = async function(opts) {
+  var nextOpts = opts;
+  for (var i = 0; i < __AE_BEFORE_BOT_REPLY_HOOKS.length; i++) {
+    var hook = __AE_BEFORE_BOT_REPLY_HOOKS[i];
+    try {
+      var result = await hook.fn(nextOpts);
+      if (result) nextOpts = result;
+    } catch(e) {
+      console.error('[ae] beforeBotReply hook failed:', hook.name, e);
+      __aeToast('⚠️ Extension hook failed: ' + hook.name + ': ' + e.message, 6000);
+    }
+  }
+  return __aeOriginalGetBotReply.call(this, nextOpts);
+};
+
+
+function __aeIsImageFileName(name) {
+  return /\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(name || '');
+}
+
+async function __aeProcessEmbeddedImagesFromZipArrayBuffer(parentName, arrayBuffer) {
+  var settings = __aeLoadSettings();
+  if (!settings.imageCaption) return 0;
+  var processed = 0;
+  try {
+    var JSZip = await __aeLoadJsZip();
+    var zip = await JSZip.loadAsync(arrayBuffer.slice ? arrayBuffer.slice(0) : arrayBuffer);
+    var imageNames = Object.keys(zip.files).filter(function(name) {
+      return !zip.files[name].dir && __aeIsImageFileName(name);
+    });
+    for (var i = 0; i < imageNames.length && processed < __AE_MAX_EMBEDDED_IMAGES; i++) {
+      __aeAssertNotCancelled();
+      var currentChars = await __aeGetActiveFileContextCharCount(activeThreadId);
+      if (currentChars >= __AE_FILE_CONTEXT_BUFFER_CHARS) {
+        __aeToast('🖼️ Embedded image buffer limit reached; skipping remaining images.', 5000);
+        break;
+      }
+      var name = imageNames[i];
+      var blob = await zip.files[name].async('blob');
+      if (!blob || blob.size === 0 || blob.size > __AE_MAX_ARCHIVE_FILE_BYTES) continue;
+      var ext = name.split('.').pop().toLowerCase();
+      var file = new File([blob], parentName + ' @ ' + (name.split('/').pop() || ('image.' + ext)), { type: blob.type || ('image/' + (ext === 'jpg' ? 'jpeg' : ext)) });
+      await __aeProcessImageFile(file);
+      processed++;
+    }
+  } catch(e) {
+    console.warn('[ae] Embedded image extraction failed for', parentName, e);
+  }
+  return processed;
+}
+
+async function __aeProcessPdfPageImages(pdf, parentName) {
+  var settings = __aeLoadSettings();
+  if (!settings.imageCaption) return 0;
+  var processed = 0;
+  try {
+    var pages = Math.min(pdf.numPages || 0, __AE_MAX_PDF_IMAGE_PAGES);
+    for (var i = 1; i <= pages; i++) {
+      __aeAssertNotCancelled();
+      var currentChars = await __aeGetActiveFileContextCharCount(activeThreadId);
+      if (currentChars >= __AE_FILE_CONTEXT_BUFFER_CHARS) break;
+      var page = await pdf.getPage(i);
+      var viewport = page.getViewport({ scale: 1.0 });
+      var canvas = document.createElement('canvas');
+      canvas.width = Math.ceil(viewport.width);
+      canvas.height = Math.ceil(viewport.height);
+      var ctx = canvas.getContext('2d');
+      await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+      var blob = await new Promise(function(resolve) { canvas.toBlob(resolve, 'image/png'); });
+      if (blob && blob.size > 0) {
+        var file = new File([blob], parentName + ' @ page-' + i + '.png', { type: 'image/png' });
+        await __aeProcessImageFile(file);
+        processed++;
+      }
+      canvas.width = canvas.height = 0;
+    }
+  } catch(e) {
+    console.warn('[ae] PDF page image extraction failed for', parentName, e);
+  }
+  return processed;
+}
+
 async function __aeProcessTextFile(file) {
+  __aeAssertNotCancelled();
   var text = await file.text();
   if (!text.trim()) {
     await __aeAddSystemMessage('⚠️ File **' + file.name + '** is empty.', 'File Upload');
     return;
   }
   var wordCount = text.split(/\s+/).length;
-  var added = await __aeAddTextAsLore(text, 'File: ' + file.name);
+  var added = await __aeRememberExtractedContent('File', file.name, text, wordCount + ' words');
   await __aeAddSystemMessage(
     '📎 Loaded **' + file.name + '**\n' +
-    wordCount + ' words → ' + added + ' lore entries added.',
+    wordCount + ' words → ' + added + ' lore entries added + AI-visible context message saved.',
     'File Upload'
   );
 }
 
 async function __aeProcessPdfFile(file) {
-  var pdfjsLib = await __aeLoadPdfJs();
+  __aeAssertNotCancelled();
+  // Snapshot file bytes immediately. Some browsers/OSes can invalidate dragged files
+  // while we are waiting for CDN libraries to load.
   var arrayBuffer = await file.arrayBuffer();
-  var pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+  var pdfjsLib = await __aeLoadPdfJs();
+  var pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer), disableWorker: true }).promise;
   var allText = '';
 
   for (var i = 1; i <= pdf.numPages; i++) {
+    __aeAssertNotCancelled();
     var page = await pdf.getPage(i);
     var content = await page.getTextContent();
     var strings = [];
@@ -12724,17 +13218,20 @@ async function __aeProcessPdfFile(file) {
     return;
   }
 
-  var added = await __aeAddTextAsLore(allText, 'PDF: ' + file.name);
+  var added = await __aeRememberExtractedContent('PDF', file.name, allText, pdf.numPages + ' pages');
+  var embeddedImages = await __aeProcessPdfPageImages(pdf, file.name);
   await __aeAddSystemMessage(
     '📄 Extracted **' + file.name + '**\n' +
-    pdf.numPages + ' pages → ' + added + ' lore entries added.',
+    pdf.numPages + ' pages → ' + added + ' lore entries added + AI-visible context message saved.' + (embeddedImages ? '\n🖼️ Also processed ' + embeddedImages + ' page image(s).' : ''),
     'PDF Extract'
   );
 }
 
 async function __aeProcessDocxFile(file) {
-  var mammoth = await __aeLoadMammoth();
+  __aeAssertNotCancelled();
+  // Snapshot file bytes before loading mammoth for the same reason as PDFs.
   var arrayBuffer = await file.arrayBuffer();
+  var mammoth = await __aeLoadMammoth();
   var result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
   var text = result.value || '';
 
@@ -12743,65 +13240,218 @@ async function __aeProcessDocxFile(file) {
     return;
   }
 
-  var added = await __aeAddTextAsLore(text, 'DOCX: ' + file.name);
+  var wordCount = text.split(/\s+/).filter(function(w) { return w; }).length;
+  var added = await __aeRememberExtractedContent('DOCX', file.name, text, wordCount + ' words');
+  var embeddedImages = await __aeProcessEmbeddedImagesFromZipArrayBuffer(file.name, arrayBuffer);
   await __aeAddSystemMessage(
     '📝 Extracted **' + file.name + '**\n' +
-    text.split(/\s+/).length + ' words → ' + added + ' lore entries added.',
+    wordCount + ' words → ' + added + ' lore entries added + AI-visible context message saved.' + (embeddedImages ? '\n🖼️ Also processed ' + embeddedImages + ' embedded image(s).' : ''),
     'DOCX Extract'
   );
 }
 
-async function __aeProcessImageFile(file) {
-  var transformers = await __aeLoadTransformers();
 
-  __aeToast('🖼️ Loading BLIP model... (~30-60s first time)', 30000);
-
-  var dataUrl = await new Promise(function(resolve) {
+async function __aeReadAndNormalizeImageDataUrl(file) {
+  var originalDataUrl = await new Promise(function(resolve, reject) {
     var reader = new FileReader();
     reader.onload = function() { resolve(reader.result); };
+    reader.onerror = function() { reject(reader.error || new Error('Failed to read image file.')); };
     reader.readAsDataURL(file);
   });
+  // Some browser-side image models fail on unusual WEBP/PNG encodings. Convert to a
+  // modest PNG via canvas when possible. If browser decoding fails, return original.
+  try {
+    var img = await new Promise(function(resolve, reject) {
+      var el = new Image();
+      el.onload = function() { resolve(el); };
+      el.onerror = function() { reject(new Error('Browser could not decode image for normalization.')); };
+      el.src = originalDataUrl;
+    });
+    var maxSide = 768;
+    var scale = Math.min(1, maxSide / Math.max(img.naturalWidth || img.width, img.naturalHeight || img.height));
+    var canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, Math.round((img.naturalWidth || img.width) * scale));
+    canvas.height = Math.max(1, Math.round((img.naturalHeight || img.height) * scale));
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    var png = canvas.toDataURL('image/png');
+    canvas.width = canvas.height = 0;
+    return png;
+  } catch(e) {
+    console.warn('[ae] Image normalization failed; using original data URL:', e);
+    return originalDataUrl;
+  }
+}
+
+async function __aeProcessImageFile(file) {
+  __aeAssertNotCancelled();
+  // Snapshot and normalize file data before model/CDN loading.
+  var dataUrl = await __aeReadAndNormalizeImageDataUrl(file);
+
+  var transformers = await __aeLoadTransformers();
+
+  __aeToast('🖼️ Loading image caption model... (~30-60s first time)', 30000);
 
   __aeToast('🖼️ Captioning ' + file.name + '...', 15000);
 
-  // BLIP base model — significantly better captions than vit-gpt2
-  // Uses beam search for more descriptive output
-  var captioner = await transformers.pipeline('image-to-text', 'Xenova/blip-image-captioning-base');
-  var outputs = await captioner(dataUrl, { num_beams: 4, max_length: 64 });
   var caption = '';
-  if (outputs && outputs[0]) {
-    caption = outputs[0].generated_text || '';
+  var lastCaptionError = null;
+  for (var mi = 0; mi < __AE_IMAGE_CAPTION_MODELS.length; mi++) {
+    var modelId = __AE_IMAGE_CAPTION_MODELS[mi];
+    try {
+      __aeToast('🖼️ Captioning with ' + modelId + '...', 15000);
+      var captioner = await transformers.pipeline('image-to-text', modelId);
+      var outputs = await captioner(dataUrl, { max_new_tokens: 64, max_length: 64 });
+      if (outputs && outputs[0]) {
+        caption = outputs[0].generated_text || outputs[0].caption || '';
+      }
+      if (caption) break;
+    } catch(e) {
+      lastCaptionError = e;
+      console.warn('[ae] Image caption model failed:', modelId, e);
+    }
   }
 
-  if (!caption) caption = 'Could not generate caption.';
+  if (!caption) {
+    caption = 'Image uploaded: ' + file.name + ' (' + (file.type || 'unknown type') + ', ' + file.size + ' bytes). Automatic captioning was unavailable.';
+  }
 
-  await __aeAddLoreEntry('[Image: ' + file.name + '] ' + caption, 'Image: ' + file.name);
+  var imageText = '[Image: ' + file.name + '] ' + caption;
+  await __aeRememberExtractedContent('Image', file.name, imageText, 'automatic image caption');
   __aeToast('🖼️ ' + file.name + ': "' + caption + '"', 5000);
 }
 
+
+async function __aeDecodeAudioToFloat32(arrayBuffer) {
+  try {
+    var AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return arrayBuffer;
+    var ctx = new AudioCtx({ sampleRate: 16000 });
+    var decoded = await ctx.decodeAudioData(arrayBuffer.slice(0));
+    var length = decoded.length;
+    var channels = decoded.numberOfChannels;
+    var mono = new Float32Array(length);
+    for (var ch = 0; ch < channels; ch++) {
+      var data = decoded.getChannelData(ch);
+      for (var i = 0; i < length; i++) mono[i] += data[i] / channels;
+    }
+    try { await ctx.close(); } catch(e) {}
+    return mono;
+  } catch(e) {
+    console.warn('[ae] Audio decode failed, falling back to raw ArrayBuffer:', e);
+    return arrayBuffer;
+  }
+}
+
 async function __aeProcessAudioFile(file) {
+  __aeAssertNotCancelled();
+  var arrayBuffer = await file.arrayBuffer();
   var transformers = await __aeLoadTransformers();
 
   __aeToast('🎤 Loading whisper model... (~5-10s first time)', 15000);
 
-  var arrayBuffer = await file.arrayBuffer();
-
   __aeToast('🎤 Transcribing ' + file.name + '...', 15000);
 
   var transcriber = await transformers.pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny.en');
-  var result = await transcriber(arrayBuffer, { chunk_length_s: 30 });
+  var audioInput = await __aeDecodeAudioToFloat32(arrayBuffer);
+  var result = await transcriber(audioInput, { chunk_length_s: 30, stride_length_s: 5 });
   var transcript = (result && result.text) ? result.text : '';
+  var voiceProfile = '';
+  try {
+    if (__aeLoadSettings().voiceProfile && typeof __aeAnalyzeAudioProfile === 'function') {
+      voiceProfile = await __aeAnalyzeAudioProfile(arrayBuffer, transcript);
+    }
+  } catch(e) { console.warn('[ae] voice profile failed:', e); }
 
   if (!transcript.trim()) {
     __aeToast('⚠️ Audio ' + file.name + ': no speech detected.', 4000);
     return;
   }
 
-  var added = await __aeAddTextAsLore(transcript, 'Audio: ' + file.name);
-  __aeToast('🎤 ' + file.name + ': ' + transcript.split(/\s+/).length + ' words → ' + added + ' lore entries', 5000);
+  var audioContextText = transcript + (voiceProfile ? '\n\n' + voiceProfile : '');
+  var added = await __aeRememberExtractedContent('Audio', file.name, audioContextText, transcript.split(/\s+/).length + ' words transcript' + (voiceProfile ? ' + voice profile' : ''));
+  __aeToast('🎤 ' + file.name + ': ' + transcript.split(/\s+/).length + ' words → ' + added + ' lore entries + AI context', 5000);
 }
 
-async function __aeProcessFile(file) {
+
+async function __aeProcessSpreadsheetFile(file) {
+  __aeAssertNotCancelled();
+  var arrayBuffer = await file.arrayBuffer();
+  var XLSX = await __aeLoadXlsx();
+  var workbook = XLSX.read(arrayBuffer, { type: 'array' });
+  var parts = [];
+  for (var si = 0; si < workbook.SheetNames.length; si++) {
+    __aeAssertNotCancelled();
+    var sheetName = workbook.SheetNames[si];
+    var sheet = workbook.Sheets[sheetName];
+    var csv = XLSX.utils.sheet_to_csv(sheet, { FS: ',', RS: '\n' }).trim();
+    if (csv) {
+      parts.push('--- SHEET: ' + sheetName + ' ---\n' + csv);
+    }
+  }
+  var text = parts.join('\n\n');
+  if (!text.trim()) {
+    await __aeAddSystemMessage('⚠️ Spreadsheet **' + file.name + '** contains no extractable cells.', 'Spreadsheet Extract');
+    return;
+  }
+  var added = await __aeRememberExtractedContent('Spreadsheet', file.name, text, workbook.SheetNames.length + ' sheets');
+  var embeddedImages = await __aeProcessEmbeddedImagesFromZipArrayBuffer(file.name, arrayBuffer);
+  await __aeAddSystemMessage(
+    '📊 Extracted **' + file.name + '**\n' +
+    workbook.SheetNames.length + ' sheet(s) → ' + added + ' lore entries added + AI-visible context message saved.' + (embeddedImages ? '\n🖼️ Also processed ' + embeddedImages + ' embedded image(s).' : ''),
+    'Spreadsheet Extract'
+  );
+}
+
+async function __aeProcessArchiveFile(file, depth) {
+  __aeAssertNotCancelled();
+  depth = depth || 0;
+  if (depth > 1) {
+    await __aeAddSystemMessage('⚠️ Nested archive skipped: **' + file.name + '**', 'Archive Extract');
+    return;
+  }
+  var arrayBuffer = await file.arrayBuffer();
+  var JSZip = await __aeLoadJsZip();
+  var zip = await JSZip.loadAsync(arrayBuffer);
+  var entries = Object.keys(zip.files).filter(function(name) { return !zip.files[name].dir; });
+  if (entries.length === 0) {
+    await __aeAddSystemMessage('⚠️ Archive **' + file.name + '** contains no files.', 'Archive Extract');
+    return;
+  }
+
+  var processed = 0;
+  var skipped = [];
+  for (var i = 0; i < entries.length && processed < __AE_MAX_ARCHIVE_FILES; i++) {
+    __aeAssertNotCancelled();
+    var name = entries[i];
+    var entry = zip.files[name];
+    try {
+      var blob = await entry.async('blob');
+      if (blob.size > __AE_MAX_ARCHIVE_FILE_BYTES) {
+        skipped.push(name + ' (too large)');
+        continue;
+      }
+      var childFile = new File([blob], name.split('/').pop() || name, { type: blob.type || '' });
+      await __aeProcessFile(childFile, { depth: depth + 1, sourceArchive: file.name });
+      processed++;
+    } catch(e) {
+      console.warn('[ae] Archive entry failed:', name, e);
+      skipped.push(name + ' (' + e.message + ')');
+    }
+  }
+
+  if (entries.length > processed) skipped.push((entries.length - processed) + ' file(s) not processed due to limits');
+  await __aeAddSystemMessage(
+    '🗜️ Processed archive **' + file.name + '**\n' +
+    processed + ' file(s) processed.' + (skipped.length ? '\nSkipped: ' + skipped.slice(0, 10).join('; ') : ''),
+    'Archive Extract'
+  );
+}
+
+async function __aeProcessFile(file, opts) {
+  opts = opts || {};
+  __aeAssertNotCancelled();
+  var taskId = __aeBeginTask(file.name || 'file', 'starting...');
   var settings = __aeLoadSettings();
   var ext = file.name.split('.').pop().toLowerCase();
   var type = file.type || '';
@@ -12810,11 +13460,16 @@ async function __aeProcessFile(file) {
   var isImage = type.startsWith('image/') || ext === 'png' || ext === 'jpg' || ext === 'jpeg' || ext === 'gif' || ext === 'webp' || ext === 'bmp' || ext === 'svg';
   var isAudio = type.startsWith('audio/') || ext === 'mp3' || ext === 'wav' || ext === 'ogg' || ext === 'm4a' || ext === 'webm' || ext === 'flac' || ext === 'aac';
   var isPdf = ext === 'pdf';
-  var isDocx = ext === 'docx' || ext === 'doc';
+  var isDocx = ext === 'docx';
+  var isSpreadsheet = ext === 'xlsx' || ext === 'xls' || ext === 'ods';
+  var isArchive = ext === 'zip';
   var isText = type.startsWith('text/') || ext === 'txt' || ext === 'md' || ext === 'csv' || ext === 'json' || ext === 'html' || ext === 'xml' || ext === 'log' || ext === 'js' || ext === 'py' || ext === 'c' || ext === 'cpp' || ext === 'h' || ext === 'ts' || ext === 'css' || ext === 'yaml' || ext === 'yml' || ext === 'ini' || ext === 'cfg' || ext === 'rtf' || ext === 'srt' || ext === 'vtt';
 
   try {
-    if (isImage && settings.imageCaption) {
+    __aeUpdateTask(taskId, 'reading ' + (ext || 'file') + '...');
+    if (ext === 'doc') {
+      await __aeAddSystemMessage('⚠️ Old binary **.doc** files are not supported by the browser extractor. Please convert **' + file.name + '** to **.docx** and try again.', 'DOC Extract');
+    } else if (isImage && settings.imageCaption) {
       await __aeProcessImageFile(file);
     } else if (isAudio && settings.audioTranscribe) {
       await __aeProcessAudioFile(file);
@@ -12822,10 +13477,14 @@ async function __aeProcessFile(file) {
       await __aeProcessPdfFile(file);
     } else if (isDocx && settings.docxExtract) {
       await __aeProcessDocxFile(file);
+    } else if (isSpreadsheet && settings.spreadsheetExtract) {
+      await __aeProcessSpreadsheetFile(file);
+    } else if (isArchive && settings.archiveExtract) {
+      await __aeProcessArchiveFile(file, opts.depth || 0);
     } else if (isText && settings.fileUpload) {
       await __aeProcessTextFile(file);
-    } else if (isImage || isAudio || isPdf || isDocx || isText) {
-      var feature = isImage ? 'image' : isAudio ? 'audio' : isPdf ? 'pdf' : isDocx ? 'docx' : 'file';
+    } else if (isImage || isAudio || isPdf || isDocx || isSpreadsheet || isArchive || isText) {
+      var feature = isImage ? 'image' : isAudio ? 'audio' : isPdf ? 'pdf' : isDocx ? 'docx' : isSpreadsheet ? 'spreadsheet' : isArchive ? 'archive' : 'file';
       await __aeAddSystemMessage(
         '⚠️ **' + feature + '** processing is disabled. Use `/toggle ' + feature + '` to enable.',
         'Extensions'
@@ -12836,134 +13495,373 @@ async function __aeProcessFile(file) {
         'Extensions'
       );
     }
+    __aeEndTask(taskId, 'done', 'processed');
   } catch(e) {
     console.error('[ae] File processing error:', e);
-    await __aeAddSystemMessage('❌ Error processing **' + file.name + '**:\n' + e.message, 'Extensions');
+    var cancelled = /cancel/i.test(e.message || '') || __aeProcessingCancelled;
+    __aeEndTask(taskId, cancelled ? 'cancelled' : 'error', e.message);
+    if (!cancelled) await __aeAddSystemMessage('❌ Error processing **' + file.name + '**:\n' + e.message, 'Extensions');
   }
 }
 
 // --- Web Search ---
 
+function __aeStripHtml(html) {
+  var div = document.createElement('div');
+  div.innerHTML = html || '';
+  return (div.textContent || div.innerText || '').replace(/\s+/g, ' ').trim();
+}
+
+function __aeDecodeHtmlEntities(text) {
+  var textarea = document.createElement('textarea');
+  textarea.innerHTML = text || '';
+  return textarea.value;
+}
+
+function __aeNormalizeDdgUrl(url) {
+  if (!url) return '';
+  url = __aeDecodeHtmlEntities(url);
+  try {
+    if (url.startsWith('//')) url = 'https:' + url;
+    var u = new URL(url, location.href);
+    var uddg = u.searchParams.get('uddg');
+    if (uddg) return decodeURIComponent(uddg);
+    return u.href;
+  } catch(e) {
+    return url;
+  }
+}
+
+function __aeExtractJsonArray(text) {
+  text = (text || '').trim();
+  var m = text.match(/\[[\s\S]*\]/);
+  if (!m) return null;
+  try { return JSON.parse(m[0]); } catch(e) { return null; }
+}
+
+function __aeExtractJsonObject(text) {
+  text = (text || '').trim();
+  var m = text.match(/\{[\s\S]*\}/);
+  if (!m) return null;
+  try { return JSON.parse(m[0]); } catch(e) { return null; }
+}
+
+function __aeExplicitSearchRequested(text) {
+  text = text || '';
+  return /(интернет|в\s+сети|поиск|поищи|найди\s+(?:в\s+интернете|в\s+сети)|загугли|посмотри\s+(?:в\s+интернете|в\s+сети)|web\s*search|internet|search\s+the\s+web|google\s+it|look\s+up|find\s+online)/i.test(text);
+}
+
+function __aeLikelyBenefitsFromSearch(text) {
+  text = text || '';
+  return /(актуальн|свеж|новост|сегодня|сейчас|последн|цена|курс|погода|расписан|рецепт|как\s+приготов|инструкция|обзор|сравни|источник|ссылк|latest|current|today|news|price|weather|schedule|recipe|how\s+to|sources?|citation|compare|review)/i.test(text);
+}
+
+async function __aeDecideIfShouldSearch(userText) {
+  if (__aeExplicitSearchRequested(userText) || __aeLikelyBenefitsFromSearch(userText)) {
+    return { search: true, query: userText, reason: 'explicit/practical/current/factual query' };
+  }
+  if (!userText || userText.trim().length < 12 || !/[?？]|\b(как|что|кто|где|когда|почему|сколько|how|what|who|where|when|why)\b/i.test(userText)) {
+    return { search: false, query: userText, reason: 'not a question/request' };
+  }
+
+  try {
+    var decision = await root.aiTextPlugin({
+      instruction: [
+        'You are a web-search routing classifier for an AI chat app.',
+        'Decide whether the assistant should search the internet BEFORE answering the user.',
+        'Return ONLY compact JSON with this schema:',
+        '{"search":true/false,"query":"best search query","reason":"short reason"}',
+        '',
+        'Search=true when:',
+        '- the user explicitly asks to search/check/find online;',
+        '- the answer may depend on current/recent facts, prices, news, versions, sources, links, schedules, availability;',
+        '- the user asks for practical real-world instructions, recipes, troubleshooting, citations, comparison, or factual verification.',
+        '',
+        'Search=false when the user is just roleplaying, chatting personally, asking for creative writing, or all needed info is already in the conversation.',
+        '',
+        'USER MESSAGE:',
+        userText
+      ].join('\n')
+    });
+    var obj = __aeExtractJsonObject(decision.text || decision.generatedText || '');
+    if (obj && typeof obj.search === 'boolean') {
+      obj.query = obj.query || userText;
+      return obj;
+    }
+  } catch(e) {
+    console.warn('[ae] auto-search classifier failed:', e);
+  }
+  return { search: false, query: userText, reason: 'classifier fallback' };
+}
+
+async function __aeGenerateSearchQueries(userQuery) {
+  var queries = [userQuery];
+  try {
+    var queryGenResult = await root.aiTextPlugin({
+      instruction: [
+        'Generate 2-3 concise web search queries for the user question.',
+        'Reply ONLY with a JSON array of strings, no explanation.',
+        'Keep named entities and important terms from the original question.',
+        '',
+        'Question: ' + userQuery
+      ].join('\n')
+    });
+    var arr = __aeExtractJsonArray(queryGenResult.text || queryGenResult.generatedText || '');
+    if (Array.isArray(arr)) {
+      queries = queries.concat(arr.filter(function(q) { return typeof q === 'string' && q.trim(); }));
+    }
+  } catch(e) {
+    console.warn('[ae] query generation failed:', e);
+  }
+  var seen = new Set();
+  return queries.map(function(q) { return q.trim(); }).filter(function(q) {
+    var k = q.toLowerCase();
+    if (!q || seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  }).slice(0, 4);
+}
+
+async function __aeSearchWeb(userQuery, opts) {
+  opts = opts || {};
+  var queries = await __aeGenerateSearchQueries(userQuery);
+  var allResults = [];
+  var seen = new Set();
+
+  function pushResult(result) {
+    var key = (result.url || '') + '|' + (result.title || '') + '|' + (result.snippet || '').slice(0, 120);
+    if (seen.has(key)) return;
+    seen.add(key);
+    allResults.push(result);
+  }
+
+  for (var qi = 0; qi < queries.length; qi++) {
+    var q = queries[qi];
+    try {
+      var ddgUrl = 'https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1&t=aiextensions';
+      var resp = await root.superFetch(ddgUrl);
+      var data = await resp.json();
+
+      if (data.Abstract && data.Abstract.trim()) {
+        pushResult({
+          title: data.Heading || q,
+          url: data.AbstractURL || '',
+          source: data.AbstractSource || 'DuckDuckGo',
+          snippet: data.Abstract.trim()
+        });
+      }
+
+      if (data.Results && data.Results.length > 0) {
+        for (var ri = 0; ri < data.Results.length; ri++) {
+          if (data.Results[ri].Text) {
+            pushResult({ title: data.Results[ri].Text.split(' - ')[0] || q, url: data.Results[ri].FirstURL || '', source: 'DuckDuckGo', snippet: data.Results[ri].Text });
+          }
+        }
+      }
+
+      if (data.RelatedTopics && data.RelatedTopics.length > 0) {
+        for (var ti = 0; ti < data.RelatedTopics.length && ti < 8; ti++) {
+          var topic = data.RelatedTopics[ti];
+          if (topic && topic.Text) {
+            pushResult({ title: topic.Text.split(' - ')[0] || q, url: topic.FirstURL || '', source: 'DuckDuckGo', snippet: topic.Text });
+          }
+        }
+      }
+
+      try {
+        var htmlResp = await root.superFetch('https://html.duckduckgo.com/html/?q=' + encodeURIComponent(q));
+        if (htmlResp.ok) {
+          var html = await htmlResp.text();
+          var blocks = html.split(/<div[^>]+class="[^"]*result[^"]*"[^>]*>/g).slice(1);
+          for (var bi = 0; bi < blocks.length && bi < 8; bi++) {
+            var block = blocks[bi];
+            var a = block.match(/class="result__a"[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/i);
+            var sn = block.match(/class="result__snippet"[^>]*>([\s\S]*?)(?:<\/a>|<\/div>)/i);
+            if (a || sn) {
+              var title = a ? __aeStripHtml(a[2]) : q;
+              var url = a ? __aeNormalizeDdgUrl(a[1]) : '';
+              var snippet = sn ? __aeStripHtml(sn[1]) : '';
+              if (title || snippet) pushResult({ title: title || q, url: url, source: 'DuckDuckGo HTML', snippet: snippet });
+            }
+          }
+        }
+      } catch(htmlErr) {
+        console.warn('[ae] DDG html search failed:', htmlErr);
+      }
+    } catch(e) {
+      console.warn('[ae] Search query failed:', q, e);
+    }
+  }
+
+  if (allResults.length === 0) {
+    return { query: userQuery, queries: queries, results: [], answer: '' };
+  }
+
+  var resultLines = allResults.slice(0, 12).map(function(r, i) {
+    return '[' + (i + 1) + '] ' + (r.title || 'Untitled') + '\nURL: ' + (r.url || '(no URL)') + '\nSnippet: ' + (r.snippet || '').slice(0, 900);
+  }).join('\n\n');
+
+  var synthesisResult = await root.aiTextPlugin({
+    instruction: [
+      'Use the following web search results to answer the user question.',
+      'Be direct and useful. Use markdown. Include source links when URLs are available.',
+      'Do not mention that you are unable to browse; the search results are already provided below.',
+      '',
+      'USER QUESTION:',
+      userQuery,
+      '',
+      'SEARCH RESULTS:',
+      resultLines
+    ].join('\n')
+  });
+
+  return {
+    query: userQuery,
+    queries: queries,
+    results: allResults,
+    answer: (synthesisResult.text || synthesisResult.generatedText || '').trim()
+  };
+}
+
+function __aeFormatSources(results) {
+  results = (results || []).filter(function(r) { return r.url; }).slice(0, 8);
+  if (results.length === 0) return '';
+  return results.map(function(r, i) {
+    return (i + 1) + '. [' + (r.title || r.url).replace(/[\[\]]/g, '') + '](' + r.url + ')';
+  }).join('\n');
+}
+
+function __aeBuildSearchContext(searchData) {
+  var raw = (searchData.results || []).slice(0, 8).map(function(r, i) {
+    return '[' + (i + 1) + '] ' + (r.title || 'Untitled') + '\nURL: ' + (r.url || '(no URL)') + '\n' + (r.snippet || '');
+  }).join('\n\n');
+  return [
+    'INTERNET SEARCH CONTEXT FOR THE NEXT ANSWER',
+    'Use this information when answering the user.',
+    'Do not claim you cannot access the internet; the relevant search results are provided here.',
+    '',
+    'User question: ' + searchData.query,
+    '',
+    'Synthesized search answer:',
+    searchData.answer || '(No synthesized answer.)',
+    '',
+    'Raw search results:',
+    raw
+  ].join('\n');
+}
+
+async function __aeMaybeBuildAutoSearchContext(opts) {
+  var settings = __aeLoadSettings();
+  if (!settings.webSearch) return null;
+  if (!opts || !Array.isArray(opts.messages) || typeof opts.threadId !== 'number' || !Number.isFinite(opts.threadId)) return null;
+  var messages = opts.messages.filter(function(m) { return !(m.hiddenFrom && m.hiddenFrom.includes('ai')); });
+  var lastUserMessage = null;
+  for (var i = messages.length - 1; i >= 0; i--) {
+    if (messages[i].characterId === -1 && messages[i].message && !String(messages[i].message).startsWith('/')) {
+      lastUserMessage = messages[i];
+      break;
+    }
+  }
+  if (!lastUserMessage) return null;
+  var userText = String(lastUserMessage.message || '').replace(/<[^>]+>/g, ' ').trim();
+  if (!userText) return null;
+
+  var cacheKey = opts.threadId + '|' + userText;
+  if (__AE_SEARCH_CACHE.has(cacheKey)) return __AE_SEARCH_CACHE.get(cacheKey);
+
+  var decision = await __aeDecideIfShouldSearch(userText);
+  if (!decision || !decision.search) return null;
+
+  var query = decision.query || userText;
+  if (opts.onProgressMessage) opts.onProgressMessage({message: '🌐 internet search…'});
+  __aeToast('🌐 Searching: ' + query, 6000);
+
+  var searchData = await __aeSearchWeb(query, { auto: true });
+  if (!searchData.results || searchData.results.length === 0) {
+    __aeToast('🌐 No results found: ' + query, 4000);
+    return null;
+  }
+
+  try {
+    await __aeAddLoreEntry('[Web Search: ' + query + '] ' + (searchData.answer || searchData.results.map(function(r) { return r.snippet; }).join(' ')).slice(0, 2500), 'Auto Search: ' + query);
+  } catch(e) {
+    console.warn('[ae] Could not save auto-search result to lore:', e);
+  }
+
+  var context = __aeBuildSearchContext(searchData);
+  __AE_SEARCH_CACHE.set(cacheKey, context);
+  return context;
+}
+
 async function __aePerformSearch(userQuery) {
   var settings = __aeLoadSettings();
   if (!settings.webSearch) {
     await __aeAddSystemMessage('⚠️ Web search is disabled. Use `/toggle search` to enable.', 'Extensions');
+    __aeToast('⚠️ Web search is disabled.', 4000);
     return;
   }
 
   if (!activeThreadId) {
     await __aeAddSystemMessage('⚠️ Open a chat thread first.', 'Extensions');
+    __aeToast('⚠️ Open a chat thread first.', 4000);
     return;
   }
 
   __aeToast('🔍 Searching: ' + userQuery, 30000);
 
   try {
-    // --- Pass 1: AI generates search queries ---
-    var queryGenResult = await root.aiTextPlugin({
-      instruction: 'Generate 2-3 concise web search queries for this question. Reply ONLY with a JSON array of strings, no explanation.\n\nQuestion: ' + userQuery,
-      startWith: '["',
-      stopSequences: [']']
-    });
-
-    var queryText = (queryGenResult.text || '').trim();
-    // Fix partial JSON
-    if (!queryText.startsWith('[')) queryText = '[' + queryText;
-    if (!queryText.endsWith(']')) queryText += ']';
-
-    var queries;
-    try { queries = JSON.parse(queryText); }
-    catch(e) { queries = [userQuery]; }
-
-    if (!Array.isArray(queries) || queries.length === 0) queries = [userQuery];
-
-    // --- Pass 2: Search via DuckDuckGo using superFetch to bypass CORS ---
-    var allResults = [];
-
-    for (var qi = 0; qi < queries.length; qi++) {
-      try {
-        // DuckDuckGo Instant Answer API
-        var ddgUrl = 'https://api.duckduckgo.com/?q=' + encodeURIComponent(queries[qi]) + '&format=json&no_html=1&skip_disambig=1&t=aiextensions';
-        var resp = await root.superFetch(ddgUrl);
-        var data = await resp.json();
-
-        if (data.Abstract && data.Abstract.trim()) {
-          allResults.push('**' + (data.Heading || queries[qi]) + '** (' + (data.AbstractSource || 'DuckDuckGo') + '):\n' + data.Abstract.trim());
-        }
-
-        if (data.Results && data.Results.length > 0) {
-          for (var ri = 0; ri < data.Results.length; ri++) {
-            if (data.Results[ri].Text) {
-              allResults.push('- ' + data.Results[ri].Text);
-            }
-          }
-        }
-
-        if (data.RelatedTopics && data.RelatedTopics.length > 0) {
-          for (var ti = 0; ti < data.RelatedTopics.length && ti < 5; ti++) {
-            var topic = data.RelatedTopics[ti];
-            if (topic && topic.Text) {
-              allResults.push('- ' + topic.Text);
-            }
-          }
-        }
-
-        // Also try HTML search via superFetch for richer results
-        try {
-          var htmlResp = await root.superFetch('https://html.duckduckgo.com/html/?q=' + encodeURIComponent(queries[qi]));
-          if (htmlResp.ok) {
-            var html = await htmlResp.text();
-            var resultRegex = /class="result__snippet"[^>]*>(.*?)<\/a>/g;
-            var match;
-            var snippetCount = 0;
-            while ((match = resultRegex.exec(html)) !== null && snippetCount < 5) {
-              var snippet = match[1].replace(/<[^>]+>/g, '').trim();
-              if (snippet.length > 20) {
-                allResults.push('- ' + snippet);
-                snippetCount++;
-              }
-            }
-          }
-        } catch(htmlErr) {
-          // superFetch should handle CORS, but just in case
-        }
-
-      } catch(e) {
-        console.warn('[ae] Search query failed:', queries[qi], e);
-      }
-    }
-
-    if (allResults.length === 0) {
+    var searchData = await __aeSearchWeb(userQuery, {});
+    if (!searchData.results || searchData.results.length === 0) {
       await __aeAddSystemMessage('🔍 No results found for: **' + userQuery + '**', 'Internet');
+      __aeToast('🔍 No results found.', 4000);
       return;
     }
 
-    // --- Pass 3: AI synthesizes answer ---
-    var synthesisPrompt = 'Based on the following search results, provide a comprehensive and helpful answer to the question. Cite sources where possible. Use markdown formatting.\n\nQuestion: ' + userQuery + '\n\nSearch Results:\n' + allResults.join('\n\n');
-
-    var synthesisResult = await root.aiTextPlugin({
-      instruction: synthesisPrompt,
-      startWith: 'Based on the search results, '
-    });
-
-    var answer = (synthesisResult.text || '').trim();
-
-    if (answer) {
-      // Save search results to lore for future context
-      var loreText = '[Web Search: ' + userQuery + '] ' + allResults.join(' ').substring(0, 2000);
+    try {
+      var loreText = '[Web Search: ' + userQuery + '] ' + ((searchData.answer || '') + ' ' + searchData.results.map(function(r) { return r.snippet; }).join(' ')).substring(0, 2500);
       await __aeAddLoreEntry(loreText, 'Search: ' + userQuery);
-
-      await __aeAddSystemMessage('🌐 **' + userQuery + '**\n\n' + answer, 'Internet');
-    } else {
-      // Fallback: show raw results
-      await __aeAddSystemMessage('🌐 **' + userQuery + '** (raw results)\n\n' + allResults.join('\n\n'), 'Internet');
+    } catch(e) {
+      console.warn('[ae] Search worked, but saving it to lore failed:', e);
     }
 
+    var sources = __aeFormatSources(searchData.results);
+    var deepNote = searchData.deep ? ('🔎 Deep search used' + (searchData.excerpts ? ' (' + searchData.excerpts.length + ' fetched excerpts)' : '') + '\n\n') : '';
+    await __aeAddSystemMessage(
+      '🌐 **' + userQuery + '**\n\n' + deepNote +
+      (searchData.answer || searchData.results.map(function(r) { return '- ' + r.snippet; }).join('\n')) +
+      (sources ? '\n\n**Sources:**\n' + sources : ''),
+      'Internet'
+    );
+    __aeToast('✅ Search complete.', 4000);
   } catch(e) {
     console.error('[ae] Search error:', e);
     await __aeAddSystemMessage('❌ Search failed: ' + e.message, 'Internet');
+    __aeToast('❌ Search failed: ' + e.message, 6000);
   }
 }
+
+// Register auto-search as a before-reply hook. The core hook bus composes this
+// cleanly with future modules like file mentions or base AI policy.
+__aeRegisterBeforeBotReplyHook('autoWebSearch', async function(opts) {
+  var context = await __aeMaybeBuildAutoSearchContext(opts);
+  if (!context) return opts;
+
+  var newMessages = opts.messages.slice();
+  var contextMsg = __aeCreateTransientMessageObj({
+    threadId: opts.threadId,
+    message: context,
+    characterId: -2,
+    name: 'Internet',
+    expectsReply: false
+  });
+  // Insert before the latest user message so the user question remains the last conversational turn.
+  var insertAt = newMessages.length;
+  for (var i = newMessages.length - 1; i >= 0; i--) {
+    if (newMessages[i].characterId === -1) { insertAt = i; break; }
+  }
+  newMessages.splice(insertAt, 0, contextMsg);
+  return Object.assign({}, opts, { messages: newMessages });
+}, {priority:100});
 
 // --- Toggle / Status ---
 
@@ -12971,6 +13869,11 @@ var __aeFeatureMap = {
   'file': 'fileUpload', 'files': 'fileUpload', 'upload': 'fileUpload',
   'pdf': 'pdfExtract',
   'docx': 'docxExtract',
+  'xlsx': 'spreadsheetExtract', 'xls': 'spreadsheetExtract', 'excel': 'spreadsheetExtract', 'spreadsheet': 'spreadsheetExtract', 'sheet': 'spreadsheetExtract',
+  'zip': 'archiveExtract', 'archive': 'archiveExtract', 'archives': 'archiveExtract',
+  'deepsearch': 'deepWebSearch', 'deep': 'deepWebSearch',
+  'advancedimage': 'advancedImageAnalysis', 'imageanalysis': 'advancedImageAnalysis', 'ocr': 'advancedImageAnalysis',
+  'voiceprofile': 'voiceProfile', 'voice-tone': 'voiceProfile',
   'image': 'imageCaption', 'images': 'imageCaption',
   'audio': 'audioTranscribe',
   'search': 'webSearch', 'web': 'webSearch', 'websearch': 'webSearch'
@@ -12983,7 +13886,7 @@ async function __aeToggle(feature) {
   if (!key) {
     await __aeAddSystemMessage(
       '⚠️ Unknown feature: **' + feature + '**\n' +
-      'Available: ' + Object.keys(__aeFeatureMap).filter(function(k) { return __aeFeatureMap[k] === k || true; }).join(', '),
+      'Available: ' + Object.keys(__aeFeatureMap).join(', '),
       'Extensions'
     );
     return;
@@ -12997,13 +13900,15 @@ async function __aeToggle(feature) {
     '⚙️ **' + label + '** is now **' + (settings[key] ? 'ON ✅' : 'OFF ❌') + '**',
     'Extensions'
   );
+  __aeToast('⚙️ ' + label + ': ' + (settings[key] ? 'ON ✅' : 'OFF ❌'), 3500);
 
   // Refresh shortcut buttons for active thread
-  if (activeThreadId) {
+  if (typeof activeThreadId === 'number' && Number.isFinite(activeThreadId)) {
     var thread = await db.threads.get(activeThreadId);
     if (thread) {
       await __aeEnsureShortcutButtons(thread);
       renderShortcutButtons(thread);
+      setTimeout(__aeStyleShortcutButtons, 50);
     }
   }
 }
@@ -13018,15 +13923,23 @@ async function __aeShowStatus() {
     '| 📎 File Upload | ' + (s.fileUpload ? '✅ ON' : '❌ OFF') + ' | `/toggle file` |',
     '| 📄 PDF Extract | ' + (s.pdfExtract ? '✅ ON' : '❌ OFF') + ' | `/toggle pdf` |',
     '| 📝 DOCX Extract | ' + (s.docxExtract ? '✅ ON' : '❌ OFF') + ' | `/toggle docx` |',
+    '| 📊 Excel/Spreadsheet Extract | ' + (s.spreadsheetExtract ? '✅ ON' : '❌ OFF') + ' | `/toggle excel` |',
+    '| 🗜️ ZIP Archive Extract | ' + (s.archiveExtract ? '✅ ON' : '❌ OFF') + ' | `/toggle zip` |',
+    '| 🔎 Deep Web Search | ' + (s.deepWebSearch ? '✅ ON' : '❌ OFF') + ' | `/toggle deepsearch` |',
+    '| 🧠 Advanced Image Analysis/OCR | ' + (s.advancedImageAnalysis ? '✅ ON' : '❌ OFF') + ' | `/toggle imageanalysis` |',
+    '| 🗣️ Voice Profile | ' + (s.voiceProfile ? '✅ ON' : '❌ OFF') + ' | `/toggle voiceprofile` |',
     '| 🖼️ Image Caption | ' + (s.imageCaption ? '✅ ON' : '❌ OFF') + ' | `/toggle image` |',
     '| 🎤 Audio Transcribe | ' + (s.audioTranscribe ? '✅ ON' : '❌ OFF') + ' | `/toggle audio` |',
-    '| 🌐 Web Search | ' + (s.webSearch ? '✅ ON' : '❌ OFF') + ' | `/toggle search` |',
+    '| 🌐 Web Search + auto-search | ' + (s.webSearch ? '✅ ON' : '❌ OFF') + ' | `/toggle search` |',
     '',
-    '**Commands:** `/file`, `/search <query>`, `/toggle <feature>`, `/extensions`',
+    '**Commands:** `/file`, `/voice`, `/files`, `/search <query>`, `/toggle <feature>`, `/policy`, `/language <code>`, `/extensions`',
     '',
-    '**Drag & drop** files onto the chat to auto-process them.'
+    'When 🌐 Web Search is ON, the character can automatically search before answering web/current/practical factual questions.',
+    '',
+    '**Drag & drop** or **paste** files onto the chat to auto-process them.'
   ];
   await __aeAddSystemMessage(lines.join('\n'), 'Extensions');
+  __aeToast('⚙️ Extension status added to chat.', 3000);
 }
 
 // --- File Input UI ---
@@ -13039,13 +13952,15 @@ function __aeCreateFileInput() {
   __aeFileInput.type = 'file';
   __aeFileInput.style.display = 'none';
   __aeFileInput.multiple = true;
-  __aeFileInput.accept = '.txt,.md,.csv,.json,.html,.xml,.log,.js,.py,.c,.cpp,.h,.ts,.css,.yaml,.yml,.ini,.cfg,.srt,.vtt,.pdf,.doc,.docx,.mp3,.wav,.ogg,.m4a,.webm,.flac,.aac,.png,.jpg,.jpeg,.gif,.webp,.bmp';
+  __aeFileInput.accept = '.txt,.md,.csv,.json,.html,.xml,.log,.js,.py,.c,.cpp,.h,.ts,.css,.yaml,.yml,.ini,.cfg,.srt,.vtt,.pdf,.docx,.xlsx,.xls,.ods,.zip,.mp3,.wav,.ogg,.m4a,.webm,.flac,.aac,.png,.jpg,.jpeg,.gif,.webp,.bmp';
   document.body.appendChild(__aeFileInput);
 
   __aeFileInput.addEventListener('change', async function() {
     var files = __aeFileInput.files;
     if (!files || files.length === 0) return;
+    __aeResetProcessingCancel();
     for (var i = 0; i < files.length; i++) {
+      if (__aeProcessingCancelled) break;
       await __aeProcessFile(files[i]);
     }
     __aeFileInput.value = '';
@@ -13106,53 +14021,233 @@ function __aeSetupDragDrop() {
     if (!e.dataTransfer || !e.dataTransfer.files || e.dataTransfer.files.length === 0) return;
 
     var files = e.dataTransfer.files;
+    __aeResetProcessingCancel();
     for (var i = 0; i < files.length; i++) {
+      if (__aeProcessingCancelled) break;
       await __aeProcessFile(files[i]);
     }
   });
 }
 
+
+// --- Paste files from clipboard ---
+
+var __aePasteInstalled = false;
+
+function __aeSetupPasteUpload() {
+  if (__aePasteInstalled) return;
+  __aePasteInstalled = true;
+
+  $.messageInput.addEventListener('paste', async function(e) {
+    var files = [];
+    if (e.clipboardData) {
+      if (e.clipboardData.files && e.clipboardData.files.length > 0) {
+        for (var i = 0; i < e.clipboardData.files.length; i++) files.push(e.clipboardData.files[i]);
+      }
+      if (e.clipboardData.items && e.clipboardData.items.length > 0) {
+        for (var j = 0; j < e.clipboardData.items.length; j++) {
+          var item = e.clipboardData.items[j];
+          if (item.kind === 'file') {
+            var f = item.getAsFile();
+            if (f && files.indexOf(f) === -1) files.push(f);
+          }
+        }
+      }
+    }
+
+    if (files.length === 0) return; // normal text paste should behave normally
+    e.preventDefault();
+
+    if (!activeThreadId) {
+      __aeToast('⚠️ Open a chat thread first.', 4000);
+      return;
+    }
+
+    __aeToast('📋 Processing pasted file(s): ' + files.length, 4000);
+    __aeResetProcessingCancel();
+    for (var k = 0; k < files.length; k++) {
+      if (__aeProcessingCancelled) break;
+      await __aeProcessFile(files[k]);
+    }
+  });
+}
+
+// --- Voice messages (Telegram-style hold/toggle recording) ---
+
+var __aeVoiceRecorder = null;
+var __aeVoiceChunks = [];
+var __aeVoiceStream = null;
+
+async function __aeToggleVoiceRecording() {
+  if (__aeVoiceRecorder && __aeVoiceRecorder.state === 'recording') {
+    __aeVoiceRecorder.stop();
+    __aeToast('🎙️ Voice recording stopped. Transcribing...', 6000);
+    return;
+  }
+
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    await __aeAddSystemMessage('⚠️ Voice recording is not supported in this browser.', 'Voice');
+    __aeToast('⚠️ Voice recording is not supported.', 5000);
+    return;
+  }
+
+  if (!activeThreadId) {
+    __aeToast('⚠️ Open a chat thread first.', 4000);
+    return;
+  }
+
+  __aeVoiceStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  var mimeType = '';
+  if (window.MediaRecorder && MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) mimeType = 'audio/webm;codecs=opus';
+  else if (window.MediaRecorder && MediaRecorder.isTypeSupported('audio/webm')) mimeType = 'audio/webm';
+
+  __aeVoiceChunks = [];
+  __aeVoiceRecorder = new MediaRecorder(__aeVoiceStream, mimeType ? { mimeType: mimeType } : undefined);
+  __aeVoiceRecorder.ondataavailable = function(e) {
+    if (e.data && e.data.size > 0) __aeVoiceChunks.push(e.data);
+  };
+  __aeVoiceRecorder.onstop = async function() {
+    try {
+      if (__aeVoiceStream) __aeVoiceStream.getTracks().forEach(function(t) { t.stop(); });
+      var blob = new Blob(__aeVoiceChunks, { type: mimeType || 'audio/webm' });
+      if (!blob.size) {
+        __aeToast('⚠️ Empty voice recording.', 4000);
+        return;
+      }
+      var file = new File([blob], 'voice-message-' + Date.now() + '.webm', { type: blob.type });
+      await __aeProcessAudioFile(file);
+    } catch(e) {
+      console.error('[ae] Voice processing failed:', e);
+      await __aeAddSystemMessage('❌ Voice message failed: ' + e.message, 'Voice');
+    } finally {
+      __aeVoiceRecorder = null;
+      __aeVoiceChunks = [];
+      __aeVoiceStream = null;
+    }
+  };
+  __aeVoiceRecorder.start();
+  setTimeout(function() {
+    try {
+      if (__aeVoiceRecorder && __aeVoiceRecorder.state === 'recording') {
+        __aeVoiceRecorder.stop();
+        __aeToast('🎙️ Voice recording auto-stopped at ' + Math.round(__AE_MAX_VOICE_RECORDING_MS/1000) + 's.', 5000);
+      }
+    } catch(e) {}
+  }, __AE_MAX_VOICE_RECORDING_MS);
+  __aeToast('🎙️ Recording voice message... click 🎙️ Voice or type /voice again to stop. Max ' + Math.round(__AE_MAX_VOICE_RECORDING_MS/1000) + 's.', 10000);
+}
+
+
+// --- Unified Extensions Menu ---
+
+async function __aeShowExtensionsMenu() {
+  var win = createFloatingWindow({
+    header: '🧩 Extensions Menu',
+    initialWidth: Math.min(620, window.innerWidth - 40),
+    initialHeight: Math.min(640, window.innerHeight - 80),
+    body: '<div style="padding:1rem;">Loading...</div>'
+  });
+
+  async function render() {
+    var s = __aeLoadSettings();
+    var activeFiles = [];
+    var totalChars = 0;
+    try {
+      activeFiles = await __aeGetUploadedFiles({ threadId: activeThreadId });
+      totalChars = activeFiles.filter(function(f) { return f.contextActive !== false; }).reduce(function(sum, f) { return sum + (f.contextCharCount || 0); }, 0);
+    } catch(e) {}
+
+    var featureRows = [
+      ['fileUpload', '📎 Text/file upload', 'file'],
+      ['pdfExtract', '📄 PDF extract', 'pdf'],
+      ['docxExtract', '📝 DOCX extract', 'docx'],
+      ['spreadsheetExtract', '📊 Excel/spreadsheets', 'excel'],
+      ['archiveExtract', '🗜️ ZIP archives', 'zip'],
+      ['deepWebSearch', '🔎 Deep web search', 'deepsearch'],
+      ['advancedImageAnalysis', '🧠 Advanced image/OCR', 'imageanalysis'],
+      ['voiceProfile', '🗣️ Voice profile', 'voiceprofile'],
+      ['imageCaption', '🖼️ Image analysis/caption', 'image'],
+      ['audioTranscribe', '🎤 Audio/voice transcription', 'audio'],
+      ['webSearch', '🌐 Web search + auto-search', 'search']
+    ];
+
+    var html = '';
+    html += '<div style="padding:0.75rem; font-size:0.92rem;">';
+    html += '<div style="margin-bottom:0.75rem; opacity:0.8;">File context buffer: <b>' + totalChars + '</b> / ' + __AE_FILE_CONTEXT_BUFFER_CHARS + ' chars · files in thread: <b>' + activeFiles.length + '</b></div>';
+    html += '<div style="display:grid; grid-template-columns:1fr auto; gap:0.45rem 0.75rem; align-items:center; margin-bottom:1rem;">';
+    featureRows.forEach(function(row) {
+      var key = row[0], label = row[1], alias = row[2];
+      html += '<label for="__aeToggle_' + key + '">' + label + '<div style="font-size:0.78rem; opacity:0.65;">/toggle ' + alias + '</div></label>';
+      html += '<input id="__aeToggle_' + key + '" class="__aeMenuToggle" data-key="' + key + '" type="checkbox" ' + (s[key] ? 'checked' : '') + ' style="transform:scale(1.25);">';
+    });
+    html += '</div>';
+
+    html += '<div style="display:flex; flex-wrap:wrap; gap:0.45rem; margin-bottom:1rem;">';
+    html += '<button class="__aeMenuFile">📎 Choose files</button>';
+    html += '<button class="__aeMenuFiles">🗂️ File Explorer</button>';
+    html += '<button class="__aeMenuVoice">🎙️ Voice</button>';
+    html += '<button class="__aeMenuPolicy">🧭 Policy</button>';
+    html += '<button class="__aeMenuStatus">⚙️ Status</button>';
+    html += '<button class="__aeMenuCancel">🛑 Cancel processing</button>';
+    html += '</div>';
+
+    html += '<div style="display:flex; gap:0.4rem; align-items:center; margin-bottom:0.6rem;">';
+    html += '<input class="__aeMenuSearchInput" placeholder="Search query..." style="flex:1; min-width:0; padding:0.35rem;">';
+    html += '<button class="__aeMenuSearch">🔍 Search</button>';
+    html += '</div>';
+
+    html += '<details style="opacity:0.9;"><summary>Commands</summary><pre style="white-space:pre-wrap; font-size:0.82rem;">/file\n/files or /explorer\n/voice\n/search &lt;query&gt;\n/toggle &lt;feature&gt;\n/policy\n/language &lt;code&gt;\n/extensions</pre></details>';
+    html += '</div>';
+    win.bodyEl.innerHTML = html;
+
+    win.bodyEl.querySelectorAll('.__aeMenuToggle').forEach(function(input) {
+      input.addEventListener('change', async function() {
+        var settings = __aeLoadSettings();
+        settings[input.dataset.key] = input.checked;
+        __aeSaveSettings(settings);
+        __aeToast('⚙️ ' + input.dataset.key + ': ' + (input.checked ? 'ON ✅' : 'OFF ❌'), 2500);
+        if (typeof activeThreadId === 'number' && Number.isFinite(activeThreadId)) {
+          var thread = await db.threads.get(activeThreadId);
+          if (thread) { await __aeEnsureShortcutButtons(thread); renderShortcutButtons(thread); setTimeout(__aeStyleShortcutButtons, 50); }
+        }
+        render();
+      });
+    });
+
+    win.bodyEl.querySelector('.__aeMenuFile')?.addEventListener('click', function() { __aeFileInput.click(); });
+    win.bodyEl.querySelector('.__aeMenuFiles')?.addEventListener('click', function() { __aeShowFileExplorer(); });
+    win.bodyEl.querySelector('.__aeMenuVoice')?.addEventListener('click', function() { __aeToggleVoiceRecording(); });
+    win.bodyEl.querySelector('.__aeMenuPolicy')?.addEventListener('click', function() { __aeShowBasePolicyModal(); });
+    win.bodyEl.querySelector('.__aeMenuStatus')?.addEventListener('click', function() { __aeShowStatus(); });
+    win.bodyEl.querySelector('.__aeMenuCancel')?.addEventListener('click', function() { __aeAbortAllProcessing('User cancelled current file processing.'); });
+    win.bodyEl.querySelector('.__aeMenuSearch')?.addEventListener('click', function() {
+      var q = win.bodyEl.querySelector('.__aeMenuSearchInput').value.trim();
+      if (q) __aePerformSearch(q);
+    });
+  }
+
+  await render();
+  return win;
+}
+
 // --- Shortcut Buttons ---
 
 async function __aeEnsureShortcutButtons(thread) {
-  if (!thread || !thread.shortcutButtons) return;
+  if (!thread) return;
+  if (!Array.isArray(thread.shortcutButtons)) thread.shortcutButtons = [];
 
-  // Remove existing extension buttons
+  // Remove existing extension buttons from previous versions/modules.
   thread.shortcutButtons = thread.shortcutButtons.filter(function(b) {
     return !b[__AE_EXT];
   });
 
-  var settings = __aeLoadSettings();
-
-  if (settings.fileUpload || settings.pdfExtract || settings.docxExtract) {
-    thread.shortcutButtons.push({
-      name: '📎 File',
-      message: '/file',
-      insertionType: 'replace',
-      autoSend: true,
-      clearAfterSend: true
-    });
-    // Mark as ours
-    thread.shortcutButtons[thread.shortcutButtons.length - 1][__AE_EXT] = true;
-  }
-
-  if (settings.webSearch) {
-    thread.shortcutButtons.push({
-      name: '🔍 Search',
-      message: '/search ',
-      insertionType: 'replace',
-      autoSend: false,
-      clearAfterSend: false
-    });
-    thread.shortcutButtons[thread.shortcutButtons.length - 1][__AE_EXT] = true;
-  }
-
   thread.shortcutButtons.push({
-    name: '⚙️ Status',
-    message: '/extensions',
+    name: '🧩 Menu',
+    message: '/menu',
     insertionType: 'replace',
     autoSend: true,
-    clearAfterSend: true
+    clearAfterSend: true,
+    type: 'message'
   });
   thread.shortcutButtons[thread.shortcutButtons.length - 1][__AE_EXT] = true;
 
@@ -13161,43 +14256,101 @@ async function __aeEnsureShortcutButtons(thread) {
 
 // --- Command Interception ---
 
+async function __aeHandleCommandText(text) {
+  text = (text || '').trim();
+  if (!text) return false;
+
+  if (text === '/menu' || text === '/extmenu') {
+    await __aeShowExtensionsMenu();
+    return true;
+  }
+
+  if (text === '/file') {
+    if (activeThreadId) {
+      __aeToast('📎 Choose file(s) to process...', 3500);
+      __aeFileInput.click();
+    } else {
+      await __aeAddSystemMessage('⚠️ Open a chat thread first.', 'Extensions');
+      __aeToast('⚠️ Open a chat thread first.', 4000);
+    }
+    return true;
+  }
+
+  if (text === '/voice') {
+    await __aeToggleVoiceRecording();
+    return true;
+  }
+
+  if (text.startsWith('/search ')) {
+    var query = text.slice(8).trim();
+    if (!query) return false;
+    __aeToast('🔍 Manual search started...', 3000);
+    __aePerformSearch(query).catch(function(e) {
+      console.error('[ae] manual search failed:', e);
+      __aeToast('❌ Search failed: ' + e.message, 6000);
+    });
+    return true;
+  }
+
+  if (text.startsWith('/toggle ')) {
+    var feature = text.slice(8).trim();
+    if (!feature) return false;
+    await __aeToggle(feature);
+    return true;
+  }
+
+  if (text === '/extensions' || text === '/ext') {
+    await __aeShowStatus();
+    return true;
+  }
+
+  return false;
+}
+
 function __aeSetupCommandHandler() {
-  // Capture-phase listener runs before the main sendButtonClickHandler
+  // Capture-phase listener runs before the original click listener. This handles real
+  // clicks/Enter. Shortcut buttons are different: the original renderer calls the
+  // lexical sendButtonClickHandler() directly, so we also wrap that function below.
   $.sendButton.addEventListener('click', function(e) {
     var text = ($.messageInput.value || '').trim();
-    var handled = false;
+    if (!text || text[0] !== '/') return;
 
-    if (text === '/file') {
-      handled = true;
-      if (activeThreadId) {
-        __aeFileInput.click();
-      } else {
-        __aeAddSystemMessage('⚠️ Open a chat thread first.', 'Extensions');
-      }
-    } else if (text.startsWith('/search ')) {
-      var query = text.slice(8).trim();
-      if (query) {
-        handled = true;
-        __aePerformSearch(query);
-      }
-    } else if (text.startsWith('/toggle ')) {
-      var feature = text.slice(8).trim();
-      if (feature) {
-        handled = true;
-        __aeToggle(feature);
-      }
-    } else if (text === '/extensions' || text === '/ext') {
-      handled = true;
-      __aeShowStatus();
-    }
+    e.stopImmediatePropagation();
+    e.preventDefault();
 
-    if (handled) {
-      e.stopImmediatePropagation();
-      e.preventDefault();
-      $.messageInput.value = '';
-    }
-  }, true); // capture phase
+    __aeHandleCommandText(text).then(function(handled) {
+      if (handled) $.messageInput.value = '';
+      else {
+        // Not our command — pass it to the original command system.
+        return __aeOriginalSendButtonClickHandler();
+      }
+    }).catch(function(err) {
+      console.error('[ae] command handler error:', err);
+      __aeToast('❌ Command failed: ' + err.message, 6000);
+    });
+  }, true);
 }
+
+// Wrap the function itself so shortcut buttons do actions instead of sending
+// literal command text as a chat message.
+var __aeOriginalSendButtonClickHandler = sendButtonClickHandler;
+sendButtonClickHandler = async function() {
+  var text = ($.messageInput.value || '').trim();
+  if (text && text[0] === '/') {
+    try {
+      var handled = await __aeHandleCommandText(text);
+      if (handled) {
+        $.messageInput.value = '';
+        return;
+      }
+    } catch(err) {
+      console.error('[ae] command wrapper error:', err);
+      __aeToast('❌ Command failed: ' + err.message, 6000);
+      return;
+    }
+  }
+  return __aeOriginalSendButtonClickHandler.apply(this, arguments);
+};
 
 // --- Wrap showThread to inject shortcut buttons ---
 // Original signature: showThread(threadId)
@@ -13206,16 +14359,16 @@ var __aeOriginalShowThread = showThread;
 showThread = async function(threadId) {
   await __aeOriginalShowThread.call(this, threadId);
   // After thread is shown, ensure our shortcut buttons are present
-  if (activeThreadId) {
+  if (typeof activeThreadId === 'number' && Number.isFinite(activeThreadId)) {
     try {
       var thread = await db.threads.get(activeThreadId);
       if (thread) {
-        // Check if we need to add buttons
-        var hasAeButtons = thread.shortcutButtons && thread.shortcutButtons.some(function(b) { return b[__AE_EXT]; });
-        if (!hasAeButtons) {
-          await __aeEnsureShortcutButtons(thread);
-        }
+        // Always normalize extension buttons. Older versions stored several
+        // extension shortcut buttons in thread.shortcutButtons, so checking merely
+        // for the existence of any __AE_EXT button keeps stale buttons forever.
+        await __aeEnsureShortcutButtons(thread);
         renderShortcutButtons(thread);
+        setTimeout(__aeStyleShortcutButtons, 50);
       }
     } catch(e) {
       console.error('[ae] showThread wrap error:', e);
@@ -13223,14 +14376,827 @@ showThread = async function(threadId) {
   }
 };
 
+
+// --- Input tooltip and visual feedback ---
+
+function __aeUpdateInputTooltip() {
+  var text = [
+    'Extension commands:',
+    '/menu — open the unified extensions menu',
+    '/file — choose files to add to lore',
+    '/search <query> — manual internet search',
+    '/voice — start/stop voice message recording',
+    '/files — open uploaded file explorer',
+    '/policy — set persistent chat policy; /language <code> — fixed language preset',
+    '/toggle file|pdf|docx|excel|zip|deepsearch|imageanalysis|voiceprofile|image|audio|search — enable/disable features',
+    '/extensions or /ext — show extension status',
+    '',
+    'Also supported: drag & drop files here, or paste files/images from clipboard.',
+    'If Web Search is ON, the character can automatically search the internet when the user asks for web/current/practical factual info.'
+  ].join('\n');
+  var existing = $.messageInput.getAttribute('title') || '';
+  if (!existing.includes('Extension commands:')) {
+    $.messageInput.setAttribute('title', existing ? existing + '\n\n' + text : text);
+  }
+}
+
+function __aeStyleShortcutButtons() {
+  try {
+    var buttons = $.shortcutButtonsCtn ? $.shortcutButtonsCtn.querySelectorAll('button') : [];
+    buttons.forEach(function(btn) {
+      var t = (btn.textContent || '').trim();
+      if (t.indexOf('📎 File') === 0 || t.indexOf('🔍 Search') === 0 || t.indexOf('⚙️ Status') === 0 || t.indexOf('🎙️ Voice') === 0 || t.indexOf('🧩 Menu') === 0 || t.indexOf('🗂️ Files') === 0 || t.indexOf('🧭 Policy') === 0) {
+        btn.style.background = 'linear-gradient(180deg, #245b8f, #173b61)';
+        btn.style.color = '#fff';
+        btn.style.borderColor = '#6bb7ff';
+        btn.style.fontWeight = '600';
+        btn.title = (btn.title ? btn.title + ' ' : '') + 'Extension button: ' + t;
+      }
+    });
+  } catch(e) { console.warn('[ae] Could not style shortcut buttons:', e); }
+}
+
+
+// --- Command autocomplete / suggestions ---
+
+const __AE_COMMAND_SUGGESTIONS = [
+  {cmd:'/menu', desc:'open extensions menu'},
+  {cmd:'/file', desc:'choose files'},
+  {cmd:'/files', desc:'open file explorer'},
+  {cmd:'/explorer', desc:'open file explorer'},
+  {cmd:'/voice', desc:'start/stop voice message'},
+  {cmd:'/search ', desc:'manual web search'},
+  {cmd:'/search deep ', desc:'deep web search'},
+  {cmd:'/toggle search', desc:'toggle web search'},
+  {cmd:'/toggle deepsearch', desc:'toggle deep web search'},
+  {cmd:'/toggle imageanalysis', desc:'toggle advanced image/OCR'},
+  {cmd:'/toggle voiceprofile', desc:'toggle voice profile'},
+  {cmd:'/toggle file', desc:'toggle file upload'},
+  {cmd:'/toggle pdf', desc:'toggle PDF extraction'},
+  {cmd:'/toggle docx', desc:'toggle DOCX extraction'},
+  {cmd:'/toggle excel', desc:'toggle spreadsheets'},
+  {cmd:'/toggle zip', desc:'toggle ZIP archives'},
+  {cmd:'/toggle image', desc:'toggle basic image captions'},
+  {cmd:'/toggle audio', desc:'toggle audio transcription'},
+  {cmd:'/policy', desc:'open base policy'},
+  {cmd:'/policy status', desc:'show base policy'},
+  {cmd:'/language ru', desc:'set Russian language policy'},
+  {cmd:'/language en', desc:'set English language policy'},
+  {cmd:'/language off', desc:'disable language policy'},
+  {cmd:'/extensions', desc:'show extension status'}
+];
+
+var __aeCommandSuggestEl = null;
+var __aeCommandSuggestItems = [];
+var __aeCommandSuggestIndex = 0;
+
+function __aeEnsureCommandSuggestEl() {
+  if (__aeCommandSuggestEl) return __aeCommandSuggestEl;
+  __aeCommandSuggestEl = document.createElement('div');
+  __aeCommandSuggestEl.id = '__aeCommandSuggestEl';
+  __aeCommandSuggestEl.style.cssText = 'position:fixed;z-index:999999;background:rgba(25,25,25,0.96);color:#fff;border:1px solid rgba(255,255,255,0.18);border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,0.38);padding:0.35rem;max-width:min(560px,92vw);font-size:13px;display:none;';
+  document.body.appendChild(__aeCommandSuggestEl);
+  return __aeCommandSuggestEl;
+}
+
+function __aeHideCommandSuggestions() {
+  if (__aeCommandSuggestEl) __aeCommandSuggestEl.style.display = 'none';
+  __aeCommandSuggestItems = [];
+}
+
+function __aeApplyCommandSuggestion(item) {
+  if (!item) return;
+  $.messageInput.value = item.cmd;
+  $.messageInput.focus();
+  var pos = item.cmd.length;
+  $.messageInput.setSelectionRange(pos, pos);
+  __aeHideCommandSuggestions();
+}
+
+function __aeRankCommandSuggestion(input, item) {
+  var q = input.toLowerCase();
+  var c = item.cmd.toLowerCase();
+  if (c === q) return 1000;
+  if (c.startsWith(q)) return 900 - c.length;
+  if (c.includes(q)) return 500 - c.indexOf(q);
+  var words = q.replace(/^\//,'').split(/\s+/).filter(Boolean);
+  var score = 0;
+  words.forEach(function(w) { if (c.includes(w) || item.desc.toLowerCase().includes(w)) score += 50; });
+  return score;
+}
+
+function __aeUpdateCommandSuggestions() {
+  var input = $.messageInput.value || '';
+  if (!input.startsWith('/') || input.length > 80 || input.includes('\n')) return __aeHideCommandSuggestions();
+  var scored = __AE_COMMAND_SUGGESTIONS.map(function(item) {
+    return { item: item, score: __aeRankCommandSuggestion(input, item) };
+  }).filter(function(x) { return x.score > 0; }).sort(function(a,b) { return b.score - a.score; }).slice(0, 7).map(function(x) { return x.item; });
+  if (scored.length === 0) return __aeHideCommandSuggestions();
+  __aeCommandSuggestItems = scored;
+  __aeCommandSuggestIndex = Math.min(__aeCommandSuggestIndex, scored.length - 1);
+  var el = __aeEnsureCommandSuggestEl();
+  var rect = $.messageInput.getBoundingClientRect();
+  el.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - 570)) + 'px';
+  el.style.bottom = Math.max(8, window.innerHeight - rect.top + 6) + 'px';
+  el.innerHTML = scored.map(function(item, i) {
+    return '<div class="__aeCmdSug" data-i="'+i+'" style="padding:0.38rem 0.5rem;border-radius:7px;cursor:pointer;'+(i===__aeCommandSuggestIndex?'background:#245b8f;':'')+'"><b>'+sanitizeHtml(item.cmd)+'</b><span style="opacity:0.72;"> — '+sanitizeHtml(item.desc)+'</span></div>';
+  }).join('') + '<div style="opacity:0.55;font-size:11px;padding:0.2rem 0.5rem 0;">Tab = complete, Esc = close</div>';
+  el.querySelectorAll('.__aeCmdSug').forEach(function(row) {
+    row.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      __aeApplyCommandSuggestion(scored[Number(row.dataset.i)]);
+    });
+  });
+  el.style.display = 'block';
+}
+
+function __aeSetupCommandAutocomplete() {
+  $.messageInput.addEventListener('input', __aeUpdateCommandSuggestions);
+  $.messageInput.addEventListener('focus', __aeUpdateCommandSuggestions);
+  $.messageInput.addEventListener('blur', function() { setTimeout(__aeHideCommandSuggestions, 200); });
+  $.messageInput.addEventListener('keydown', function(e) {
+    if (!__aeCommandSuggestItems.length || !__aeCommandSuggestEl || __aeCommandSuggestEl.style.display === 'none') return;
+    if (e.key === 'Escape') { e.preventDefault(); __aeHideCommandSuggestions(); }
+    else if (e.key === 'Tab') { e.preventDefault(); __aeApplyCommandSuggestion(__aeCommandSuggestItems[__aeCommandSuggestIndex]); }
+    else if (e.key === 'ArrowDown') { e.preventDefault(); __aeCommandSuggestIndex = (__aeCommandSuggestIndex + 1) % __aeCommandSuggestItems.length; __aeUpdateCommandSuggestions(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); __aeCommandSuggestIndex = (__aeCommandSuggestIndex - 1 + __aeCommandSuggestItems.length) % __aeCommandSuggestItems.length; __aeUpdateCommandSuggestions(); }
+  }, true);
+}
+
 // --- Initialize ---
 
 __aeCreateFileInput();
 __aeSetupDragDrop();
+__aeSetupPasteUpload();
 __aeSetupCommandHandler();
+__aeSetupCommandAutocomplete();
+__aeUpdateInputTooltip();
+setTimeout(async function() {
+  try {
+    if (typeof activeThreadId === 'number' && Number.isFinite(activeThreadId)) {
+      var thread = await db.threads.get(activeThreadId);
+      if (thread) { await __aeEnsureShortcutButtons(thread); renderShortcutButtons(thread); }
+    }
+  } catch(e) { console.warn('[ae] startup menu normalization failed:', e); }
+  __aeStyleShortcutButtons();
+}, 250);
 
-console.log('[ae] Extensions module v' + __AE_VERSION + ' loaded. Commands: /file, /search, /toggle, /extensions');
+console.log('[ae] Extensions module v' + __AE_VERSION + ' loaded. Commands: /menu, /file, /voice, /search, /toggle, /extensions');
 
+
+// ============================================
+// AI CHARACTER CHAT — FILE EXPLORER MODULE
+// ============================================
+// Provides /files and /explorer commands; accessible from unified 🧩 Menu.
+// Shows uploaded/processed file registry stored in db.misc.
+// ============================================
+
+async function __aeRenderFileExplorerBody(win, opts) {
+  opts = opts || {};
+  var files = await __aeGetUploadedFiles({ threadId: activeThreadId, includeAllThreads: !!opts.includeAllThreads });
+  var activeFiles = files.filter(function(f) { return f.contextActive !== false; });
+  var totalChars = activeFiles.reduce(function(sum, f) { return sum + (f.contextCharCount || 0); }, 0);
+
+  var html = '';
+  html += '<div style="padding:0.6rem; font-size:0.9rem;">';
+  html += '<div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; margin-bottom:0.5rem;">';
+  html += '<b>🗂️ Uploaded files</b>';
+  html += '<button class="__aeRefreshFiles">refresh</button>';
+  html += '<button class="__aeToggleAllThreads">' + (opts.includeAllThreads ? 'current thread only' : 'all threads') + '</button>';
+  html += '</div>';
+  html += '<div style="opacity:0.75; margin-bottom:0.5rem;">AI-visible file context buffer: ' + totalChars + ' / ' + __AE_FILE_CONTEXT_BUFFER_CHARS + ' chars. Oldest contexts are hidden from AI when the buffer is exceeded; @mentions can reactivate a file.</div>';
+  html += '<input class="__aeFileFilter" placeholder="Filter files..." style="box-sizing:border-box;width:100%;padding:0.35rem;margin-bottom:0.55rem;">';
+
+  if (files.length === 0) {
+    html += '<div style="opacity:0.7;">No uploaded files registered yet. Drop/paste files or use <code>/file</code>.</div>';
+  } else {
+    html += '<div style="display:flex; flex-direction:column; gap:0.45rem;">';
+    files.forEach(function(f) {
+      var statusColor = f.status === 'ok' ? '#238636' : f.status === 'buffered-out' ? '#b7791f' : f.status === 'partial' ? '#b7791f' : '#c53030';
+      html += '<div class="__aeFileRow" data-file-id="' + sanitizeHtml(f.id) + '" style="border:1px solid var(--border-color); border-radius:8px; padding:0.5rem; background:rgba(127,127,127,0.06);">';
+      html += '<div style="display:flex; justify-content:space-between; gap:0.5rem; align-items:flex-start;">';
+      html += '<div style="min-width:0;"><div style="font-weight:600; overflow-wrap:anywhere;">' + sanitizeHtml(f.name) + '</div>';
+      html += '<div style="font-size:0.8rem; opacity:0.75;">' + sanitizeHtml(f.kind || f.ext || 'file') + ' · ' + new Date(f.uploadedAt || Date.now()).toLocaleString() + ' · <span style="color:' + statusColor + '">' + sanitizeHtml(f.status || 'ok') + '</span>' + (f.contextActive === false ? ' · not in AI buffer' : '') + '</div></div>';
+      html += '</div>';
+      html += '<div style="font-size:0.82rem; opacity:0.85; max-height:3.5rem; overflow:hidden; white-space:pre-wrap; margin:0.35rem 0;">' + sanitizeHtml((f.preview || '').slice(0, 350)) + '</div>';
+      html += '<div style="display:flex; gap:0.35rem; flex-wrap:wrap;">';
+      html += '<button class="__aeMentionFile">insert @[...]</button>';
+      html += '<button class="__aeRecallFile">recall to AI</button>';
+      html += '<button class="__aePreviewFile">preview</button>';
+      html += '<button class="__aeForgetFile">forget</button>';
+      html += '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+  html += '</div>';
+
+  win.bodyEl.innerHTML = html;
+
+  win.bodyEl.querySelector('.__aeRefreshFiles')?.addEventListener('click', function() {
+    __aeRenderFileExplorerBody(win, opts);
+  });
+  win.bodyEl.querySelector('.__aeToggleAllThreads')?.addEventListener('click', function() {
+    opts.includeAllThreads = !opts.includeAllThreads;
+    __aeRenderFileExplorerBody(win, opts);
+  });
+
+  win.bodyEl.querySelector('.__aeFileFilter')?.addEventListener('input', function(e) {
+    var q = (e.target.value || '').toLowerCase();
+    win.bodyEl.querySelectorAll('.__aeFileRow').forEach(function(row) {
+      row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  });
+
+  win.bodyEl.querySelectorAll('.__aeFileRow').forEach(function(row) {
+    var fileId = row.dataset.fileId;
+    var file = files.find(function(f) { return f.id === fileId; });
+    if (!file) return;
+
+    row.querySelector('.__aeMentionFile')?.addEventListener('click', function() {
+      var mention = '@[' + file.name + ']';
+      $.messageInput.value = ($.messageInput.value ? $.messageInput.value + ' ' : '') + mention;
+      $.messageInput.focus();
+      __aeToast('Inserted mention: ' + mention, 3000);
+    });
+
+    row.querySelector('.__aeRecallFile')?.addEventListener('click', async function() {
+      await __aeReactivateFileContext(file);
+      __aeToast('📎 Recalled file context: ' + file.name, 4000);
+      __aeRenderFileExplorerBody(win, opts);
+    });
+
+    row.querySelector('.__aePreviewFile')?.addEventListener('click', function() {
+      var preview = file.fullText || file.preview || '(No preview available.)';
+      var pwin = createFloatingWindow({
+        header: 'Preview: ' + sanitizeHtml(file.name),
+        initialWidth: Math.min(800, window.innerWidth - 40),
+        initialHeight: Math.min(600, window.innerHeight - 80),
+        body: '<pre style="white-space:pre-wrap; overflow:auto; padding:0.75rem; margin:0;">' + sanitizeHtml(preview) + '</pre>'
+      });
+      return pwin;
+    });
+
+    row.querySelector('.__aeForgetFile')?.addEventListener('click', async function() {
+      if (!confirm('Forget file from explorer? This hides its direct AI context, but does not clean old lore chunks.\n\n' + file.name)) return;
+      await __aeForgetUploadedFile(file.id);
+      __aeToast('Forgot file: ' + file.name, 3000);
+      __aeRenderFileExplorerBody(win, opts);
+    });
+  });
+}
+
+async function __aeShowFileExplorer(opts) {
+  opts = opts || {};
+  if (typeof activeThreadId !== 'number' || !Number.isFinite(activeThreadId)) {
+    __aeToast('⚠️ Open a chat thread first.', 4000);
+    return;
+  }
+  var win = createFloatingWindow({
+    header: '🗂️ File Explorer',
+    initialWidth: Math.min(760, window.innerWidth - 40),
+    initialHeight: Math.min(600, window.innerHeight - 80),
+    body: '<div style="padding:1rem;">Loading files...</div>'
+  });
+  await __aeRenderFileExplorerBody(win, opts);
+  return win;
+}
+
+// Patch command dispatcher from shortcuts/init module.
+var __aeFileExplorerOriginalHandleCommandText = __aeHandleCommandText;
+__aeHandleCommandText = async function(text) {
+  text = (text || '').trim();
+  if (text === '/files' || text === '/explorer') {
+    await __aeShowFileExplorer();
+    return true;
+  }
+  return __aeFileExplorerOriginalHandleCommandText.apply(this, arguments);
+};
+
+console.log('[ae] File Explorer module loaded. Commands: /files, /explorer');
+
+// ============================================
+// AI CHARACTER CHAT — FILE MENTIONS MODULE
+// ============================================
+// Lets the user write @[filename.ext] to recall a file from File Explorer.
+// Uses before-reply hook bus from core.
+// ============================================
+
+function __aeExtractFileMentions(text) {
+  text = text || '';
+  var result = [];
+  var re = /@\[([^\]\n]{1,240})\]/g;
+  var m;
+  while ((m = re.exec(text)) !== null) {
+    var name = (m[1] || '').trim();
+    if (name) result.push(name);
+  }
+  return Array.from(new Set(result));
+}
+
+async function __aeBuildMentionContextForFile(file) {
+  if (!file) return null;
+  var text = file.fullText || file.preview || '';
+  if (!text && typeof file.contextMessageId === 'number') {
+    var msg = await db.messages.get(file.contextMessageId).catch(function() { return null; });
+    if (msg && msg.message) text = msg.message;
+  }
+  if (!text) return null;
+  return __aeBuildAiContextContent(file.kind || 'File', file.name, text, (file.metaText || '') + ' recalled by @mention');
+}
+
+__aeRegisterBeforeBotReplyHook('fileMentions', async function(opts) {
+  if (!opts || !Array.isArray(opts.messages) || typeof opts.threadId !== 'number') return opts;
+
+  var messages = opts.messages.filter(function(m) { return !(m.hiddenFrom && m.hiddenFrom.includes('ai')); });
+  var lastUserMessage = null;
+  for (var i = messages.length - 1; i >= 0; i--) {
+    if (messages[i].characterId === -1 && messages[i].message) {
+      lastUserMessage = messages[i];
+      break;
+    }
+  }
+  if (!lastUserMessage) return opts;
+
+  var mentions = __aeExtractFileMentions(String(lastUserMessage.message || ''));
+  if (mentions.length === 0) return opts;
+
+  var contextBlocks = [];
+  var unresolved = [];
+
+  for (var mi = 0; mi < mentions.length; mi++) {
+    var mentionName = mentions[mi];
+    var found = await __aeFindUploadedFileByMention(mentionName, opts.threadId);
+    if (found.file) {
+      await __aeReactivateFileContext(found.file);
+      var ctx = await __aeBuildMentionContextForFile(found.file);
+      if (ctx) {
+        contextBlocks.push(ctx);
+        __aeToast('📎 Recalled file: ' + found.file.name, 2500);
+      } else {
+        unresolved.push(mentionName + ' (no stored preview/context)');
+      }
+    } else if (found.matches && found.matches.length > 1) {
+      unresolved.push(mentionName + ' (ambiguous: ' + found.matches.map(function(f) { return f.name; }).slice(0, 5).join(', ') + ')');
+    } else {
+      unresolved.push(mentionName + ' (not found)');
+    }
+  }
+
+  if (unresolved.length > 0) {
+    contextBlocks.push('FILE MENTION RESOLUTION NOTES:\n' + unresolved.map(function(x) { return '- ' + x; }).join('\n'));
+  }
+
+  if (contextBlocks.length === 0) return opts;
+
+  var newMessages = opts.messages.slice();
+  var mentionMsg = __aeCreateTransientMessageObj({
+    threadId: opts.threadId,
+    message: contextBlocks.join('\n\n---\n\n'),
+    characterId: -2,
+    name: 'File Mention Context',
+    expectsReply: false
+  });
+
+  var insertAt = newMessages.length;
+  for (var j = newMessages.length - 1; j >= 0; j--) {
+    if (newMessages[j].characterId === -1) { insertAt = j; break; }
+  }
+  newMessages.splice(insertAt, 0, mentionMsg);
+  return Object.assign({}, opts, { messages: newMessages });
+}, {priority:200});
+
+console.log('[ae] File Mentions module loaded. Syntax: @[filename.ext]');
+
+// ============================================
+// AI CHARACTER CHAT — BASE POLICY MODULE
+// ============================================
+// Persistent per-chat hard directives. Currently: fixed language preset.
+// No auto-language mode by design.
+// ============================================
+
+const __AE_POLICY_LANGUAGES = [
+  { code: 'off', label: 'Off / no language policy', name: '' },
+  { code: 'en', label: 'English', name: 'English' },
+  { code: 'ru', label: 'Русский / Russian', name: 'Russian' },
+  { code: 'es', label: 'Español / Spanish', name: 'Spanish' },
+  { code: 'pt', label: 'Português / Portuguese', name: 'Portuguese' },
+  { code: 'fr', label: 'Français / French', name: 'French' },
+  { code: 'de', label: 'Deutsch / German', name: 'German' },
+  { code: 'id', label: 'Bahasa Indonesia / Indonesian', name: 'Indonesian' },
+  { code: 'pl', label: 'Polski / Polish', name: 'Polish' },
+  { code: 'ja', label: '日本語 / Japanese', name: 'Japanese' },
+  { code: 'zh', label: '中文 / Chinese', name: 'Chinese' }
+];
+
+function __aeGetLanguagePreset(code) {
+  return __AE_POLICY_LANGUAGES.find(function(l) { return l.code === code; }) || __AE_POLICY_LANGUAGES[0];
+}
+
+async function __aeGetThreadBasePolicy(threadId) {
+  if (typeof threadId !== 'number') return { language: 'off' };
+  var thread = await db.threads.get(threadId);
+  var policy = thread && thread.customData && thread.customData.__aeBasePolicy;
+  return Object.assign({ language: 'off' }, policy || {});
+}
+
+async function __aeSetThreadBasePolicy(threadId, policy) {
+  var thread = await db.threads.get(threadId);
+  if (!thread) return null;
+  var customData = Object.assign({}, thread.customData || {});
+  customData.__aeBasePolicy = Object.assign({ language: 'off' }, customData.__aeBasePolicy || {}, policy || {});
+  await db.threads.update(threadId, { customData: customData });
+  return customData.__aeBasePolicy;
+}
+
+function __aeBuildBasePolicyPrompt(policy) {
+  policy = policy || {};
+  var lang = __aeGetLanguagePreset(policy.language || 'off');
+  if (!lang || lang.code === 'off') return '';
+  return [
+    'HIGH PRIORITY CHAT-WIDE BASE INSTRUCTION',
+    'This is a persistent setting for the entire current chat, not a one-message request.',
+    'It overrides character habits, examples, style snippets, uploaded context language, and web-search result language when they conflict with it.',
+    '',
+    'LANGUAGE PRESET: ' + lang.name + '.',
+    'All visible assistant/character output in this chat must be written in ' + lang.name + '.',
+    'This includes narration, roleplay actions, stage directions, thoughts, filler phrases, explanations, summaries, and citations prose.',
+    'Do not switch to another language unless the user explicitly changes the chat language preset.',
+    'Proper nouns, filenames, URLs, code, API names, direct quotes, and untranslatable terms may remain as-is when necessary.',
+    'Before finalizing, silently check the response for language drift and rewrite drifting parts into ' + lang.name + '.',
+    'Output only the final answer.'
+  ].join('\n');
+}
+
+__aeRegisterBeforeBotReplyHook('basePolicy', async function(opts) {
+  if (!opts || !Array.isArray(opts.messages) || typeof opts.threadId !== 'number') return opts;
+  var policy = await __aeGetThreadBasePolicy(opts.threadId);
+  var prompt = __aeBuildBasePolicyPrompt(policy);
+  if (!prompt) return opts;
+
+  var newMessages = opts.messages.slice();
+  var policyMsg = __aeCreateTransientMessageObj({
+    threadId: opts.threadId,
+    message: prompt,
+    characterId: -2,
+    name: 'Base Policy',
+    expectsReply: false
+  });
+
+  // Insert closest to the latest user message. If there is no user message yet,
+  // insert at the beginning so the policy is treated as background instruction,
+  // not as the latest thing the character should directly answer to.
+  var insertAt = 0;
+  for (var i = newMessages.length - 1; i >= 0; i--) {
+    if (newMessages[i].characterId === -1) { insertAt = i; break; }
+  }
+  newMessages.splice(insertAt, 0, policyMsg);
+  return Object.assign({}, opts, { messages: newMessages });
+}, {priority:900});
+
+async function __aeShowBasePolicyModal() {
+  if (typeof activeThreadId !== 'number' || !Number.isFinite(activeThreadId)) {
+    __aeToast('⚠️ Open a chat thread first.', 4000);
+    return;
+  }
+  var current = await __aeGetThreadBasePolicy(activeThreadId);
+  var result = await prompt2({
+    info: { type: 'none', html: '<div style="font-size:0.9rem; margin-bottom:0.5rem;">Base Policy is a persistent per-chat directive inserted into the high-priority system context before every reply.</div>' },
+    language: {
+      label: 'Fixed chat language preset:',
+      type: 'select',
+      options: __AE_POLICY_LANGUAGES.map(function(l) { return { value: l.code, content: l.label }; }),
+      defaultValue: current.language || 'off'
+    }
+  }, { submitButtonText: 'save policy' });
+  if (!result) return;
+  var policy = await __aeSetThreadBasePolicy(activeThreadId, { language: result.language });
+  var lang = __aeGetLanguagePreset(policy.language);
+  await __aeAddSystemMessage('🧭 Base Policy updated. Language: **' + (lang.label || 'Off') + '**', 'Base Policy');
+  __aeToast('🧭 Base Policy: ' + (lang.label || 'Off'), 4000);
+}
+
+async function __aeShowBasePolicyStatus() {
+  var policy = await __aeGetThreadBasePolicy(activeThreadId);
+  var lang = __aeGetLanguagePreset(policy.language || 'off');
+  await __aeAddSystemMessage('🧭 Current Base Policy\n\nLanguage: **' + (lang.label || 'Off') + '**\n\nCommands: `/policy`, `/language <code>`, `/language off`\nCodes: ' + __AE_POLICY_LANGUAGES.map(function(l) { return '`' + l.code + '`'; }).join(', '), 'Base Policy');
+}
+
+var __aeBasePolicyOriginalHandleCommandText = __aeHandleCommandText;
+__aeHandleCommandText = async function(text) {
+  text = (text || '').trim();
+  if (text === '/policy') {
+    await __aeShowBasePolicyModal();
+    return true;
+  }
+  if (text === '/policy status') {
+    await __aeShowBasePolicyStatus();
+    return true;
+  }
+  if (text.startsWith('/language ')) {
+    var code = text.slice('/language '.length).trim().toLowerCase();
+    var lang = __aeGetLanguagePreset(code);
+    if (!__AE_POLICY_LANGUAGES.some(function(l) { return l.code === code; })) {
+      await __aeAddSystemMessage('⚠️ Unknown language preset: **' + code + '**\nAvailable: ' + __AE_POLICY_LANGUAGES.map(function(l) { return '`' + l.code + '` = ' + l.label; }).join(', '), 'Base Policy');
+      return true;
+    }
+    await __aeSetThreadBasePolicy(activeThreadId, { language: code });
+    await __aeAddSystemMessage('🧭 Chat language preset set to **' + lang.label + '**.', 'Base Policy');
+    __aeToast('🧭 Language preset: ' + lang.label, 4000);
+    return true;
+  }
+  return __aeBasePolicyOriginalHandleCommandText.apply(this, arguments);
+};
+
+console.log('[ae] Base Policy module loaded. Commands: /policy, /language <code>');
+
+// ============================================
+// AI CHARACTER CHAT — DEEP WEB SEARCH MODULE
+// ============================================
+// Adds optional deep search: fetch top pages, extract text, pick relevant excerpts.
+// ============================================
+
+function __aeSearchTerms(query) {
+  return String(query || '').toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(function(w) { return w.length > 2; }).slice(0, 32);
+}
+
+function __aeScoreTextForQuery(text, terms) {
+  text = String(text || '').toLowerCase();
+  var score = 0;
+  terms.forEach(function(t) {
+    var idx = text.indexOf(t);
+    if (idx !== -1) score += 1 + Math.max(0, 1 - idx / 4000);
+  });
+  return score;
+}
+
+function __aeHtmlToReadableText(html) {
+  try {
+    var doc = new DOMParser().parseFromString(html || '', 'text/html');
+    doc.querySelectorAll('script,style,noscript,svg,canvas,iframe,nav,footer,header,form').forEach(function(n) { n.remove(); });
+    var text = (doc.body && (doc.body.innerText || doc.body.textContent)) || '';
+    return text.replace(/\s+/g, ' ').trim();
+  } catch(e) {
+    return String(html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+}
+
+function __aeChunkByChars(text, size, overlap) {
+  size = size || 1800;
+  overlap = overlap || 200;
+  var chunks = [];
+  text = String(text || '');
+  for (var i = 0; i < text.length; i += size - overlap) {
+    var c = text.slice(i, i + size).trim();
+    if (c.length > 80) chunks.push(c);
+    if (chunks.length > 60) break;
+  }
+  return chunks;
+}
+
+async function __aeDeepSearchWeb(userQuery, opts) {
+  opts = opts || {};
+  var quick = await __aeOriginalSearchWebForDeep(userQuery, opts);
+  if (!quick.results || quick.results.length === 0) return quick;
+
+  var terms = __aeSearchTerms(userQuery);
+  var urls = [];
+  quick.results.forEach(function(r) {
+    if (r.url && /^https?:/i.test(r.url) && urls.indexOf(r.url) === -1) urls.push(r.url);
+  });
+  urls = urls.slice(0, opts.maxPages || 5);
+
+  var excerpts = [];
+  for (var ui = 0; ui < urls.length; ui++) {
+    __aeAssertNotCancelled();
+    var url = urls[ui];
+    try {
+      var resp = await root.superFetch(url, { signal: window.AbortSignal?.timeout ? window.AbortSignal.timeout(12000) : undefined });
+      if (!resp || !resp.ok) continue;
+      var ct = resp.headers && resp.headers.get ? (resp.headers.get('content-type') || '') : '';
+      if (ct && !/text\/html|text\/plain|application\/xhtml/i.test(ct)) continue;
+      var html = await resp.text();
+      var text = __aeHtmlToReadableText(html).slice(0, 50000);
+      var chunks = __aeChunkByChars(text, 1800, 200).map(function(chunk) {
+        return { url: url, text: chunk, score: __aeScoreTextForQuery(chunk, terms) };
+      });
+      chunks.sort(function(a, b) { return b.score - a.score; });
+      excerpts.push.apply(excerpts, chunks.slice(0, 3));
+    } catch(e) {
+      console.warn('[ae] Deep fetch failed:', url, e);
+    }
+  }
+
+  excerpts.sort(function(a, b) { return b.score - a.score; });
+  excerpts = excerpts.slice(0, 10);
+  if (excerpts.length === 0) return quick;
+
+  var sourceText = excerpts.map(function(e, i) {
+    return '[' + (i + 1) + '] URL: ' + e.url + '\nExcerpt: ' + e.text;
+  }).join('\n\n');
+
+  var synthesisResult = await root.aiTextPlugin({
+    instruction: [
+      'Answer the user question using the fetched web page excerpts below.',
+      'Prefer the fetched excerpts over search snippets. Be accurate, concise, and include source URLs where useful.',
+      '',
+      'USER QUESTION:',
+      userQuery,
+      '',
+      'FETCHED WEB EXCERPTS:',
+      sourceText
+    ].join('\n')
+  });
+
+  quick.answer = (synthesisResult.text || synthesisResult.generatedText || quick.answer || '').trim();
+  quick.deep = true;
+  quick.excerpts = excerpts;
+  // Add excerpts as high-quality pseudo-results for source formatting/context.
+  quick.results = quick.results.concat(excerpts.map(function(e, i) { return { title: 'Fetched excerpt ' + (i + 1), url: e.url, source: 'deep-fetch', snippet: e.text.slice(0, 800) }; }));
+  return quick;
+}
+
+var __aeOriginalSearchWebForDeep = __aeSearchWeb;
+__aeSearchWeb = async function(userQuery, opts) {
+  opts = opts || {};
+  var settings = __aeLoadSettings();
+  var explicitDeep = /^\s*deep\s+/i.test(userQuery || '');
+  if (explicitDeep) userQuery = userQuery.replace(/^\s*deep\s+/i, '').trim();
+  if (settings.deepWebSearch || opts.deep || explicitDeep) {
+    __aeToast('🔎 Deep web search...', 5000);
+    return __aeDeepSearchWeb(userQuery, opts);
+  }
+  return __aeOriginalSearchWebForDeep.apply(this, arguments);
+};
+
+console.log('[ae] Deep Web Search module loaded. Use /search deep <query> or /toggle deepsearch.');
+
+// ============================================
+// AI CHARACTER CHAT — ADVANCED IMAGE ANALYSIS MODULE
+// ============================================
+// Optional multi-pass image analysis: caption + object detection + OCR attempt.
+// Enabled with /toggle imageanalysis.
+// ============================================
+
+async function __aeAdvancedAnalyzeImage(file) {
+  __aeAssertNotCancelled();
+  var dataUrl = await __aeReadAndNormalizeImageDataUrl(file);
+  var transformers = await __aeLoadTransformers();
+  var lines = ['[Image: ' + file.name + ']'];
+
+  try {
+    __aeToast('🧠 Advanced image caption...', 6000);
+    var captioner = await transformers.pipeline('image-to-text', 'Xenova/vit-gpt2-image-captioning');
+    var cap = await captioner(dataUrl, { max_new_tokens: 64, max_length: 64 });
+    if (cap && cap[0]) lines.push('Caption: ' + (cap[0].generated_text || cap[0].caption || '').trim());
+  } catch(e) {
+    console.warn('[ae] advanced caption failed:', e);
+    lines.push('Caption: unavailable.');
+  }
+
+  try {
+    __aeAssertNotCancelled();
+    __aeToast('🧠 Detecting objects...', 6000);
+    var detector = await transformers.pipeline('object-detection', 'Xenova/detr-resnet-50');
+    var objects = await detector(dataUrl, { threshold: 0.75, percentage: true });
+    if (objects && objects.length) {
+      lines.push('Objects: ' + objects.slice(0, 12).map(function(o) {
+        return (o.label || o.class || 'object') + (o.score ? ' (' + Math.round(o.score * 100) + '%)' : '');
+      }).join(', '));
+    }
+  } catch(e) {
+    console.warn('[ae] object detection failed:', e);
+  }
+
+  try {
+    __aeAssertNotCancelled();
+    __aeToast('🧠 Checking visual hypotheses...', 6000);
+    var zeroShot = await transformers.pipeline('zero-shot-image-classification', 'Xenova/clip-vit-base-patch32');
+    var labels = [
+      'damaged car', 'broken car', 'car accident', 'traffic accident', 'vehicle collision',
+      'car crash scene', 'broken bumper', 'dented vehicle', 'emergency road scene',
+      'normal parked car', 'undamaged car', 'person portrait', 'document screenshot',
+      'table or spreadsheet', 'handwritten text', 'printed text'
+    ];
+    var zs = await zeroShot(dataUrl, labels);
+    if (zs && zs.length) {
+      zs.sort(function(a,b) { return (b.score || 0) - (a.score || 0); });
+      lines.push('Visual hypothesis scores: ' + zs.slice(0, 8).map(function(x) {
+        return (x.label || 'label') + ' (' + Math.round((x.score || 0) * 100) + '%)';
+      }).join(', '));
+      var accidentScore = zs.filter(function(x) { return /damaged|broken|accident|collision|crash|bumper|dented/i.test(x.label || ''); })
+        .reduce(function(max, x) { return Math.max(max, x.score || 0); }, 0);
+      if (accidentScore > 0.18) lines.push('Damage/accident hint: possible vehicle damage or accident context detected; treat as uncertain and verify with user if important.');
+    }
+  } catch(e) {
+    console.warn('[ae] zero-shot image classification failed:', e);
+  }
+
+  try {
+    __aeAssertNotCancelled();
+    __aeToast('🧠 OCR attempt...', 6000);
+    var ocr = await transformers.pipeline('image-to-text', 'Xenova/trocr-small-printed');
+    var out = await ocr(dataUrl, { max_new_tokens: 128 });
+    var text = out && out[0] ? (out[0].generated_text || '').trim() : '';
+    if (text && text.length > 2) lines.push('OCR text: ' + text);
+  } catch(e) {
+    console.warn('[ae] OCR failed:', e);
+  }
+
+  var analysis = lines.filter(Boolean).join('\n');
+  await __aeRememberExtractedContent('Image Analysis', file.name, analysis, 'advanced image analysis');
+  __aeToast('🧠 Image analysis saved: ' + file.name, 4000);
+}
+
+var __aeOriginalProcessImageFileForAdvanced = __aeProcessImageFile;
+__aeProcessImageFile = async function(file) {
+  var settings = __aeLoadSettings();
+  if (!settings.advancedImageAnalysis) return __aeOriginalProcessImageFileForAdvanced.apply(this, arguments);
+  try {
+    return await __aeAdvancedAnalyzeImage(file);
+  } catch(e) {
+    console.warn('[ae] advanced image analysis failed, falling back to basic:', e);
+    return __aeOriginalProcessImageFileForAdvanced.apply(this, arguments);
+  }
+};
+
+console.log('[ae] Advanced Image Analysis module loaded. Use /toggle imageanalysis.');
+
+// ============================================
+// AI CHARACTER CHAT — VOICE PROFILE MODULE
+// ============================================
+// Lightweight acoustic profile for uploaded/recorded audio.
+// Does NOT identify a person; only describes audible qualities with uncertainty.
+// ============================================
+
+function __aeEstimatePitchAutocorrelation(samples, sampleRate) {
+  if (!samples || samples.length < sampleRate * 0.1) return null;
+  var size = Math.min(samples.length, sampleRate * 2);
+  var start = Math.max(0, Math.floor((samples.length - size) / 2));
+  var x = samples.slice(start, start + size);
+  var rms = Math.sqrt(x.reduce(function(sum, v) { return sum + v * v; }, 0) / x.length);
+  if (rms < 0.01) return null;
+  var minLag = Math.floor(sampleRate / 350);
+  var maxLag = Math.floor(sampleRate / 70);
+  var bestLag = 0, best = -Infinity;
+  for (var lag = minLag; lag <= maxLag; lag++) {
+    var corr = 0;
+    for (var i = 0; i < x.length - lag; i += 3) corr += x[i] * x[i + lag];
+    if (corr > best) { best = corr; bestLag = lag; }
+  }
+  return bestLag ? sampleRate / bestLag : null;
+}
+
+async function __aeAnalyzeAudioProfile(arrayBuffer, transcript) {
+  var AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return '';
+  try {
+    var ctx = new AudioCtx({ sampleRate: 16000 });
+    var decoded = await ctx.decodeAudioData(arrayBuffer.slice(0));
+    var sr = decoded.sampleRate;
+    var ch = decoded.numberOfChannels;
+    var len = decoded.length;
+    var mono = new Float32Array(len);
+    for (var c = 0; c < ch; c++) {
+      var data = decoded.getChannelData(c);
+      for (var i = 0; i < len; i++) mono[i] += data[i] / ch;
+    }
+    try { await ctx.close(); } catch(e) {}
+
+    var duration = len / sr;
+    var rms = Math.sqrt(mono.reduce(function(sum, v) { return sum + v * v; }, 0) / Math.max(1, mono.length));
+    var zc = 0;
+    for (var zi = 1; zi < mono.length; zi += 4) if ((mono[zi - 1] < 0 && mono[zi] >= 0) || (mono[zi - 1] >= 0 && mono[zi] < 0)) zc++;
+    var zcr = zc / Math.max(1, mono.length / 4);
+    var pitch = __aeEstimatePitchAutocorrelation(mono, sr);
+    var words = (transcript || '').split(/\s+/).filter(Boolean).length;
+    var wpm = duration > 0 ? Math.round(words / duration * 60) : 0;
+
+    var pitchLabel = !pitch ? 'uncertain' : pitch < 120 ? 'low' : pitch < 190 ? 'medium' : 'high';
+    var volumeLabel = rms < 0.025 ? 'quiet' : rms < 0.09 ? 'moderate' : 'loud';
+    var paceLabel = !wpm ? 'uncertain' : wpm < 100 ? 'slow' : wpm < 170 ? 'normal' : 'fast';
+    var toneHints = [];
+    if (rms > 0.11 || zcr > 0.12) toneHints.push('energetic/tense possible');
+    if (rms < 0.03) toneHints.push('soft/quiet');
+    if (wpm > 180) toneHints.push('hurried');
+    if (wpm > 0 && wpm < 90) toneHints.push('calm/slow');
+
+    return [
+      'VOICE ACOUSTIC PROFILE (approximate, not identity):',
+      '- duration: ' + duration.toFixed(1) + 's',
+      '- loudness: ' + volumeLabel,
+      '- pitch impression: ' + pitchLabel + (pitch ? ' (~' + Math.round(pitch) + ' Hz)' : ''),
+      '- speaking pace: ' + paceLabel + (wpm ? ' (~' + wpm + ' wpm)' : ''),
+      '- tone hints: ' + (toneHints.length ? toneHints.join(', ') : 'neutral/uncertain'),
+      '- perceived age/gender: not reliably inferred; avoid treating this as fact.'
+    ].join('\n');
+  } catch(e) {
+    console.warn('[ae] voice acoustic profile failed:', e);
+    return '';
+  }
+}
+
+console.log('[ae] Voice Profile module loaded. Use /toggle voiceprofile.');
   async function getCharacterHash(characterObj) {
     let char = structuredClone(characterObj);
     // debugger;

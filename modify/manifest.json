@@ -1,7 +1,51 @@
 {
-  "description": "Overlay manifest for modifications. New modules are declared here with their insertion point.",
+  "description": "Overlay manifest for modifications. Extension is split into ordered modules inserted after html_028_module_reply_as_and_input_ux.",
   "new_modules": {
-    "030_extensions.frag": {
+    "030_extensions_core.frag": {
+      "source": "ai-character-chat-html",
+      "insert_after": "html_028_module_reply_as_and_input_ux"
+    },
+    "031_extensions_processors.frag": {
+      "source": "ai-character-chat-html",
+      "insert_after": "html_028_module_reply_as_and_input_ux"
+    },
+    "032_extensions_web_search.frag": {
+      "source": "ai-character-chat-html",
+      "insert_after": "html_028_module_reply_as_and_input_ux"
+    },
+    "033_extensions_controls_io.frag": {
+      "source": "ai-character-chat-html",
+      "insert_after": "html_028_module_reply_as_and_input_ux"
+    },
+    "034_extensions_voice.frag": {
+      "source": "ai-character-chat-html",
+      "insert_after": "html_028_module_reply_as_and_input_ux"
+    },
+    "035_extensions_shortcuts_commands_init.frag": {
+      "source": "ai-character-chat-html",
+      "insert_after": "html_028_module_reply_as_and_input_ux"
+    },
+    "036_extensions_file_explorer.frag": {
+      "source": "ai-character-chat-html",
+      "insert_after": "html_028_module_reply_as_and_input_ux"
+    },
+    "037_extensions_file_mentions.frag": {
+      "source": "ai-character-chat-html",
+      "insert_after": "html_028_module_reply_as_and_input_ux"
+    },
+    "038_extensions_base_policy.frag": {
+      "source": "ai-character-chat-html",
+      "insert_after": "html_028_module_reply_as_and_input_ux"
+    },
+    "039_extensions_deep_web_search.frag": {
+      "source": "ai-character-chat-html",
+      "insert_after": "html_028_module_reply_as_and_input_ux"
+    },
+    "040_extensions_image_analysis.frag": {
+      "source": "ai-character-chat-html",
+      "insert_after": "html_028_module_reply_as_and_input_ux"
+    },
+    "041_extensions_voice_profile.frag": {
       "source": "ai-character-chat-html",
       "insert_after": "html_028_module_reply_as_and_input_ux"
     }
