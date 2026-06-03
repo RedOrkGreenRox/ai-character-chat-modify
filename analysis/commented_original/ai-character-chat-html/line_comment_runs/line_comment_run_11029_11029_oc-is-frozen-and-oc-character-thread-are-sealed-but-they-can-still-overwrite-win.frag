@@ -1,1 +1,0 @@
-            // oc is frozen and oc.character/thread are sealed, but they can still overwrite window.oc - however, this is a security issue, since oc gets JSONified and sent back to the main thread when data changes, and I don't want to have to deal with unexpected properties on the main thread because it could be dangerous

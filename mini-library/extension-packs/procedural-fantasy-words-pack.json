@@ -1,0 +1,15 @@
+{
+  "id": "pack.words.fantasy-small",
+  "kind": "extension-pack",
+  "packType": "word-list",
+  "extensionTarget": "procedural-generation",
+  "name": "Small Fantasy Word Pack",
+  "label": "Small Fantasy Word Pack",
+  "tags": ["procedural", "words", "fantasy", "names"],
+  "contentSchema": "accm.word-list.v1",
+  "lists": {
+    "placePrefixes": ["Eld", "Vey", "Mar", "Thal", "Orin", "Cal"],
+    "placeSuffixes": ["doria", "haven", "mere", "watch", "spire", "fall"],
+    "mysticNouns": ["moon", "glass", "ash", "oath", "river", "lantern"]
+  }
+}

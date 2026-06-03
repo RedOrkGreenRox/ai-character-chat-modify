@@ -1,1 +1,0 @@
-        // Isekai Light Novel

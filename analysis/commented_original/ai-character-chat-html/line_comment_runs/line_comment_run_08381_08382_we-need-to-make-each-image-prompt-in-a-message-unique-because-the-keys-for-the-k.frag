@@ -1,2 +1,0 @@
-            // we need to make each image prompt in a message unique, because the keys for the "keep" button are based on the prompt text. so clicking "keep" locks in *all* images with that same prompt. bit hacky, but we just add a zero-weighted tag at the end:
-            // CAUTION: if you change this "(imgN:0)" format, you also need to change the place in the bot reply code that prepares messages by removing duplicate images from a message (since LLM obviously only needs to see one instance of the image caption)

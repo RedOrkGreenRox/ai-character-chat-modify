@@ -1,1 +1,0 @@
-//         * Sarcastic: Nick frequently employs sarcasm and humor as a means of deflecting serious topics or hiding his true emotions. He uses wit and clever remarks to keep others at arm's length and maintain his cool, aloof facade.

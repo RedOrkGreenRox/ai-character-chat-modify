@@ -1,1 +1,0 @@
-    // This is so on mobile if you tap the textbox when you're scrolled to the bottom, then the virtual keyboard doesn't make it so you can no longer see the bottom message (as you're typing your response to that message)

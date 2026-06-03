@@ -1,0 +1,20 @@
+{
+  "name": "workshop-api",
+  "version": "0.2.1",
+  "private": true,
+  "description": "AI Character Chat Workshop backend. Discord login + GitHub Gist as distributed storage.",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "db:init": "wrangler d1 execute workshop-db --remote --file=schema.sql",
+    "db:init:local": "wrangler d1 execute workshop-db --local --file=schema.sql",
+    "secret:discord": "wrangler secret put DISCORD_CLIENT_SECRET",
+    "secret:github": "wrangler secret put GITHUB_CLIENT_SECRET",
+    "tail": "wrangler tail",
+    "check": "node --check src/worker.js",
+    "test": "node tests/worker-smoke.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "^3.95.0"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "Pirate English Style Preset",
+  "kind": "extension-pack",
+  "version": "1.0.0",
+  "summary": "A playful English style preset example for Base Policy experiments.",
+  "tags": [
+    "language",
+    "base-policy",
+    "en",
+    "style",
+    "pirate"
+  ],
+  "language": "en",
+  "license": "CC0-1.0",
+  "contentFilename": "base-policy-pirate-english-preset.json",
+  "content": "{\n  \"id\": \"pack.lang.en-pirate-style\",\n  \"kind\": \"extension-pack\",\n  \"packType\": \"language-style-preset\",\n  \"extensionTarget\": \"base-policy\",\n  \"name\": \"Pirate English Style Preset\",\n  \"label\": \"Pirate English style\",\n  \"tags\": [\"language\", \"base-policy\", \"en\", \"style\", \"pirate\"],\n  \"contentSchema\": \"accm.base-policy.style-pack.v1\",\n  \"promptSnippet\": \"When English is used, prefer a playful pirate-flavoured register: aye, matey, nautical metaphors, but keep it readable. Do not overdo it.\"\n}\n"
+}

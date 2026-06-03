@@ -1,0 +1,17 @@
+{
+  "name": "Strict Russian Actions Skillbook",
+  "kind": "skillbook",
+  "version": "1.0.0",
+  "summary": "Ensures Russian RP actions in asterisks are Russian, not English.",
+  "tags": [
+    "language",
+    "ru",
+    "style",
+    "actions",
+    "roleplay"
+  ],
+  "language": "ru",
+  "license": "CC0-1.0",
+  "contentFilename": "strict-russian-actions-skillbook.md",
+  "content": "## Strict Russian action narration\nWhen this skillbook is active and Russian is an allowed/selected language, all action narration must be in Russian too.\n\n## Required behaviour\nText inside *asterisks* must be Russian. Do not write English stage directions and only translate dialogue.\n\nCorrect:\n*Он осторожно убирает руку с твоего плеча и улыбается чуть виновато.*\n\nIncorrect:\n*He pulls back with a sheepish grin.*\n\n## Style preference\nUse natural Russian verbs of motion and small gestures: \"отводит взгляд\", \"проводит пальцами\", \"замирает на полуслове\", \"поправляет воротник\".\n"
+}

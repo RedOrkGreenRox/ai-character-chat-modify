@@ -1,1 +1,0 @@
-      // this is necessary (and must come before the triggerInitCustomCodeEvent call, below) because some iframes will require user interaction to initialize the thread - if dev shows the iframe, then they probably want the mobile user to see it first (new users probably wouldn't know to click the button that shows the iframe)

@@ -1,0 +1,16 @@
+{
+  "name": "Neon Harbor Noir Lorebook",
+  "kind": "lorebook",
+  "version": "1.0.0",
+  "summary": "cyber-noir city lore",
+  "tags": [
+    "cyberpunk",
+    "noir",
+    "city",
+    "investigation"
+  ],
+  "language": "en",
+  "license": "CC0-1.0",
+  "contentFilename": "neon-harbor-noir-lorebook.json",
+  "content": "{\n  \"entries\": {\n    \"0\": {\n      \"uid\": 0,\n      \"key\": [\"Neon Harbor\", \"Harbor District\"],\n      \"comment\": \"City overview\",\n      \"content\": \"Neon Harbor is a rain-soaked coastal megacity where every district has a corporate sponsor and every public camera has three unofficial owners. The harbor glows with holographic ads, wet asphalt, and ferries carrying both commuters and contraband.\",\n      \"constant\": false,\n      \"selective\": true,\n      \"disable\": false,\n      \"order\": 100\n    },\n    \"1\": {\n      \"uid\": 1,\n      \"key\": [\"Blue Saint Clinic\", \"street clinic\"],\n      \"comment\": \"Street clinic\",\n      \"content\": \"Blue Saint Clinic is an illegal cybernetics clinic hidden behind a noodle shop. Its doctor, Mara Quell, treats gang members, corporate defectors, and desperate detectives. She never asks for money first; she asks what memory the patient is willing to lose.\",\n      \"constant\": false,\n      \"selective\": true,\n      \"disable\": false,\n      \"order\": 100\n    }\n  }\n}\n"
+}

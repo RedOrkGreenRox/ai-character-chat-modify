@@ -1,1 +1,0 @@
-      // systemCharacter: {name:defaultSystemName, avatar:{}},

@@ -1,1 +1,0 @@
-  // NOTE: If you change this, compare the native embeddings to the JS ones, and ensure the level of resolution that I'm keeping via the toFixed in `window.textEmbedderFunction` is an appropriate amount.

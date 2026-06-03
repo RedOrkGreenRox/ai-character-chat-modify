@@ -1,0 +1,11 @@
+{
+  "id": "pack.lang.en-pirate-style",
+  "kind": "extension-pack",
+  "packType": "language-style-preset",
+  "extensionTarget": "base-policy",
+  "name": "Pirate English Style Preset",
+  "label": "Pirate English style",
+  "tags": ["language", "base-policy", "en", "style", "pirate"],
+  "contentSchema": "accm.base-policy.style-pack.v1",
+  "promptSnippet": "When English is used, prefer a playful pirate-flavoured register: aye, matey, nautical metaphors, but keep it readable. Do not overdo it."
+}

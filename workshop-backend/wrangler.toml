@@ -1,0 +1,17 @@
+name = "workshop-api"
+main = "src/worker.js"
+compatibility_date = "2025-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "workshop-db"
+database_id = "PUT_DATABASE_ID_HERE"
+
+[vars]
+DISCORD_CLIENT_ID = "PUT_DISCORD_CLIENT_ID_HERE"
+GITHUB_CLIENT_ID  = "PUT_GITHUB_CLIENT_ID_HERE"
+PUBLIC_URL        = "https://accm-workshop.accm.workers.dev"
+ALLOWED_ORIGINS   = "*"
+DAILY_PUBLISH_LIMIT_NEW     = "3"
+DAILY_PUBLISH_LIMIT_TRUSTED = "50"
+BOOTSTRAP_ADMIN_DISCORD_UID = ""

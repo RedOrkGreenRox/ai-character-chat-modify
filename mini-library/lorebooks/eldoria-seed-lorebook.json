@@ -1,0 +1,34 @@
+{
+  "entries": {
+    "0": {
+      "uid": 0,
+      "key": ["Eldoria", "Eldorian kingdom"],
+      "comment": "Eldoria overview",
+      "content": "Eldoria is an old river kingdom built around silver bridges, canal-cities, and oath-bound noble houses. Its people value hospitality, public promises, and beautifully written contracts. The capital, Veyr, is famous for moonlit markets and libraries carved into pale stone.",
+      "constant": false,
+      "selective": true,
+      "disable": false,
+      "order": 100
+    },
+    "1": {
+      "uid": 1,
+      "key": ["Veyr", "capital of Eldoria"],
+      "comment": "Capital city",
+      "content": "Veyr is the capital of Eldoria. It is a canal city where bridges are named after saints, poets, and executed traitors. The upper city is polished marble and blue glass; the lower quays are crowded with smugglers, lamp-lighters, and archive clerks who know too much.",
+      "constant": false,
+      "selective": true,
+      "disable": false,
+      "order": 100
+    },
+    "2": {
+      "uid": 2,
+      "key": ["Glasswood", "Glasswood forest"],
+      "comment": "Haunted forest",
+      "content": "The Glasswood is a forest east of Veyr where many trees have translucent bark and sing softly during storms. Travellers claim the forest repeats conversations that never happened. The royal surveyors marked the region as safe, but no surveyor returned unchanged.",
+      "constant": false,
+      "selective": true,
+      "disable": false,
+      "order": 110
+    }
+  }
+}

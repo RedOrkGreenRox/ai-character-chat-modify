@@ -1,1 +1,0 @@
-    // note that we don't need to handle {{user}}/{{char}} stuff in this function because that's just for instruction, reminder, and initial messages. Initial messages have already had {{char}} stuff "rendered" when they were added to the thread.

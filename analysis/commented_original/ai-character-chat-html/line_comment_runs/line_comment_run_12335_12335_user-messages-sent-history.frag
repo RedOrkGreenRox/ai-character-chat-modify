@@ -1,1 +1,0 @@
-  // User messages sent history:

@@ -1,1 +1,0 @@
-    /* truncate long thread names */

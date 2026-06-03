@@ -1,0 +1,24 @@
+{
+  "entries": {
+    "0": {
+      "uid": 0,
+      "key": ["Neon Harbor", "Harbor District"],
+      "comment": "City overview",
+      "content": "Neon Harbor is a rain-soaked coastal megacity where every district has a corporate sponsor and every public camera has three unofficial owners. The harbor glows with holographic ads, wet asphalt, and ferries carrying both commuters and contraband.",
+      "constant": false,
+      "selective": true,
+      "disable": false,
+      "order": 100
+    },
+    "1": {
+      "uid": 1,
+      "key": ["Blue Saint Clinic", "street clinic"],
+      "comment": "Street clinic",
+      "content": "Blue Saint Clinic is an illegal cybernetics clinic hidden behind a noodle shop. Its doctor, Mara Quell, treats gang members, corporate defectors, and desperate detectives. She never asks for money first; she asks what memory the patient is willing to lose.",
+      "constant": false,
+      "selective": true,
+      "disable": false,
+      "order": 100
+    }
+  }
+}

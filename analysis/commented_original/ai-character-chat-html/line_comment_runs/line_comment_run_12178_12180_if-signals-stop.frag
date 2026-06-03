@@ -1,3 +1,0 @@
-  //     if(signals.stop) {
-  //       break;
-  //     }

@@ -1,1 +1,0 @@
-        // update thread's lastMessageTime

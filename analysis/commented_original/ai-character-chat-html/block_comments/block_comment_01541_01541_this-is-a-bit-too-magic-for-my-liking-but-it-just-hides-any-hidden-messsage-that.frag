@@ -1,1 +1,0 @@
-  /* this is a bit too 'magic' for my liking, but it just hides any hidden messsage that has a hidden message immediately after it, so to see the earlier hidden message, they first need to display the one below it (prevents a wall of "show hidden messages" buttons  */

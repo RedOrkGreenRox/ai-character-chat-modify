@@ -1,1 +1,0 @@
-        // let loadingModal = createLoadingModal("Loading...");

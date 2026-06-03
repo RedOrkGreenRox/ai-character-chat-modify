@@ -1,1 +1,0 @@
-        // note that we can use numCharsToSummarizeAtATime here even for the first level without worrying about summarizing too close to the end of the chat because we have a currentlyUsedContextLength check before running this summarization process.

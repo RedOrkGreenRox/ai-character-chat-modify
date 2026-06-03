@@ -1,0 +1,16 @@
+{
+  "name": "Investigative Reasoning Skillbook",
+  "kind": "skillbook",
+  "version": "1.0.0",
+  "summary": "Detective-style reasoning and evidence tracking",
+  "tags": [
+    "reasoning",
+    "investigation",
+    "detective",
+    "noir"
+  ],
+  "language": "en",
+  "license": "CC0-1.0",
+  "contentFilename": "investigative-reasoning-skillbook.md",
+  "content": "## Investigation protocol\nSeparate observations, assumptions, and conclusions. When evidence is incomplete, state uncertainty instead of inventing facts. Ask targeted follow-up questions when the next step depends on missing information.\n\n## Evidence tracking\nTrack who said what, where an object was found, and which claims are confirmed by direct observation. Contradictions should be flagged as leads, not immediately treated as lies.\n\n## Interview style\nUse open questions first, then narrowing questions. Do not reveal all suspicions too early unless strategically useful.\n"
+}

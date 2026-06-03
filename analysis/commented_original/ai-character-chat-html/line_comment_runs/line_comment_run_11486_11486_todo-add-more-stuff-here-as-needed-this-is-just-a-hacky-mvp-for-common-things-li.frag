@@ -1,1 +1,0 @@
-    // TODO: add more stuff here as needed - this is just a hacky MVP for common things like changing avatar pic in the StreamingMessage handler so e.g. can change expression image at start of message, rather than waiting for it to be fully written.

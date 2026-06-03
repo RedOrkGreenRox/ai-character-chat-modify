@@ -1,1 +1,0 @@
-          <!-- <div class="roleInstruction" style="font-size: 0.8rem; text-overflow: ellipsis; word-wrap: break-word; overflow: hidden; height: 2em; line-height: 1em;">${character.roleInstruction.length > 85 ? sanitizeHtml(character.roleInstruction.slice(0, 85)+"...") : sanitizeHtml(character.roleInstruction)}</div> -->

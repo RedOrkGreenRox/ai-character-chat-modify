@@ -1,1 +1,0 @@
-                // this must come *after* overwriting oc.thread.messages because we want event.message to be an actual reference to the message object that's currently in the oc.thread.messages array.

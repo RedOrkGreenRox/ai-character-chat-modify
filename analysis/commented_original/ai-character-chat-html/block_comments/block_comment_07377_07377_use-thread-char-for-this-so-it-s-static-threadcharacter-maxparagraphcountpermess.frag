@@ -1,1 +1,0 @@
-          /* use thread char for this so it's static: */ threadCharacter.maxParagraphCountPerMessage===1 ? null : `   - It's fine for a single message to span MULTIPLE paragraphs. Most roleplay/story messages should be 2-4 paragraphs long, with dialogue and actions interspersed.`,

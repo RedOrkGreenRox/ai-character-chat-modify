@@ -1,0 +1,16 @@
+{
+  "name": "Small Fantasy Word Pack",
+  "kind": "extension-pack",
+  "version": "1.0.0",
+  "summary": "Small procedural word lists for fantasy names/terms.",
+  "tags": [
+    "procedural",
+    "words",
+    "fantasy",
+    "names"
+  ],
+  "language": "en",
+  "license": "CC0-1.0",
+  "contentFilename": "procedural-fantasy-words-pack.json",
+  "content": "{\n  \"id\": \"pack.words.fantasy-small\",\n  \"kind\": \"extension-pack\",\n  \"packType\": \"word-list\",\n  \"extensionTarget\": \"procedural-generation\",\n  \"name\": \"Small Fantasy Word Pack\",\n  \"label\": \"Small Fantasy Word Pack\",\n  \"tags\": [\"procedural\", \"words\", \"fantasy\", \"names\"],\n  \"contentSchema\": \"accm.word-list.v1\",\n  \"lists\": {\n    \"placePrefixes\": [\"Eld\", \"Vey\", \"Mar\", \"Thal\", \"Orin\", \"Cal\"],\n    \"placeSuffixes\": [\"doria\", \"haven\", \"mere\", \"watch\", \"spire\", \"fall\"],\n    \"mysticNouns\": [\"moon\", \"glass\", \"ash\", \"oath\", \"river\", \"lantern\"]\n  }\n}\n"
+}

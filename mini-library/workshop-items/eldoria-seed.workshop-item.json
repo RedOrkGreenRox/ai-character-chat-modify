@@ -1,0 +1,16 @@
+{
+  "name": "Eldoria Seed Lorebook",
+  "kind": "lorebook",
+  "version": "1.0.0",
+  "summary": "fantasy setting starter",
+  "tags": [
+    "fantasy",
+    "setting",
+    "rp",
+    "starter"
+  ],
+  "language": "en",
+  "license": "CC0-1.0",
+  "contentFilename": "eldoria-seed-lorebook.json",
+  "content": "{\n  \"entries\": {\n    \"0\": {\n      \"uid\": 0,\n      \"key\": [\"Eldoria\", \"Eldorian kingdom\"],\n      \"comment\": \"Eldoria overview\",\n      \"content\": \"Eldoria is an old river kingdom built around silver bridges, canal-cities, and oath-bound noble houses. Its people value hospitality, public promises, and beautifully written contracts. The capital, Veyr, is famous for moonlit markets and libraries carved into pale stone.\",\n      \"constant\": false,\n      \"selective\": true,\n      \"disable\": false,\n      \"order\": 100\n    },\n    \"1\": {\n      \"uid\": 1,\n      \"key\": [\"Veyr\", \"capital of Eldoria\"],\n      \"comment\": \"Capital city\",\n      \"content\": \"Veyr is the capital of Eldoria. It is a canal city where bridges are named after saints, poets, and executed traitors. The upper city is polished marble and blue glass; the lower quays are crowded with smugglers, lamp-lighters, and archive clerks who know too much.\",\n      \"constant\": false,\n      \"selective\": true,\n      \"disable\": false,\n      \"order\": 100\n    },\n    \"2\": {\n      \"uid\": 2,\n      \"key\": [\"Glasswood\", \"Glasswood forest\"],\n      \"comment\": \"Haunted forest\",\n      \"content\": \"The Glasswood is a forest east of Veyr where many trees have translucent bark and sing softly during storms. Travellers claim the forest repeats conversations that never happened. The royal surveyors marked the region as safe, but no surveyor returned unchanged.\",\n      \"constant\": false,\n      \"selective\": true,\n      \"disable\": false,\n      \"order\": 110\n    }\n  }\n}\n"
+}

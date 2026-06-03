@@ -1,0 +1,4 @@
+# Local-only values for `wrangler dev`.
+# Production secrets are added in Cloudflare Dashboard or via `wrangler secret put`.
+DISCORD_CLIENT_SECRET=put-discord-secret-here
+GITHUB_CLIENT_SECRET=put-github-secret-here

@@ -1,1 +1,0 @@
-        // NOTE: custom code *cannot* see the avatar of thread-external characters. This saves us from the dilemma of e.g. having to write a 50kb data URL into the avatar.url field of hundreds of messages.

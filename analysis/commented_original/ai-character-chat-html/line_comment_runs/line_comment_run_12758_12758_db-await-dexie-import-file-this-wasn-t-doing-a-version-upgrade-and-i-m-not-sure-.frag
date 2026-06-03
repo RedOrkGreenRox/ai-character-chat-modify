@@ -1,1 +1,0 @@
-        // db = await Dexie.import(file); // this wasn't doing a version upgrade, and I'm not sure how to trigger it, so I'm just using the code below which was written for partial imports (but also works for full imports), and does the version upgrade manually

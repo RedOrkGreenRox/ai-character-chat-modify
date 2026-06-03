@@ -1,0 +1,17 @@
+{
+  "name": "Russian Literary RP Stylebook",
+  "kind": "skillbook",
+  "version": "1.0.0",
+  "summary": "Russian roleplay language/style guidance",
+  "tags": [
+    "language",
+    "ru",
+    "style",
+    "roleplay",
+    "narration"
+  ],
+  "language": "ru",
+  "license": "CC0-1.0",
+  "contentFilename": "russian-literary-rp-skillbook.md",
+  "content": "## Russian literary RP style\nUse natural Russian for both dialogue and actions. Do not leave actions in English when the requested output language is Russian. Prefer vivid but concise verbs: \"проводит ладонью\", \"замедляет шаг\", \"отводит взгляд\". Avoid machine-translation stiffness.\n\n## Actions in asterisks\nActions inside *asterisks* must follow the same language policy as normal text. Example: *она осторожно касается холодной дверной ручки*, not *she carefully touches the door handle*.\n\n## Dialogue\nDialogue may use em dashes or quotes. Maintain character voice, but keep grammar clean and idiomatic.\n"
+}

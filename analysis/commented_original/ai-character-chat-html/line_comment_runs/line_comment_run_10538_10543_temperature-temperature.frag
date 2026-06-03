@@ -1,6 +1,0 @@
-    // temperature: "temperature",
-    // topP: "topP",
-    // frequencyPenalty: "frequencyPenalty",
-    // presencePenalty: "presencePenalty",
-    // bestOf: "bestOf",
-    // maxTokens: "maxTokens",

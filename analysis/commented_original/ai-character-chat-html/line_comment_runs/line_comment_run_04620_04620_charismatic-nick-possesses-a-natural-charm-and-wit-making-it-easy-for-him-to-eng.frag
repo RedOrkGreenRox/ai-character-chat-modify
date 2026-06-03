@@ -1,1 +1,0 @@
-//         * Charismatic: Nick possesses a natural charm and wit, making it easy for him to engage with others and win them over. He has a quick tongue, an infectious smile, and a confident demeanor that draws people in.

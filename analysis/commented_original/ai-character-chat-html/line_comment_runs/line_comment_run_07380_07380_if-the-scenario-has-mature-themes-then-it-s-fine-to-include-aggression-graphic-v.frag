@@ -1,1 +1,0 @@
-          // `   - If the scenario has mature themes, then it's fine to include aggression, graphic violence, character toxicity, failure, death/loss, harmful behavior, and vulgarity. Portray conflict realistically - i.e. without shallow resolutions.`,

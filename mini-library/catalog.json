@@ -1,0 +1,195 @@
+{
+  "schema": "accm.mini-library.catalog.v1",
+  "items": [
+    {
+      "name": "Eldoria Seed Lorebook",
+      "kind": "lorebook",
+      "version": "1.0.0",
+      "summary": "fantasy setting starter",
+      "tags": [
+        "fantasy",
+        "setting",
+        "rp",
+        "starter"
+      ],
+      "language": "en",
+      "license": "CC0-1.0",
+      "contentFilename": "eldoria-seed-lorebook.json",
+      "file": "lorebooks/eldoria-seed-lorebook.json",
+      "publishPayload": "workshop-items/eldoria-seed.workshop-item.json"
+    },
+    {
+      "name": "Neon Harbor Noir Lorebook",
+      "kind": "lorebook",
+      "version": "1.0.0",
+      "summary": "cyber-noir city lore",
+      "tags": [
+        "cyberpunk",
+        "noir",
+        "city",
+        "investigation"
+      ],
+      "language": "en",
+      "license": "CC0-1.0",
+      "contentFilename": "neon-harbor-noir-lorebook.json",
+      "file": "lorebooks/neon-harbor-noir-lorebook.json",
+      "publishPayload": "workshop-items/neon-harbor-noir.workshop-item.json"
+    },
+    {
+      "name": "Russian Literary RP Stylebook",
+      "kind": "skillbook",
+      "version": "1.0.0",
+      "summary": "Russian roleplay language/style guidance",
+      "tags": [
+        "language",
+        "ru",
+        "style",
+        "roleplay",
+        "narration"
+      ],
+      "language": "ru",
+      "license": "CC0-1.0",
+      "contentFilename": "russian-literary-rp-skillbook.md",
+      "file": "skillbooks/russian-literary-rp-skillbook.md",
+      "publishPayload": "workshop-items/russian-literary-rp.workshop-item.json"
+    },
+    {
+      "name": "Investigative Reasoning Skillbook",
+      "kind": "skillbook",
+      "version": "1.0.0",
+      "summary": "Detective-style reasoning and evidence tracking",
+      "tags": [
+        "reasoning",
+        "investigation",
+        "detective",
+        "noir"
+      ],
+      "language": "en",
+      "license": "CC0-1.0",
+      "contentFilename": "investigative-reasoning-skillbook.md",
+      "file": "skillbooks/investigative-reasoning-skillbook.md",
+      "publishPayload": "workshop-items/investigative-reasoning.workshop-item.json"
+    },
+    {
+      "name": "Ira, Archive Witch",
+      "kind": "character",
+      "version": "1.0.0",
+      "summary": "Occult archivist character",
+      "tags": [
+        "fantasy",
+        "occult",
+        "assistant",
+        "archivist"
+      ],
+      "language": "en",
+      "license": "CC0-1.0",
+      "contentFilename": "ira-archive-witch.json",
+      "file": "characters/ira-archive-witch.json",
+      "publishPayload": "workshop-items/ira-archive-witch.workshop-item.json"
+    },
+    {
+      "name": "Nova, Harbor Runner",
+      "kind": "character",
+      "version": "1.0.0",
+      "summary": "Cyber-noir courier character",
+      "tags": [
+        "cyberpunk",
+        "courier",
+        "noir",
+        "streetwise"
+      ],
+      "language": "en",
+      "license": "CC0-1.0",
+      "contentFilename": "nova-harbor-runner.json",
+      "file": "characters/nova-harbor-runner.json",
+      "publishPayload": "workshop-items/nova-harbor-runner.workshop-item.json"
+    },
+    {
+      "name": "Noir Clue Ledger Skillbook",
+      "kind": "skillbook",
+      "version": "1.0.0",
+      "summary": "Adds a visible CLUE LEDGER section to investigation-focused replies.",
+      "tags": [
+        "noir",
+        "investigation",
+        "reasoning",
+        "clue-ledger"
+      ],
+      "language": "en",
+      "license": "CC0-1.0",
+      "contentFilename": "noir-clue-ledger-skillbook.md",
+      "file": "skillbooks/noir-clue-ledger-skillbook.md",
+      "publishPayload": "workshop-items/noir-clue-ledger.workshop-item.json"
+    },
+    {
+      "name": "Action-first RP Skillbook",
+      "kind": "skillbook",
+      "version": "1.0.0",
+      "summary": "Forces immersive RP replies to begin with physical action and sensory detail.",
+      "tags": [
+        "roleplay",
+        "style",
+        "action",
+        "sensory"
+      ],
+      "language": "en",
+      "license": "CC0-1.0",
+      "contentFilename": "action-first-rp-skillbook.md",
+      "file": "skillbooks/action-first-rp-skillbook.md",
+      "publishPayload": "workshop-items/action-first-rp.workshop-item.json"
+    },
+    {
+      "name": "Strict Russian Actions Skillbook",
+      "kind": "skillbook",
+      "version": "1.0.0",
+      "summary": "Ensures Russian RP actions in asterisks are Russian, not English.",
+      "tags": [
+        "language",
+        "ru",
+        "style",
+        "actions",
+        "roleplay"
+      ],
+      "language": "ru",
+      "license": "CC0-1.0",
+      "contentFilename": "strict-russian-actions-skillbook.md",
+      "file": "skillbooks/strict-russian-actions-skillbook.md",
+      "publishPayload": "workshop-items/strict-russian-actions.workshop-item.json"
+    },
+    {
+      "name": "Pirate English Style Preset",
+      "kind": "extension-pack",
+      "version": "1.0.0",
+      "summary": "A playful English style preset example for Base Policy experiments.",
+      "tags": [
+        "language",
+        "base-policy",
+        "en",
+        "style",
+        "pirate"
+      ],
+      "language": "en",
+      "license": "CC0-1.0",
+      "contentFilename": "base-policy-pirate-english-preset.json",
+      "file": "extension-packs/base-policy-pirate-english-preset.json",
+      "publishPayload": "workshop-items/base-policy-pirate-english-preset.workshop-item.json"
+    },
+    {
+      "name": "Small Fantasy Word Pack",
+      "kind": "extension-pack",
+      "version": "1.0.0",
+      "summary": "Small procedural word lists for fantasy names/terms.",
+      "tags": [
+        "procedural",
+        "words",
+        "fantasy",
+        "names"
+      ],
+      "language": "en",
+      "license": "CC0-1.0",
+      "contentFilename": "procedural-fantasy-words-pack.json",
+      "file": "extension-packs/procedural-fantasy-words-pack.json",
+      "publishPayload": "workshop-items/procedural-fantasy-words.workshop-item.json"
+    }
+  ]
+}

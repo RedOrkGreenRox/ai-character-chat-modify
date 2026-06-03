@@ -1,1 +1,0 @@
-        // Generate memories if they're enabled, and if this is a level 2 summary. We use level 2 summaries because level 1 tends not to have enough 'substance'/info-density to extract several lore/fact entries from.

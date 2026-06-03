@@ -1,1 +1,0 @@
-            // Re-render currentlyStreaming messages:

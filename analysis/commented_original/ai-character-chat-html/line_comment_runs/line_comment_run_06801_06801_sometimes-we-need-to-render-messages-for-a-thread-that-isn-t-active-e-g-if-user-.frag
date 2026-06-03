@@ -1,1 +1,0 @@
-    // sometimes we need to render messages for a thread that isn't active (e.g. if user clicks thread export, and then we need to compute thread.currentSummaryHashChain because it hasn't been 'lazily' upgraded yet)

@@ -1,1 +1,0 @@
-        // if they didn't change the name, and the original name was 'null' (which is the case for 'normal' messages - i.e. messages which don't overwrite the name of the character), then we delete the name

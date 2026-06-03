@@ -1,0 +1,16 @@
+{
+  "name": "Action-first RP Skillbook",
+  "kind": "skillbook",
+  "version": "1.0.0",
+  "summary": "Forces immersive RP replies to begin with physical action and sensory detail.",
+  "tags": [
+    "roleplay",
+    "style",
+    "action",
+    "sensory"
+  ],
+  "language": "en",
+  "license": "CC0-1.0",
+  "contentFilename": "action-first-rp-skillbook.md",
+  "content": "## Action-first roleplay style\nWhen this skillbook is active, roleplay replies should start with a concrete physical action before dialogue.\n\n## Required pattern\nFor immersive RP replies, begin with one short action sentence in asterisks before any spoken line.\nExample: *She steadies the lantern against the wind before answering.*\n\n## Prohibited pattern\nDo not start RP replies with abstract explanation, meta-commentary, or a direct answer without embodiment.\n\n## Verification marker\nAt least once per reply, include one sensory detail: sound, touch, smell, light, temperature, or weight.\n"
+}
