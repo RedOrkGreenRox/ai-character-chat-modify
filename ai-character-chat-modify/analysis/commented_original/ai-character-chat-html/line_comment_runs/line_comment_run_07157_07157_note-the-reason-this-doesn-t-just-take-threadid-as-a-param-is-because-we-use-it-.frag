@@ -1,0 +1,1 @@
+  // Note: the reason this doesn't just take threadId as a param is because we use it for regenerateMessage() which doesn't necessarily use all messages in a thread, and we also use it for "reply with..." which can use a different AI character

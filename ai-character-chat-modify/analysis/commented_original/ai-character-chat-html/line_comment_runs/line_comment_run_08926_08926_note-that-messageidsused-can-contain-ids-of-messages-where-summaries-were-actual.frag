@@ -1,0 +1,1 @@
+        // note that messageIdsUsed can contain ids of messages where summaries were actually used in place of the original message itself, but message.summariesUsed (which is an array of {messageId, summaryLevel}), tells us about that.

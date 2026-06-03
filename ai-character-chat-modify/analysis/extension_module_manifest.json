@@ -1,0 +1,599 @@
+{
+  "generated_by": "tools/build_extension_indexes.py",
+  "module_count": 18,
+  "modules": {
+    "030_extensions_core.frag": {
+      "title": "030 extensions core",
+      "file": "modify/new/030_extensions_core.frag",
+      "lines": 644,
+      "bytes": 25299,
+      "provides": [
+        "__AE_BEFORE_BOT_REPLY_HOOKS",
+        "__AE_CHUNK_WORDS",
+        "__AE_CONTEXT_PREVIEW_CHARS",
+        "__AE_DEFAULTS",
+        "__AE_EXT",
+        "__AE_FILE_CONTEXT_BUFFER_CHARS",
+        "__AE_FILE_REGISTRY_KEY",
+        "__AE_IMAGE_CAPTION_MODELS",
+        "__AE_MAX_ARCHIVE_FILES",
+        "__AE_MAX_ARCHIVE_FILE_BYTES",
+        "__AE_MAX_EMBEDDED_IMAGES",
+        "__AE_MAX_LORE_CHUNKS_PER_FILE",
+        "__AE_MAX_PDF_IMAGE_PAGES",
+        "__AE_MAX_VOICE_RECORDING_MS",
+        "__AE_PROCESSING_TASKS",
+        "__AE_SEARCH_CACHE",
+        "__AE_STORAGE_KEY",
+        "__AE_VERSION",
+        "__aeAbortAllProcessing",
+        "__aeAddAiContextMessage",
+        "__aeAddLoreEntry",
+        "__aeAddSystemMessage",
+        "__aeAddTextAsLore",
+        "__aeAssertNotCancelled",
+        "__aeBeginTask",
+        "__aeBuildAiContextContent",
+        "__aeChunkText",
+        "__aeCreateId",
+        "__aeCreateTransientMessageObj",
+        "__aeEndTask",
+        "__aeEnforceFileContextBuffer",
+        "__aeFindUploadedFileByMention",
+        "__aeForgetUploadedFile",
+        "__aeGetActiveFileContextCharCount",
+        "__aeGetUploadedFiles",
+        "__aeJsZipReady",
+        "__aeLoadFileRegistry",
+        "__aeLoadJsZip",
+        "__aeLoadMammoth",
+        "__aeLoadPdfJs",
+        "__aeLoadScript",
+        "__aeLoadScriptFromAny",
+        "__aeLoadSettings",
+        "__aeLoadTransformers",
+        "__aeLoadXlsx",
+        "__aeMammothReady",
+        "__aeNormalizeFileName",
+        "__aeOriginalGetBotReply",
+        "__aePdfJsReady",
+        "__aeProcessingCancelled",
+        "__aeProcessingTaskSeq",
+        "__aeReactivateFileContext",
+        "__aeRegisterBeforeBotReplyHook",
+        "__aeRegisterUploadedFile",
+        "__aeRememberExtractedContent",
+        "__aeRenderTaskPanel",
+        "__aeResetProcessingCancel",
+        "__aeSaveFileRegistry",
+        "__aeSaveSettings",
+        "__aeSetContextMessageActive",
+        "__aeTaskPanelEl",
+        "__aeToast",
+        "__aeTransformersReady",
+        "__aeTransientMessageIdCounter",
+        "__aeUpdateTask",
+        "__aeUpdateUploadedFile",
+        "__aeXlsxReady",
+        "window.__aeTransformers"
+      ],
+      "wraps": [
+        "getBotReply"
+      ],
+      "hooks_registered": [],
+      "commands_seen": [],
+      "storage": [
+        "db.lore",
+        "db.messages",
+        "db.misc",
+        "db.threads"
+      ],
+      "root_api_calls": [],
+      "network_literals": [],
+      "consumes_or_patches": [
+        "getBotReply"
+      ]
+    },
+    "031_extensions_processors.frag": {
+      "title": "031 extensions processors",
+      "file": "modify/new/031_extensions_processors.frag",
+      "lines": 395,
+      "bytes": 17219,
+      "provides": [
+        "__aeDecodeAudioToFloat32",
+        "__aeIsImageFileName",
+        "__aeProcessArchiveFile",
+        "__aeProcessAudioFile",
+        "__aeProcessDocxFile",
+        "__aeProcessEmbeddedImagesFromZipArrayBuffer",
+        "__aeProcessFile",
+        "__aeProcessImageFile",
+        "__aeProcessPdfFile",
+        "__aeProcessPdfPageImages",
+        "__aeProcessSpreadsheetFile",
+        "__aeProcessTextFile",
+        "__aeReadAndNormalizeImageDataUrl"
+      ],
+      "wraps": [],
+      "hooks_registered": [],
+      "commands_seen": [],
+      "storage": [],
+      "root_api_calls": [],
+      "network_literals": [],
+      "consumes_or_patches": []
+    },
+    "032_extensions_web_search.frag": {
+      "title": "032 extensions web search",
+      "file": "modify/new/032_extensions_web_search.frag",
+      "lines": 360,
+      "bytes": 14203,
+      "provides": [
+        "__aeBuildSearchContext",
+        "__aeDecideIfShouldSearch",
+        "__aeDecodeHtmlEntities",
+        "__aeExplicitSearchRequested",
+        "__aeExtractJsonArray",
+        "__aeExtractJsonObject",
+        "__aeFormatSources",
+        "__aeGenerateSearchQueries",
+        "__aeLikelyBenefitsFromSearch",
+        "__aeMaybeBuildAutoSearchContext",
+        "__aeNormalizeDdgUrl",
+        "__aePerformSearch",
+        "__aeSearchWeb",
+        "__aeStripHtml"
+      ],
+      "wraps": [],
+      "hooks_registered": [
+        "autoWebSearch"
+      ],
+      "commands_seen": [],
+      "storage": [],
+      "root_api_calls": [
+        "aiTextPlugin",
+        "superFetch"
+      ],
+      "network_literals": [
+        "https://html.duckduckgo.com/html/?q="
+      ],
+      "consumes_or_patches": [
+        "aiTextPlugin",
+        "superFetch"
+      ]
+    },
+    "033_extensions_controls_io.frag": {
+      "title": "033 extensions controls io",
+      "file": "modify/new/033_extensions_controls_io.frag",
+      "lines": 210,
+      "bytes": 7762,
+      "provides": [
+        "__aeCreateFileInput",
+        "__aeDragDropInstalled",
+        "__aeFeatureMap",
+        "__aeFileInput",
+        "__aePasteInstalled",
+        "__aeSetupDragDrop",
+        "__aeSetupPasteUpload",
+        "__aeShowStatus",
+        "__aeToggle"
+      ],
+      "wraps": [],
+      "hooks_registered": [],
+      "commands_seen": [],
+      "storage": [
+        "db.threads"
+      ],
+      "root_api_calls": [],
+      "network_literals": [],
+      "consumes_or_patches": []
+    },
+    "034_extensions_voice.frag": {
+      "title": "034 extensions voice",
+      "file": "modify/new/034_extensions_voice.frag",
+      "lines": 66,
+      "bytes": 2597,
+      "provides": [
+        "__aeToggleVoiceRecording",
+        "__aeVoiceChunks",
+        "__aeVoiceRecorder",
+        "__aeVoiceStream"
+      ],
+      "wraps": [],
+      "hooks_registered": [],
+      "commands_seen": [],
+      "storage": [],
+      "root_api_calls": [],
+      "network_literals": [],
+      "consumes_or_patches": []
+    },
+    "035_extensions_shortcuts_commands_init.frag": {
+      "title": "035 extensions shortcuts commands init",
+      "file": "modify/new/035_extensions_shortcuts_commands_init.frag",
+      "lines": 399,
+      "bytes": 17881,
+      "provides": [
+        "__AE_COMMAND_SUGGESTIONS",
+        "__aeApplyCommandSuggestion",
+        "__aeCommandSuggestEl",
+        "__aeCommandSuggestIndex",
+        "__aeCommandSuggestItems",
+        "__aeEnsureCommandSuggestEl",
+        "__aeEnsureShortcutButtons",
+        "__aeHandleCommandText",
+        "__aeHideCommandSuggestions",
+        "__aeOriginalSendButtonClickHandler",
+        "__aeOriginalShowThread",
+        "__aeRankCommandSuggestion",
+        "__aeSetupCommandAutocomplete",
+        "__aeSetupCommandHandler",
+        "__aeShowExtensionsMenu",
+        "__aeStyleShortcutButtons",
+        "__aeUpdateCommandSuggestions",
+        "__aeUpdateInputTooltip"
+      ],
+      "wraps": [
+        "sendButtonClickHandler",
+        "showThread"
+      ],
+      "hooks_registered": [],
+      "commands_seen": [
+        "/explorer",
+        "/ext",
+        "/extensions",
+        "/extmenu",
+        "/file",
+        "/files",
+        "/language en",
+        "/language off",
+        "/language ru",
+        "/menu",
+        "/policy",
+        "/policy status",
+        "/toggle audio",
+        "/toggle deepsearch",
+        "/toggle docx",
+        "/toggle excel",
+        "/toggle file",
+        "/toggle image",
+        "/toggle imageanalysis",
+        "/toggle pdf",
+        "/toggle search",
+        "/toggle voiceprofile",
+        "/toggle zip",
+        "/voice"
+      ],
+      "storage": [
+        "db.threads"
+      ],
+      "root_api_calls": [],
+      "network_literals": [],
+      "consumes_or_patches": [
+        "sendButtonClickHandler",
+        "showThread"
+      ]
+    },
+    "036_extensions_file_explorer.frag": {
+      "title": "036 extensions file explorer",
+      "file": "modify/new/036_extensions_file_explorer.frag",
+      "lines": 384,
+      "bytes": 25571,
+      "provides": [
+        "__aeRenderFileExplorerBody",
+        "__aeShowFileExplorer"
+      ],
+      "wraps": [],
+      "hooks_registered": [],
+      "commands_seen": [
+        "/explorer",
+        "/files"
+      ],
+      "storage": [
+        "db.characters",
+        "db.lore",
+        "db.memories",
+        "db.messages"
+      ],
+      "root_api_calls": [],
+      "network_literals": [],
+      "consumes_or_patches": []
+    },
+    "037_extensions_file_mentions.frag": {
+      "title": "037 extensions file mentions",
+      "file": "modify/new/037_extensions_file_mentions.frag",
+      "lines": 94,
+      "bytes": 3393,
+      "provides": [
+        "__aeBuildMentionContextForFile",
+        "__aeExtractFileMentions"
+      ],
+      "wraps": [],
+      "hooks_registered": [
+        "fileMentions"
+      ],
+      "commands_seen": [],
+      "storage": [
+        "db.messages"
+      ],
+      "root_api_calls": [],
+      "network_literals": [],
+      "consumes_or_patches": []
+    },
+    "038_extensions_base_policy.frag": {
+      "title": "038 extensions base policy",
+      "file": "modify/new/038_extensions_base_policy.frag",
+      "lines": 288,
+      "bytes": 14796,
+      "provides": [
+        "__AE_POLICY_LANGUAGES",
+        "__AE_POLICY_LANGUAGE_PACKS",
+        "__aeBuildBasePolicyPrompt",
+        "__aeGetAvailableLanguagePacks",
+        "__aeGetLanguagePreset",
+        "__aeGetThreadBasePolicy",
+        "__aeNormalizeBasePolicy",
+        "__aeRegisterBuiltinLanguagePacks",
+        "__aeSetThreadBasePolicy",
+        "__aeShowBasePolicyModal",
+        "__aeShowBasePolicyStatus"
+      ],
+      "wraps": [],
+      "hooks_registered": [
+        "basePolicy"
+      ],
+      "commands_seen": [
+        "/policy",
+        "/policy status"
+      ],
+      "storage": [
+        "db.threads"
+      ],
+      "root_api_calls": [],
+      "network_literals": [],
+      "consumes_or_patches": []
+    },
+    "039_extensions_deep_web_search.frag": {
+      "title": "039 extensions deep web search",
+      "file": "modify/new/039_extensions_deep_web_search.frag",
+      "lines": 122,
+      "bytes": 4669,
+      "provides": [
+        "__aeChunkByChars",
+        "__aeDeepSearchWeb",
+        "__aeHtmlToReadableText",
+        "__aeOriginalSearchWebForDeep",
+        "__aeScoreTextForQuery",
+        "__aeSearchTerms"
+      ],
+      "wraps": [
+        "__aeSearchWeb"
+      ],
+      "hooks_registered": [],
+      "commands_seen": [],
+      "storage": [],
+      "root_api_calls": [
+        "aiTextPlugin",
+        "superFetch"
+      ],
+      "network_literals": [],
+      "consumes_or_patches": [
+        "__aeSearchWeb",
+        "aiTextPlugin",
+        "superFetch"
+      ]
+    },
+    "040_extensions_image_analysis.frag": {
+      "title": "040 extensions image analysis",
+      "file": "modify/new/040_extensions_image_analysis.frag",
+      "lines": 92,
+      "bytes": 4229,
+      "provides": [
+        "__aeAdvancedAnalyzeImage",
+        "__aeOriginalProcessImageFileForAdvanced"
+      ],
+      "wraps": [
+        "__aeProcessImageFile"
+      ],
+      "hooks_registered": [],
+      "commands_seen": [],
+      "storage": [],
+      "root_api_calls": [],
+      "network_literals": [],
+      "consumes_or_patches": [
+        "__aeProcessImageFile"
+      ]
+    },
+    "041_extensions_voice_profile.frag": {
+      "title": "041 extensions voice profile",
+      "file": "modify/new/041_extensions_voice_profile.frag",
+      "lines": 77,
+      "bytes": 3512,
+      "provides": [
+        "__aeAnalyzeAudioProfile",
+        "__aeEstimatePitchAutocorrelation"
+      ],
+      "wraps": [],
+      "hooks_registered": [],
+      "commands_seen": [],
+      "storage": [],
+      "root_api_calls": [],
+      "network_literals": [],
+      "consumes_or_patches": []
+    },
+    "042_extensions_mobile_ui.frag": {
+      "title": "042 extensions mobile ui",
+      "file": "modify/new/042_extensions_mobile_ui.frag",
+      "lines": 503,
+      "bytes": 26427,
+      "provides": [
+        "window.__aeIsMobile",
+        "window.__aeMenuBack",
+        "window.__aeMenuNavigate",
+        "window.__aeMenuReplace",
+        "window.__aeMobileUiInstalled",
+        "window.__aeOpenMenu",
+        "window.__aeRegisterMenuView",
+        "window.__aeShowBasePolicyModal",
+        "window.__aeShowExtensionsMenu",
+        "window.createFloatingWindow"
+      ],
+      "wraps": [],
+      "hooks_registered": [],
+      "commands_seen": [
+        "/extensions",
+        "/file",
+        "/files",
+        "/menu",
+        "/policy",
+        "/voice"
+      ],
+      "storage": [
+        "db.threads"
+      ],
+      "root_api_calls": [],
+      "network_literals": [],
+      "consumes_or_patches": []
+    },
+    "043_extensions_voice_widget.frag": {
+      "title": "043 extensions voice widget",
+      "file": "modify/new/043_extensions_voice_widget.frag",
+      "lines": 251,
+      "bytes": 11134,
+      "provides": [
+        "window.__aeToggleVoiceRecording",
+        "window.__aeVoiceWidgetInstalled"
+      ],
+      "wraps": [],
+      "hooks_registered": [],
+      "commands_seen": [],
+      "storage": [],
+      "root_api_calls": [
+        "className",
+        "innerHTML",
+        "style"
+      ],
+      "network_literals": [],
+      "consumes_or_patches": [
+        "className",
+        "innerHTML",
+        "style"
+      ]
+    },
+    "044_accm_runtime.frag": {
+      "title": "044 accm runtime",
+      "file": "modify/new/044_accm_runtime.frag",
+      "lines": 426,
+      "bytes": 22935,
+      "provides": [
+        "window.__accm",
+        "window.__aeRegisterMenuView"
+      ],
+      "wraps": [
+        "__aeEnsureShortcutButtons",
+        "__aeHandleCommandText"
+      ],
+      "hooks_registered": [
+        "accmLibrarySkillbooks"
+      ],
+      "commands_seen": [],
+      "storage": [
+        "db.misc",
+        "db.threads"
+      ],
+      "root_api_calls": [],
+      "network_literals": [],
+      "consumes_or_patches": [
+        "__aeEnsureShortcutButtons",
+        "__aeHandleCommandText"
+      ]
+    },
+    "045_accm_gradual_message_reveal.frag": {
+      "title": "045 accm gradual message reveal",
+      "file": "modify/new/045_accm_gradual_message_reveal.frag",
+      "lines": 277,
+      "bytes": 9774,
+      "provides": [
+        "window.__accmGradualMessageRevealInstalled",
+        "window.__accmRevealedContainerKeys",
+        "window.__accmRevealedMessageKeys"
+      ],
+      "wraps": [],
+      "hooks_registered": [],
+      "commands_seen": [],
+      "storage": [],
+      "root_api_calls": [],
+      "network_literals": [],
+      "consumes_or_patches": []
+    },
+    "056_extensions_workshop.frag": {
+      "title": "056 extensions workshop",
+      "file": "modify/new/056_extensions_workshop.frag",
+      "lines": 666,
+      "bytes": 33068,
+      "provides": [
+        "window.__aeRegisterMenuView",
+        "window.__aeShowWorkshop",
+        "window.__aeWorkshopInstalled"
+      ],
+      "wraps": [],
+      "hooks_registered": [],
+      "commands_seen": [
+        "/install",
+        "/workshop",
+        "/ws"
+      ],
+      "storage": [],
+      "root_api_calls": [
+        "decompressBlobWithGzip",
+        "superFetch"
+      ],
+      "network_literals": [],
+      "consumes_or_patches": [
+        "decompressBlobWithGzip",
+        "superFetch"
+      ]
+    },
+    "058_accm_workshop_importers.frag": {
+      "title": "058 accm workshop importers",
+      "file": "modify/new/058_accm_workshop_importers.frag",
+      "lines": 347,
+      "bytes": 15094,
+      "provides": [
+        "window.__accmWorkshopImportersInstalled"
+      ],
+      "wraps": [],
+      "hooks_registered": [],
+      "commands_seen": [],
+      "storage": [],
+      "root_api_calls": [
+        "textToImagePlugin"
+      ],
+      "network_literals": [],
+      "consumes_or_patches": [
+        "textToImagePlugin"
+      ]
+    }
+  },
+  "wrapper_chains": {
+    "__aeEnsureShortcutButtons": [
+      "044_accm_runtime.frag"
+    ],
+    "__aeHandleCommandText": [
+      "044_accm_runtime.frag"
+    ],
+    "__aeProcessImageFile": [
+      "040_extensions_image_analysis.frag"
+    ],
+    "__aeSearchWeb": [
+      "039_extensions_deep_web_search.frag"
+    ],
+    "getBotReply": [
+      "030_extensions_core.frag"
+    ],
+    "sendButtonClickHandler": [
+      "035_extensions_shortcuts_commands_init.frag"
+    ],
+    "showThread": [
+      "035_extensions_shortcuts_commands_init.frag"
+    ]
+  }
+}

@@ -1,0 +1,1 @@
+  // inject summaries if we have any - NOTE: we inject them into the preparedMessages *regardless* of whether we actually inject them into the DB (see note below on prefix cache stuff), since the next summary to be computed needs to have a completely up-to-date version of the messages - otherwise it'll repeat summaries that it has already done.

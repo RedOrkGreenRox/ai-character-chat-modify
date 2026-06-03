@@ -1,0 +1,1 @@
+  // let lastChunkIndexA = -1;

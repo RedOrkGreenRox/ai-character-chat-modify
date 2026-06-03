@@ -1,0 +1,1 @@
+    // NOTE: originalMessages is needed to "hydrate" the messages with any missing data, assuming that `messages` have `id`s (which they might not, since custom code can completely overwrite messages)

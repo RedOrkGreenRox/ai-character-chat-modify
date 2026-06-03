@@ -1,0 +1,1 @@
+  // polyfill for navigator.userActivation

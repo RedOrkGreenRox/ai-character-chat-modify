@@ -1,0 +1,91 @@
+{
+  "root_imports_from_list": [
+    "loadDependencies",
+    "aiTextPlugin",
+    "textToImagePlugin",
+    "commentsPlugin",
+    "tabbedCommentsPlugin",
+    "uploadPlugin",
+    "superFetch",
+    "fullscreenButtonPlugin",
+    "combineEmojis",
+    "bugReport",
+    "generateShareLinkForCharacter",
+    "compressBlobWithGzip",
+    "loadDataFromUrlThatReferencesCloudStorageFile",
+    "decompressBlobWithGzip",
+    "evaluatePerchanceTextInSandbox",
+    "getMessageObjsWithoutSummarizedOnes",
+    "injectHierarchicalSummariesAndComputeNextSummariesInBackgroundIfNeeded",
+    "confirmAsync"
+  ],
+  "db_tables": [
+    "characters",
+    "threads",
+    "messages",
+    "misc",
+    "summaries",
+    "memories",
+    "lore",
+    "textEmbeddingCache",
+    "textCompressionCache"
+  ],
+  "dom_helpers": [
+    "$",
+    "$$",
+    "showEl",
+    "hideEl",
+    "delay",
+    "htmlToElement",
+    "createLoadingModal",
+    "createFloatingWindow"
+  ],
+  "custom_code_oc": {
+    "thread_fields": [
+      "name",
+      "messages",
+      "userCharacter",
+      "systemCharacter",
+      "character",
+      "customData",
+      "messageWrapperStyle",
+      "shortcutButtons"
+    ],
+    "thread_events": [
+      "MessageAdded",
+      "MessageEdited",
+      "MessageDeleted",
+      "MessageInserted",
+      "StreamingMessageChunk",
+      "StreamingMessage"
+    ],
+    "character_fields": [
+      "name",
+      "avatar",
+      "roleInstruction",
+      "reminderMessage",
+      "initialMessages",
+      "customCode",
+      "imagePromptPrefix",
+      "imagePromptSuffix",
+      "imagePromptTriggers",
+      "shortcutButtons",
+      "messageInputPlaceholder",
+      "stopSequences",
+      "modelName",
+      "userCharacter",
+      "streamingResponse",
+      "customData",
+      "maxTokensPerMessage",
+      "avatarUrl"
+    ],
+    "methods": [
+      "getChatCompletion",
+      "getInstructCompletion",
+      "generateText",
+      "textToImage",
+      "window.show",
+      "window.hide"
+    ]
+  }
+}

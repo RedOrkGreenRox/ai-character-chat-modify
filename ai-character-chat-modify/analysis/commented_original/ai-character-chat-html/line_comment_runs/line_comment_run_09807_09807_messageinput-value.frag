@@ -1,0 +1,1 @@
+          // $.messageInput.value = "";

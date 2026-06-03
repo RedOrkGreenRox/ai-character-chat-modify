@@ -1,0 +1,11 @@
+{
+  "project": "ai-character-chat-modify",
+  "features": [
+    "auto web search",
+    "drag and drop",
+    "paste files",
+    "DOCX extraction",
+    "PDF extraction"
+  ],
+  "language_rule": "Answer in the same language as the user question."
+}

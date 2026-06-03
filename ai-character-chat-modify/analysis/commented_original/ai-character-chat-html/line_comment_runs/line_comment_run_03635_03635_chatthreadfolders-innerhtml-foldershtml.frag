@@ -1,0 +1,1 @@
+    // $.chatThreadFolders.innerHTML = foldersHtml;

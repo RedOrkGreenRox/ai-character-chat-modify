@@ -1,0 +1,2 @@
+    // let worker = new Worker(URL.createObjectURL(new Blob([`importScripts("https://user.uploads.dev/file/fb599e745c0f1b1c78543c8aa228bf71.js");`], {type:"text/javascript"}))); // transformers.js v2.8.0
+    // let worker = new Worker(URL.createObjectURL(new Blob([`importScripts("https://user.uploads.dev/file/7b296c17c954e25f2f5f72bd98e4a2b1.js");`], {type:"text/javascript"}))); // transformers.js v2.17.1
