@@ -372,7 +372,7 @@
   ae.library.install = ae.library.install || async function(item) {
     let lib = await ae.library.load();
     item = Object.assign({ installedAt: Date.now() }, item || {});
-    if (!item.id) item.id = 'local-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+    if (!item.id) item.id = 'local-' + ((typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Date.now().toString(36));
     let idx = lib.items.findIndex(function(x) { return x.id === item.id; });
     if (idx >= 0) lib.items[idx] = Object.assign({}, lib.items[idx], item, { updatedAt: Date.now() });
     else lib.items.push(item);

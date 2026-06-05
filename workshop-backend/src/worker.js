@@ -62,7 +62,7 @@ const WORKSHOP_CONFIG = {
   GITHUB_GIST_PUBLIC: false,
 
   // CORS fallback if ALLOWED_ORIGINS variable is absent.
-  ALLOWED_ORIGINS: '*'
+  ALLOWED_ORIGINS: 'https://perchance.org'
 };
 
 const TOS_VERSION = WORKSHOP_CONFIG.TOS_VERSION;
@@ -91,11 +91,30 @@ function textResponse(text, status, extraHeaders) {
   if (extraHeaders) Object.assign(headers, extraHeaders);
   return new Response(text, { status: status || 200, headers });
 }
-function htmlResponse(html, status) {
-  return new Response(html, { status: status || 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+function htmlResponse(html, status, extraHeaders) {
+  const headers = { 'Content-Type': 'text/html; charset=utf-8' };
+  if (extraHeaders) Object.assign(headers, extraHeaders);
+  return new Response(html, { status: status || 200, headers });
 }
 function jsonErr(status, code, message) {
   return jsonResponse({ error: code, message: message || code }, status);
+}
+
+const SESSION_COOKIE_NAME = 'accm_ws_session';
+function getCookie(req, name) {
+  const cookie = req.headers.get('Cookie') || '';
+  const parts = cookie.split(';');
+  for (const part of parts) {
+    const idx = part.indexOf('=');
+    if (idx === -1) continue;
+    if (part.slice(0, idx).trim() === name) return decodeURIComponent(part.slice(idx + 1).trim());
+  }
+  return '';
+}
+function sessionCookie(token, maxAgeSeconds) {
+  return SESSION_COOKIE_NAME + '=' + encodeURIComponent(token || '') +
+    '; Max-Age=' + String(maxAgeSeconds || 0) +
+    '; Path=/; Secure; HttpOnly; SameSite=None';
 }
 
 // --- base64 ---
@@ -141,15 +160,23 @@ async function decryptToken(env, blob) {
 
 // ---------------- CORS ----------------
 function corsHeaders(env, origin) {
-  const allowed = String(cfg(env, 'ALLOWED_ORIGINS')).split(',').map(s => s.trim());
-  const ok = allowed.includes('*') || allowed.includes(origin);
+  const allowed = String(cfg(env, 'ALLOWED_ORIGINS')).split(',').map(s => s.trim()).filter(Boolean);
+  const ok = origin ? (allowed.includes(origin) || allowed.includes('*')) : true;
   return {
-    'Access-Control-Allow-Origin':  ok ? (origin || '*') : '',
+    'Access-Control-Allow-Origin':  ok ? (origin || '') : '',
     'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Authorization, Content-Type',
+    'Access-Control-Allow-Credentials': 'true',
     'Access-Control-Max-Age':       '86400',
     'Vary':                         'Origin',
   };
+}
+
+function popupTargetOrigin(env) {
+  const allowed = String(cfg(env, 'ALLOWED_ORIGINS') || '')
+    .split(',').map(s => s.trim()).filter(s => s && s !== '*');
+  if (allowed.includes('https://perchance.org')) return 'https://perchance.org';
+  return allowed[0] || 'https://perchance.org';
 }
 
 async function hashToken(token) {
@@ -165,12 +192,7 @@ async function hashToken(token) {
 async function getUser(env, req) {
   const auth = req.headers.get('Authorization') || '';
   let token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
-  if (!token) {
-    try {
-      const u = new URL(req.url);
-      token = u.searchParams.get('session') || u.searchParams.get('token');
-    } catch (e) {}
-  }
+  if (!token) token = getCookie(req, SESSION_COOKIE_NAME);
   if (!token) return null;
   const hashedToken = await hashToken(token);
   const row = await env.DB.prepare(`
@@ -189,6 +211,25 @@ async function getUser(env, req) {
 
 function tosOk(u) {
   return !!u.tos_accepted_at && u.tos_version === TOS_VERSION;
+}
+
+function validatePublishContent(kind, content, filename) {
+  const jsKinds = new Set(['generator', 'generator-extension', 'extension-pack']);
+  const looksJs = /\.m?js$/i.test(String(filename || ''));
+  if (!jsKinds.has(kind) && !looksJs) return null;
+  const checks = [
+    [/\beval\s*\(/, 'eval_forbidden'],
+    [/new\s+Function\s*\(/, 'function_constructor_forbidden'],
+    [/\bimport\s*\(/, 'dynamic_import_forbidden'],
+    [/document\.cookie/, 'cookie_access_forbidden'],
+    [/localStorage|sessionStorage/, 'browser_storage_access_forbidden'],
+    [/XMLHttpRequest|fetch\s*\(/, 'network_access_forbidden'],
+    [/<script[\s>]/i, 'script_tag_forbidden'],
+  ];
+  for (const [re, code] of checks) {
+    if (re.test(content)) return code;
+  }
+  return null;
 }
 
 // ---------------- oauth state ----------------
@@ -210,18 +251,11 @@ async function consumeOauthState(env, state) {
 }
 
 // ---------------- popup pages ----------------
-function popupReturn(env, payload, message) {
+function popupReturn(env, payload, message, extraHeaders) {
   const safe = JSON.stringify(payload).replace(/</g, '\\u003c');
   const msg  = String(message || 'Done.').replace(/[<>&]/g, '');
   
-  const allowedStr = String(cfg(env, 'ALLOWED_ORIGINS') || '');
-  const allowed = allowedStr.split(',').map(s => s.trim());
-  let targetOrigin = "*";
-  if (allowed.includes('https://perchance.org')) {
-    targetOrigin = 'https://perchance.org';
-  } else if (allowed.length > 0 && allowed[0] !== '*') {
-    targetOrigin = allowed[0];
-  }
+  const targetOrigin = popupTargetOrigin(env);
 
   const html =
     '<!doctype html><meta charset=utf-8><title>' + msg + '</title>' +
@@ -233,7 +267,7 @@ function popupReturn(env, payload, message) {
     '<div style="opacity:.6">You can close this window.</div></div>' +
     '<script>(function(){try{if(window.opener){window.opener.postMessage(' + safe + ',"' + targetOrigin + '");}}catch(e){}' +
     'setTimeout(function(){try{window.close();}catch(e){}},400);})();</script>';
-  return htmlResponse(html);
+  return htmlResponse(html, 200, extraHeaders);
 }
 function popupError(message) {
   const msg = String(message || 'Error').replace(/[<>&]/g, '');
@@ -262,7 +296,7 @@ async function handleRequest(req, env, ctx) {
     res = await router(req, env, ctx, url, path, method);
   } catch (err) {
     console.error(err);
-    res = jsonErr(500, 'internal', String((err && err.message) || err));
+    res = jsonErr(500, 'internal', 'Internal server error');
   }
 
   // attach CORS headers to the response
@@ -351,16 +385,15 @@ async function router(req, env, ctx, url, path, method) {
 
     return popupReturn(
       env,
-      { type: 'workshop.auth.ok', provider: 'discord', token: sessTok, expires_at: exp },
-      'Logged in via Discord.'
+      { type: 'workshop.auth.ok', provider: 'discord', session_mode: 'cookie', expires_at: exp },
+      'Logged in via Discord.',
+      { 'Set-Cookie': sessionCookie(sessTok, WORKSHOP_CONFIG.SESSION_DAYS * 24 * 3600) }
     );
   }
 
   // -------- github oauth (link) --------
-  if (method === 'GET' && path === '/v1/auth/github/start') {
-    const u = await getUser(env, req);
-    if (!u) return popupError('Login via Discord first, then link GitHub.');
-    const state = await makeOauthState(env, 'github', 'link', u.id);
+  async function makeGithubAuthorizeUrl(userId) {
+    const state = await makeOauthState(env, 'github', 'link', userId);
     const redirect = cfg(env, 'PUBLIC_URL') + '/v1/auth/github/callback';
     const au = new URL('https://github.com/login/oauth/authorize');
     au.searchParams.set('client_id',    env.GITHUB_CLIENT_ID);
@@ -368,7 +401,19 @@ async function router(req, env, ctx, url, path, method) {
     au.searchParams.set('scope',        WORKSHOP_CONFIG.GITHUB_GIST_SCOPE);
     au.searchParams.set('state',        state);
     au.searchParams.set('allow_signup', 'true');
-    return Response.redirect(au.toString(), 302);
+    return au.toString();
+  }
+
+  if (method === 'POST' && path === '/v1/auth/github/start') {
+    const u = await getUser(env, req);
+    if (!u) return jsonErr(401, 'unauthorized');
+    return jsonResponse({ url: await makeGithubAuthorizeUrl(u.id) });
+  }
+
+  if (method === 'GET' && path === '/v1/auth/github/start') {
+    const u = await getUser(env, req);
+    if (!u) return popupError('Login via Discord first, then link GitHub.');
+    return Response.redirect(await makeGithubAuthorizeUrl(u.id), 302);
   }
 
   if (method === 'GET' && path === '/v1/auth/github/callback') {
@@ -429,12 +474,12 @@ async function router(req, env, ctx, url, path, method) {
 
   if (method === 'POST' && path === '/v1/auth/logout') {
     const auth = req.headers.get('Authorization') || '';
-    const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
+    const token = auth.startsWith('Bearer ') ? auth.slice(7) : getCookie(req, SESSION_COOKIE_NAME);
     if (token) {
       const hashedToken = await hashToken(token);
       await env.DB.prepare(`DELETE FROM sessions WHERE token=?`).bind(hashedToken).run();
     }
-    return jsonResponse({ ok: true });
+    return jsonResponse({ ok: true }, 200, { 'Set-Cookie': sessionCookie('', 0) });
   }
 
   // -------- me --------
@@ -574,7 +619,10 @@ async function router(req, env, ctx, url, path, method) {
 
     const ext = (kind === 'generator' || kind === 'generator-extension') ? 'js' : 'json';
     const filename = (typeof contentFilename === 'string' && contentFilename.length > 0)
-      ? contentFilename : (slugify(name) + '.' + ext);
+      ? contentFilename.replace(/[^a-z0-9_.-]+/gi, '_').slice(0, 120)
+      : (slugify(name) + '.' + ext);
+    const contentPolicyError = validatePublishContent(kind, content, filename);
+    if (contentPolicyError) return jsonErr(400, contentPolicyError, 'Published executable content failed static safety checks: ' + contentPolicyError);
 
     const ghToken = await decryptToken(env, u.github_token_enc);
     const gistRes = await fetch('https://api.github.com/gists', {
@@ -638,11 +686,12 @@ async function router(req, env, ctx, url, path, method) {
     const id = decodeURIComponent(m[1]);
     const item = await env.DB.prepare(`SELECT version FROM items WHERE id=? AND status='live'`).bind(id).first();
     if (!item) return jsonErr(404, 'not_found');
+    const prevInstall = await env.DB.prepare(`SELECT 1 FROM installs WHERE user_id=? AND item_id=?`).bind(u.id, id).first();
     await env.DB.prepare(`
       INSERT INTO installs (user_id, item_id, version, installed_at) VALUES (?,?,?,?)
       ON CONFLICT(user_id, item_id) DO UPDATE SET version=excluded.version, installed_at=excluded.installed_at
     `).bind(u.id, id, item.version, now()).run();
-    await env.DB.prepare(`UPDATE items SET install_count=install_count+1 WHERE id=?`).bind(id).run();
+    if (!prevInstall) await env.DB.prepare(`UPDATE items SET install_count=install_count+1 WHERE id=?`).bind(id).run();
     return jsonResponse({ ok: true });
   }
 
@@ -656,6 +705,8 @@ async function router(req, env, ctx, url, path, method) {
     const value = body && (body.value === 1 || body.value === -1) ? body.value : 0;
     const exists = await env.DB.prepare(`SELECT 1 FROM items WHERE id=? AND status='live'`).bind(id).first();
     if (!exists) return jsonErr(404, 'not_found');
+    const prevVote = await env.DB.prepare(`SELECT value FROM votes WHERE user_id=? AND item_id=?`).bind(u.id, id).first();
+    const oldValue = prevVote && Number(prevVote.value) || 0;
     if (value === 0) {
       await env.DB.prepare(`DELETE FROM votes WHERE user_id=? AND item_id=?`).bind(u.id, id).run();
     } else {
@@ -664,9 +715,11 @@ async function router(req, env, ctx, url, path, method) {
         ON CONFLICT(user_id, item_id) DO UPDATE SET value=excluded.value, created_at=excluded.created_at
       `).bind(u.id, id, value, now()).run();
     }
-    const sum = await env.DB.prepare(`SELECT COALESCE(SUM(value),0) AS s FROM votes WHERE item_id=?`).bind(id).first();
-    const s = (sum && sum.s) || 0;
-    await env.DB.prepare(`UPDATE items SET vote_score=? WHERE id=?`).bind(s, id).run();
+    const delta = value - oldValue;
+    const score = await env.DB.prepare(
+      `UPDATE items SET vote_score=vote_score+? WHERE id=? RETURNING vote_score`
+    ).bind(delta, id).first();
+    const s = score && score.vote_score != null ? score.vote_score : 0;
     return jsonResponse({ ok: true, vote_score: s });
   }
 

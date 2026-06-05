@@ -15,6 +15,6 @@
     "test": "node tests/worker-smoke.mjs"
   },
   "devDependencies": {
-    "wrangler": "^3.95.0"
+    "wrangler": "3.95.0"
   }
 }

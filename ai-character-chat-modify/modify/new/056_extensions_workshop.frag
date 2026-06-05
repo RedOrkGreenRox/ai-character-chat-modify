@@ -38,8 +38,9 @@
   };
 
   const __AE_WORKSHOP_KEY = __AE_WORKSHOP_CONFIG.storageKey;
+  let __aeWsMemoryToken = ''; // legacy bearer fallback only; sessions are stored in HttpOnly Worker cookie.
+
   const __AE_WORKSHOP_DEFAULTS = {
-    token: '',
     lastKind: '',
     includeNsfw: __AE_WORKSHOP_CONFIG.defaultIncludeNsfw,
     sort: __AE_WORKSHOP_CONFIG.defaultSort
@@ -48,14 +49,21 @@
   function __aeWsLoad() {
     try {
       let raw = localStorage.getItem(__AE_WORKSHOP_KEY);
-      return Object.assign({}, __AE_WORKSHOP_DEFAULTS, raw ? JSON.parse(raw) : {});
+      let parsed = raw ? JSON.parse(raw) : {};
+      if (parsed && Object.prototype.hasOwnProperty.call(parsed, 'token')) {
+        delete parsed.token;
+        localStorage.setItem(__AE_WORKSHOP_KEY, JSON.stringify(parsed));
+      }
+      return Object.assign({}, __AE_WORKSHOP_DEFAULTS, parsed);
     } catch(e) {
       return Object.assign({}, __AE_WORKSHOP_DEFAULTS);
     }
   }
 
   function __aeWsSave(s) {
-    localStorage.setItem(__AE_WORKSHOP_KEY, JSON.stringify(Object.assign({}, __AE_WORKSHOP_DEFAULTS, s || {})));
+    let clean = Object.assign({}, __AE_WORKSHOP_DEFAULTS, s || {});
+    delete clean.token;
+    localStorage.setItem(__AE_WORKSHOP_KEY, JSON.stringify(clean));
   }
 
   function __aeWsApiUrl() {
@@ -63,13 +71,11 @@
   }
 
   function __aeWsToken() {
-    return __aeWsLoad().token || '';
+    return __aeWsMemoryToken || '';
   }
 
   function __aeWsSetToken(token) {
-    let s = __aeWsLoad();
-    s.token = token || '';
-    __aeWsSave(s);
+    __aeWsMemoryToken = token || '';
   }
 
   function __aeWsEsc(s) {
@@ -87,7 +93,9 @@
     }
     let token = __aeWsToken();
     if (token) headers['Authorization'] = 'Bearer ' + token;
-    let res = await fetch(api + path, Object.assign({}, opts, { headers: headers }));
+    let fetchOpts = Object.assign({}, opts, { headers: headers, credentials: 'include' });
+    delete fetchOpts.json;
+    let res = await fetch(api + path, fetchOpts);
     let text = await res.text();
     let data = null;
     try { data = text ? JSON.parse(text) : null; } catch(e) { data = { raw: text }; }
@@ -208,28 +216,39 @@
     }
   }
 
-  function __aeWsOpenPopup(url, expectedTypes) {
+  function __aeWsOpenPopup(urlOrFactory, expectedTypes) {
     expectedTypes = expectedTypes || [];
     return new Promise(function(resolve, reject) {
       let done = false;
+      let popup = window.open('about:blank', __AE_WORKSHOP_CONFIG.popupName, __AE_WORKSHOP_CONFIG.popupFeatures);
+      const expectedOrigin = new URL(__aeWsApiUrl()).origin;
       function cleanup() {
         window.removeEventListener('message', onMessage);
         done = true;
       }
+      function fail(err) {
+        cleanup();
+        try { if (popup && !popup.closed) popup.close(); } catch(e) {}
+        reject(err);
+      }
       function onMessage(ev) {
+        if (ev.origin !== expectedOrigin) return;
+        if (popup && ev.source !== popup) return;
         let data = ev.data || {};
         if (!data || typeof data !== 'object') return;
         if (expectedTypes.length && expectedTypes.indexOf(data.type) === -1) return;
         cleanup();
         resolve(data);
       }
-      window.addEventListener('message', onMessage);
-      let popup = window.open(url, __AE_WORKSHOP_CONFIG.popupName, __AE_WORKSHOP_CONFIG.popupFeatures);
       if (!popup) {
-        cleanup();
         reject(new Error('Popup was blocked. Allow popups for this page and try again.'));
         return;
       }
+      window.addEventListener('message', onMessage);
+      Promise.resolve(typeof urlOrFactory === 'function' ? urlOrFactory() : urlOrFactory).then(function(url) {
+        if (!url) throw new Error('OAuth start URL is empty.');
+        popup.location.href = url;
+      }).catch(fail);
       setTimeout(function() {
         if (!done) {
           // Do not reject too early: the user may still be authorizing.
@@ -253,8 +272,10 @@
     let token = __aeWsToken();
     if (!api) throw new Error('Set Workshop API URL first.');
     if (!token) throw new Error('Login with Discord first.');
-    let url = api + '/v1/auth/github/start?session=' + encodeURIComponent(token);
-    let msg = await __aeWsOpenPopup(url, ['workshop.github.linked']);
+    let msg = await __aeWsOpenPopup(async function() {
+      let started = await __aeWsFetch('/v1/auth/github/start', { method: 'POST' });
+      return started && started.url;
+    }, ['workshop.github.linked']);
     __aeToast('Workshop: GitHub linked' + (msg.github_login ? ' (' + msg.github_login + ')' : '') + '.', 3500);
     return msg;
   }

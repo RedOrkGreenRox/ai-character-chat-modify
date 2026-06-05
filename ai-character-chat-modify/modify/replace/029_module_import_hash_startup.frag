@@ -116,7 +116,7 @@
       let cborBytes = new Uint8Array(await cborBlob.arrayBuffer());
 
       let CBOR = await import("https://user.uploads.dev/file/4cc84b2c503aad595e5c6e9fffe24602.js").then(r => r.default).catch(console.error);
-      if(!CBOR) CBOR = await import(`https://user.uploads.dev/file/4cc84b2c503aad595e5c6e9fffe24602.js?v=${Math.random()}`).then(r => r.default).catch(console.error);
+      if(!CBOR) CBOR = await import(`https://user.uploads.dev/file/4cc84b2c503aad595e5c6e9fffe24602.js?v=${Date.now()}`).then(r => r.default).catch(console.error);
       if(!CBOR) CBOR = await import(URL.createObjectURL(await root.superFetch(`https://user.uploads.dev/file/4cc84b2c503aad595e5c6e9fffe24602.js`).then(r => r.blob()))).then(r => r.default).catch(console.error);
       if(!CBOR) { // no idea why the above aren't working for some people, final fallback:
         await import(`https://unpkg.com/cbor-x@1.6.0/dist/index.js`).catch(console.error); // adds it as a global

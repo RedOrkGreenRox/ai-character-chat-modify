@@ -792,7 +792,7 @@
 
       let chunkI = 0;
       let prevText = null;
-      const streamId = (await sha256Text(Math.random().toString()+Math.random().toString())).slice(0, 16);
+      const streamId = ((typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID().replace(/-/g, '') : await sha256Text(String(Date.now()))).slice(0, 16);
       let alreadyCalledStopMethod = false;
       let gotFirstChunk = false;
 

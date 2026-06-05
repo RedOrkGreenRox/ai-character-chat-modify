@@ -115,3 +115,14 @@ CREATE TABLE IF NOT EXISTS reports (
 );
 
 CREATE INDEX IF NOT EXISTS idx_reports_status ON reports(status, created_at DESC);
+
+
+CREATE INDEX IF NOT EXISTS idx_items_status_nsfw_kind_score
+  ON items(status, nsfw, kind, vote_score DESC, install_count DESC);
+CREATE INDEX IF NOT EXISTS idx_items_status_nsfw_updated
+  ON items(status, nsfw, updated_at DESC);
+CREATE INDEX IF NOT EXISTS idx_installs_item ON installs(item_id);
+CREATE INDEX IF NOT EXISTS idx_votes_item ON votes(item_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_reports_unique_open_user_item
+  ON reports(user_id, item_id, status)
+  WHERE status='open';

@@ -43,6 +43,7 @@ const __AE_MAX_PDF_IMAGE_PAGES = 3;
 const __AE_MAX_LORE_CHUNKS_PER_FILE = 40;
 const __AE_MAX_VOICE_RECORDING_MS = 60 * 1000;
 const __AE_BEFORE_BOT_REPLY_HOOKS = [];
+let __aeIdSequence = 0;
 
 const __AE_DEFAULTS = {
   fileUpload: true,
@@ -365,7 +366,8 @@ async function __aeAddAiContextMessage(content, name, customData) {
 }
 
 function __aeCreateId(prefix) {
-  return (prefix || 'ae') + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
+  let rnd = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID().replace(/-/g, '').slice(0, 12) : (++__aeIdSequence).toString(36);
+  return (prefix || 'ae') + '_' + Date.now().toString(36) + '_' + rnd;
 }
 
 function __aeNormalizeFileName(name) {
