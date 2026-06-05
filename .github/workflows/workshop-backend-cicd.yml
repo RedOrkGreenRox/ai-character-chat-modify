@@ -1,0 +1,176 @@
+name: Workshop Backend CI/CD
+
+on:
+  pull_request:
+    paths:
+      - 'workshop-backend/**'
+      - '.github/workflows/workshop-backend-cicd.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'workshop-backend/**'
+      - '.github/workflows/workshop-backend-cicd.yml'
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: 'Deploy Worker after tests'
+        type: boolean
+        default: true
+      migrate:
+        description: 'Apply D1 schema.sql before deploy'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: workshop-backend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Validate Worker
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: workshop-backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.20.2'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Syntax check
+        run: npm run check
+
+      - name: Smoke tests
+        run: npm test
+
+  deploy:
+    name: Migrate D1 and deploy Worker
+    runs-on: ubuntu-latest
+    needs: test
+    if: >-
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_dispatch' && inputs.deploy)
+    environment: cloudflare-production
+    defaults:
+      run:
+        working-directory: workshop-backend
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_D1_DATABASE_ID: ${{ secrets.CLOUDFLARE_D1_DATABASE_ID }}
+
+      # Prefer GitHub repository/environment Variables for non-secrets.
+      # Secrets with the same names also work if you prefer to keep client IDs private.
+      DISCORD_CLIENT_ID: ${{ vars.DISCORD_CLIENT_ID || secrets.DISCORD_CLIENT_ID }}
+      GITHUB_CLIENT_ID: ${{ vars.GITHUB_CLIENT_ID || secrets.GITHUB_CLIENT_ID }}
+      PUBLIC_URL: ${{ vars.PUBLIC_URL }}
+      ALLOWED_ORIGINS: ${{ vars.ALLOWED_ORIGINS }}
+      DAILY_PUBLISH_LIMIT_NEW: ${{ vars.DAILY_PUBLISH_LIMIT_NEW }}
+      DAILY_PUBLISH_LIMIT_TRUSTED: ${{ vars.DAILY_PUBLISH_LIMIT_TRUSTED }}
+      BOOTSTRAP_ADMIN_DISCORD_UID: ${{ vars.BOOTSTRAP_ADMIN_DISCORD_UID || secrets.BOOTSTRAP_ADMIN_DISCORD_UID }}
+
+      # Optional: if set, CI will sync Cloudflare Worker secrets before deploy.
+      DISCORD_CLIENT_SECRET: ${{ secrets.DISCORD_CLIENT_SECRET }}
+      GITHUB_CLIENT_SECRET: ${{ secrets.GITHUB_CLIENT_SECRET }}
+      TOKEN_ENCRYPTION_KEY: ${{ secrets.TOKEN_ENCRYPTION_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.20.2'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Validate CI configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          required=(CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_D1_DATABASE_ID DISCORD_CLIENT_ID GITHUB_CLIENT_ID PUBLIC_URL)
+          for key in "${required[@]}"; do
+            if [ -z "${!key:-}" ]; then
+              echo "::error::$key is required for Cloudflare deploy"
+              exit 1
+            fi
+          done
+
+      - name: Render wrangler.toml from CI variables
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os
+          from pathlib import Path
+
+          path = Path('wrangler.toml')
+          text = path.read_text()
+          replacements = {
+              'PUT_DATABASE_ID_HERE': os.environ['CLOUDFLARE_D1_DATABASE_ID'],
+              'PUT_DISCORD_CLIENT_ID_HERE': os.environ['DISCORD_CLIENT_ID'],
+              'PUT_GITHUB_CLIENT_ID_HERE': os.environ['GITHUB_CLIENT_ID'],
+              'https://accm-workshop.accm.workers.dev': os.environ['PUBLIC_URL'],
+          }
+          for old, new in replacements.items():
+              text = text.replace(old, new)
+
+          def set_var(src: str, key: str, value: str) -> str:
+              if value == '':
+                  return src
+              lines = src.splitlines()
+              target = f'{key} '
+              out = []
+              done = False
+              escaped = value.replace('\\', '\\\\').replace('"', '\\"')
+              for line in lines:
+                  if line.startswith(target) or line.startswith(f'{key}='):
+                      out.append(f'{key} = "{escaped}"')
+                      done = True
+                  else:
+                      out.append(line)
+              if not done:
+                  out.append(f'{key} = "{escaped}"')
+              return '\n'.join(out) + '\n'
+
+          text = set_var(text, 'ALLOWED_ORIGINS', os.environ.get('ALLOWED_ORIGINS') or 'https://perchance.org')
+          text = set_var(text, 'DAILY_PUBLISH_LIMIT_NEW', os.environ.get('DAILY_PUBLISH_LIMIT_NEW') or '3')
+          text = set_var(text, 'DAILY_PUBLISH_LIMIT_TRUSTED', os.environ.get('DAILY_PUBLISH_LIMIT_TRUSTED') or '50')
+          text = set_var(text, 'BOOTSTRAP_ADMIN_DISCORD_UID', os.environ.get('BOOTSTRAP_ADMIN_DISCORD_UID') or '')
+          path.write_text(text)
+          PY
+
+      - name: Sync Worker secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          put_secret() {
+            local name="$1"
+            local value="$2"
+            if [ -n "$value" ]; then
+              printf '%s' "$value" | npx wrangler secret put "$name"
+            else
+              echo "Skipping $name: GitHub secret is not set"
+            fi
+          }
+          put_secret DISCORD_CLIENT_SECRET "${DISCORD_CLIENT_SECRET:-}"
+          put_secret GITHUB_CLIENT_SECRET "${GITHUB_CLIENT_SECRET:-}"
+          put_secret TOKEN_ENCRYPTION_KEY "${TOKEN_ENCRYPTION_KEY:-}"
+
+      - name: Apply D1 schema
+        if: github.event_name != 'workflow_dispatch' || inputs.migrate
+        run: npx wrangler d1 execute workshop-db --remote --file=schema.sql
+
+      - name: Deploy Worker
+        run: npx wrangler deploy
