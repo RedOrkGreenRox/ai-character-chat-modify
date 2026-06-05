@@ -81,7 +81,9 @@ jobs:
 
       # Optional: if set, CI will sync Cloudflare Worker secrets before deploy.
       DISCORD_CLIENT_SECRET: ${{ secrets.DISCORD_CLIENT_SECRET }}
-      GITHUB_CLIENT_SECRET: ${{ secrets.GITHUB_CLIENT_SECRET }}
+      # GitHub repository secrets cannot use the reserved GITHUB_ prefix.
+      # This CI name is synced into Cloudflare runtime GITHUB_CLIENT_SECRET below.
+      WORKSHOP_GITHUB_CLIENT_SECRET: ${{ secrets.WORKSHOP_GITHUB_CLIENT_SECRET }}
       TOKEN_ENCRYPTION_KEY: ${{ secrets.TOKEN_ENCRYPTION_KEY }}
     steps:
       - name: Checkout
@@ -163,7 +165,7 @@ jobs:
             fi
           }
           put_secret DISCORD_CLIENT_SECRET "${DISCORD_CLIENT_SECRET:-}"
-          put_secret GITHUB_CLIENT_SECRET "${GITHUB_CLIENT_SECRET:-}"
+          put_secret GITHUB_CLIENT_SECRET "${WORKSHOP_GITHUB_CLIENT_SECRET:-}"
           put_secret TOKEN_ENCRYPTION_KEY "${TOKEN_ENCRYPTION_KEY:-}"
 
       - name: Apply D1 schema
