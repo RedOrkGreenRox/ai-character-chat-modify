@@ -113,7 +113,11 @@ function fromBase64(s) {
 
 // --- encryption for github tokens at rest ---
 async function getEncKey(env) {
-  const seed = new TextEncoder().encode(env.DISCORD_CLIENT_SECRET || 'fallback-seed');
+  const secret = env.TOKEN_ENCRYPTION_KEY || env.DISCORD_CLIENT_SECRET;
+  if (!secret) {
+    throw new Error('TOKEN_ENCRYPTION_KEY or DISCORD_CLIENT_SECRET is required for security');
+  }
+  const seed = new TextEncoder().encode(secret);
   const raw  = await crypto.subtle.digest('SHA-256', seed);
   return crypto.subtle.importKey('raw', raw, { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']);
 }
@@ -148,6 +152,15 @@ function corsHeaders(env, origin) {
   };
 }
 
+async function hashToken(token) {
+  if (!token) return '';
+  const encoder = new TextEncoder();
+  const data = encoder.encode(token);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 // ---------------- auth ----------------
 async function getUser(env, req) {
   const auth = req.headers.get('Authorization') || '';
@@ -159,6 +172,7 @@ async function getUser(env, req) {
     } catch (e) {}
   }
   if (!token) return null;
+  const hashedToken = await hashToken(token);
   const row = await env.DB.prepare(`
     SELECT users.id, users.handle, users.avatar_url, users.role,
            users.tos_accepted_at, users.tos_version,
@@ -167,7 +181,7 @@ async function getUser(env, req) {
     FROM sessions
     JOIN users ON users.id = sessions.user_id
     WHERE sessions.token = ?
-  `).bind(token).first();
+  `).bind(hashedToken).first();
   if (!row || row.expires_at < now()) return null;
   if (row.banned_at) return null;
   return row;
@@ -196,9 +210,19 @@ async function consumeOauthState(env, state) {
 }
 
 // ---------------- popup pages ----------------
-function popupReturn(payload, message) {
+function popupReturn(env, payload, message) {
   const safe = JSON.stringify(payload).replace(/</g, '\\u003c');
   const msg  = String(message || 'Done.').replace(/[<>&]/g, '');
+  
+  const allowedStr = String(cfg(env, 'ALLOWED_ORIGINS') || '');
+  const allowed = allowedStr.split(',').map(s => s.trim());
+  let targetOrigin = "*";
+  if (allowed.includes('https://perchance.org')) {
+    targetOrigin = 'https://perchance.org';
+  } else if (allowed.length > 0 && allowed[0] !== '*') {
+    targetOrigin = allowed[0];
+  }
+
   const html =
     '<!doctype html><meta charset=utf-8><title>' + msg + '</title>' +
     '<style>html,body{margin:0;height:100%;background:#0f1115;color:#eee;' +
@@ -207,7 +231,7 @@ function popupReturn(payload, message) {
     'flex-direction:column;gap:1rem;padding:1rem;text-align:center}.ok{font-size:2rem}</style>' +
     '<div class="b"><div class="ok">✓</div><div>' + msg + '</div>' +
     '<div style="opacity:.6">You can close this window.</div></div>' +
-    '<script>(function(){try{if(window.opener){window.opener.postMessage(' + safe + ',"*");}}catch(e){}' +
+    '<script>(function(){try{if(window.opener){window.opener.postMessage(' + safe + ',"' + targetOrigin + '");}}catch(e){}' +
     'setTimeout(function(){try{window.close();}catch(e){}},400);})();</script>';
   return htmlResponse(html);
 }
@@ -319,12 +343,14 @@ async function router(req, env, ctx, url, path, method) {
     }
 
     const sessTok = sToken();
+    const hashedSessTok = await hashToken(sessTok);
     const exp = t + WORKSHOP_CONFIG.SESSION_DAYS * 24 * 3600 * 1000;
     await env.DB.prepare(`
       INSERT INTO sessions (token, user_id, created_at, expires_at) VALUES (?,?,?,?)
-    `).bind(sessTok, userRow.id, t, exp).run();
+    `).bind(hashedSessTok, userRow.id, t, exp).run();
 
     return popupReturn(
+      env,
       { type: 'workshop.auth.ok', provider: 'discord', token: sessTok, expires_at: exp },
       'Logged in via Discord.'
     );
@@ -386,6 +412,7 @@ async function router(req, env, ctx, url, path, method) {
     `).bind(ghMe.login, String(ghMe.id), enc, tok.scope || 'gist', t, st.user_id).run();
 
     return popupReturn(
+      env,
       { type: 'workshop.github.linked', github_login: ghMe.login },
       'Linked GitHub: ' + ghMe.login
     );
@@ -403,7 +430,10 @@ async function router(req, env, ctx, url, path, method) {
   if (method === 'POST' && path === '/v1/auth/logout') {
     const auth = req.headers.get('Authorization') || '';
     const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
-    if (token) await env.DB.prepare(`DELETE FROM sessions WHERE token=?`).bind(token).run();
+    if (token) {
+      const hashedToken = await hashToken(token);
+      await env.DB.prepare(`DELETE FROM sessions WHERE token=?`).bind(hashedToken).run();
+    }
     return jsonResponse({ ok: true });
   }
 

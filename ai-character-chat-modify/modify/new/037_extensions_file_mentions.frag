@@ -8,11 +8,11 @@
 
 function __aeExtractFileMentions(text) {
   text = text || '';
-  var result = [];
-  var re = /@\[([^\]\n]{1,240})\]/g;
-  var m;
+  let result = [];
+  let re = /@\[([^\]\n]{1,240})\]/g;
+  let m;
   while ((m = re.exec(text)) !== null) {
-    var name = (m[1] || '').trim();
+    let name = (m[1] || '').trim();
     if (name) result.push(name);
   }
   return Array.from(new Set(result));
@@ -20,9 +20,9 @@ function __aeExtractFileMentions(text) {
 
 async function __aeBuildMentionContextForFile(file) {
   if (!file) return null;
-  var text = file.fullText || file.preview || '';
+  let text = file.fullText || file.preview || '';
   if (!text && typeof file.contextMessageId === 'number') {
-    var msg = await db.messages.get(file.contextMessageId).catch(function() { return null; });
+    let msg = await db.messages.get(file.contextMessageId).catch(function() { return null; });
     if (msg && msg.message) text = msg.message;
   }
   if (!text) return null;
@@ -32,9 +32,9 @@ async function __aeBuildMentionContextForFile(file) {
 __aeRegisterBeforeBotReplyHook('fileMentions', async function(opts) {
   if (!opts || !Array.isArray(opts.messages) || typeof opts.threadId !== 'number') return opts;
 
-  var messages = opts.messages.filter(function(m) { return !(m.hiddenFrom && m.hiddenFrom.includes('ai')); });
-  var lastUserMessage = null;
-  for (var i = messages.length - 1; i >= 0; i--) {
+  let messages = opts.messages.filter(function(m) { return !(m.hiddenFrom && m.hiddenFrom.includes('ai')); });
+  let lastUserMessage = null;
+  for (let i = messages.length - 1; i >= 0; i--) {
     if (messages[i].characterId === -1 && messages[i].message) {
       lastUserMessage = messages[i];
       break;
@@ -42,18 +42,18 @@ __aeRegisterBeforeBotReplyHook('fileMentions', async function(opts) {
   }
   if (!lastUserMessage) return opts;
 
-  var mentions = __aeExtractFileMentions(String(lastUserMessage.message || ''));
+  let mentions = __aeExtractFileMentions(String(lastUserMessage.message || ''));
   if (mentions.length === 0) return opts;
 
-  var contextBlocks = [];
-  var unresolved = [];
+  let contextBlocks = [];
+  let unresolved = [];
 
-  for (var mi = 0; mi < mentions.length; mi++) {
-    var mentionName = mentions[mi];
-    var found = await __aeFindUploadedFileByMention(mentionName, opts.threadId);
+  for (let mi = 0; mi < mentions.length; mi++) {
+    let mentionName = mentions[mi];
+    let found = await __aeFindUploadedFileByMention(mentionName, opts.threadId);
     if (found.file) {
       await __aeReactivateFileContext(found.file);
-      var ctx = await __aeBuildMentionContextForFile(found.file);
+      let ctx = await __aeBuildMentionContextForFile(found.file);
       if (ctx) {
         contextBlocks.push(ctx);
         __aeToast('📎 Recalled file: ' + found.file.name, 2500);
@@ -73,8 +73,8 @@ __aeRegisterBeforeBotReplyHook('fileMentions', async function(opts) {
 
   if (contextBlocks.length === 0) return opts;
 
-  var newMessages = opts.messages.slice();
-  var mentionMsg = __aeCreateTransientMessageObj({
+  let newMessages = opts.messages.slice();
+  let mentionMsg = __aeCreateTransientMessageObj({
     threadId: opts.threadId,
     message: contextBlocks.join('\n\n---\n\n'),
     characterId: -2,
@@ -82,8 +82,8 @@ __aeRegisterBeforeBotReplyHook('fileMentions', async function(opts) {
     expectsReply: false
   });
 
-  var insertAt = newMessages.length;
-  for (var j = newMessages.length - 1; j >= 0; j--) {
+  let insertAt = newMessages.length;
+  for (let j = newMessages.length - 1; j >= 0; j--) {
     if (newMessages[j].characterId === -1) { insertAt = j; break; }
   }
   newMessages.splice(insertAt, 0, mentionMsg);

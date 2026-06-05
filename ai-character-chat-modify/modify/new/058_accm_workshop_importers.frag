@@ -11,7 +11,7 @@
   if (window.__accmWorkshopImportersInstalled) return;
   window.__accmWorkshopImportersInstalled = true;
 
-  var ae = window.__accm;
+  let ae = window.__accm;
   if (!ae || !ae.importers) {
     console.warn('[accm] Workshop importers skipped: runtime/importer registry missing.');
     return;
@@ -29,7 +29,7 @@
         return payload.item && payload.item.kind === 'skillbook' && !!(ws() && ws().installLorebook);
       },
       install: async function(payload) {
-        var item = Object.assign({}, payload.item || {}, {
+        let item = Object.assign({}, payload.item || {}, {
           id: (payload.item && payload.item.id) || ('workshop.skillbook.' + Date.now()),
           kind: 'skillbook',
           content: payload.content,
@@ -65,9 +65,9 @@
       return !!(ws() && ws().isDexieExportText && ws().isDexieExportText(payload.content) && typeof tryImportingDexieFile === 'function');
     },
     install: async function(payload) {
-      var item = payload.item;
-      var df = new File([payload.content], (item.name || 'perchance-export') + '.json', { type: 'application/json' });
-      var dr = await tryImportingDexieFile(df, {});
+      let item = payload.item;
+      let df = new File([payload.content], (item.name || 'perchance-export') + '.json', { type: 'application/json' });
+      let dr = await tryImportingDexieFile(df, {});
       __aeToast('🏛 Perchance export import attempted: ' + item.name + ' (' + dr + ')', 5000);
       return true;
     }
@@ -101,11 +101,11 @@
   }
 
   function __accmDecodeBinaryWrapper(text) {
-    var json = __accmTryParseJson(text);
+    let json = __accmTryParseJson(text);
     if (!json || json.schema !== 'accm.binary-file.v1' || !json.base64) return null;
-    var bin = atob(json.base64);
-    var bytes = new Uint8Array(bin.length);
-    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    let bin = atob(json.base64);
+    let bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
     return new File([bytes], json.filename || 'binary-file', { type: json.mime || 'application/octet-stream' });
   }
 
@@ -115,13 +115,13 @@
 
   function __accmGeneratedAvatarDataUrl(name) {
     name = String(name || '?').trim() || '?';
-    var initials = name.split(/\s+/).slice(0, 2).map(function(x) { return x[0] || ''; }).join('').toUpperCase() || '?';
-    var hash = 0;
-    for (var i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
-    var hue = hash % 360;
-    var bg1 = 'hsl(' + hue + ', 62%, 38%)';
-    var bg2 = 'hsl(' + ((hue + 38) % 360) + ', 72%, 24%)';
-    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">' +
+    let initials = name.split(/\s+/).slice(0, 2).map(function(x) { return x[0] || ''; }).join('').toUpperCase() || '?';
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+    let hue = hash % 360;
+    let bg1 = 'hsl(' + hue + ', 62%, 38%)';
+    let bg2 = 'hsl(' + ((hue + 38) % 360) + ', 72%, 24%)';
+    let svg = '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">' +
       '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + bg1 + '"/><stop offset="1" stop-color="' + bg2 + '"/></linearGradient></defs>' +
       '<rect width="512" height="512" rx="96" fill="url(#g)"/>' +
       '<circle cx="384" cy="112" r="72" fill="rgba(255,255,255,0.14)"/>' +
@@ -134,23 +134,23 @@
   async function __accmResizeAvatarDataUrl(dataUrl, size) {
     size = size || 512;
     try {
-      var img = await new Promise(function(resolve, reject) {
-        var el = new Image();
+      let img = await new Promise(function(resolve, reject) {
+        let el = new Image();
         el.onload = function() { resolve(el); };
         el.onerror = function() { reject(new Error('Could not load generated avatar image.')); };
         el.src = dataUrl;
       });
-      var canvas = document.createElement('canvas');
+      let canvas = document.createElement('canvas');
       canvas.width = size;
       canvas.height = size;
-      var ctx = canvas.getContext('2d');
+      let ctx = canvas.getContext('2d');
       ctx.fillStyle = '#111';
       ctx.fillRect(0, 0, size, size);
-      var side = Math.min(img.naturalWidth || img.width, img.naturalHeight || img.height);
-      var sx = ((img.naturalWidth || img.width) - side) / 2;
-      var sy = ((img.naturalHeight || img.height) - side) / 2;
+      let side = Math.min(img.naturalWidth || img.width, img.naturalHeight || img.height);
+      let sx = ((img.naturalWidth || img.width) - side) / 2;
+      let sy = ((img.naturalHeight || img.height) - side) / 2;
       ctx.drawImage(img, sx, sy, side, side, 0, 0, size, size);
-      var out = canvas.toDataURL('image/jpeg', 0.88);
+      let out = canvas.toDataURL('image/jpeg', 0.88);
       canvas.width = canvas.height = 0;
       return out;
     } catch(e) {
@@ -160,7 +160,7 @@
   }
 
   function __accmAvatarPromptForCharacter(character) {
-    var desc = String(character.roleInstruction || '').replace(/{{char}}/g, character.name || 'the character').replace(/{{user}}/g, 'the user');
+    let desc = String(character.roleInstruction || '').replace(/{{char}}/g, character.name || 'the character').replace(/{{user}}/g, 'the user');
     desc = desc.replace(/\s+/g, ' ').slice(0, 900);
     return [
       'high quality square profile portrait avatar, character headshot, expressive face, clean composition, detailed digital painting',
@@ -172,22 +172,22 @@
 
   async function __accmGenerateAiAvatarForCharacter(character) {
     if (!root || typeof root.textToImagePlugin !== 'function') return null;
-    var prompt = __accmAvatarPromptForCharacter(character);
-    var resultObj = root.textToImagePlugin({
+    let prompt = __accmAvatarPromptForCharacter(character);
+    let resultObj = root.textToImagePlugin({
       prompt: prompt,
       negativePrompt: 'text, watermark, logo, blurry, low quality, deformed face, extra limbs, bad anatomy, cropped head',
       resolution: '512x512',
       style: 'z-index:10000; opacity:0.45; position:fixed; top:0.5rem; right:0.5rem; transform-origin:top right; transform:scale(0.32);'
     });
-    var iframeEl = null;
+    let iframeEl = null;
     try {
       if (resultObj.iframeHtml) {
-        var tmp = document.createElement('div');
+        let tmp = document.createElement('div');
         tmp.innerHTML = resultObj.iframeHtml;
         iframeEl = tmp.firstElementChild;
         if (iframeEl) document.body.append(iframeEl);
       }
-      var resultData = await resultObj.onFinishPromise;
+      let resultData = await resultObj.onFinishPromise;
       if (resultData && resultData.dataUrl) return await __accmResizeAvatarDataUrl(resultData.dataUrl, 512);
     } finally {
       try { if (iframeEl) iframeEl.remove(); } catch(e) {}
@@ -196,9 +196,9 @@
   }
 
   function __accmNormalizeNativeCharacterJson(json) {
-    var avatar = Object.assign({ url: '', size: 1, shape: 'square' }, json.avatar || {});
+    let avatar = Object.assign({ url: '', size: 1, shape: 'square' }, json.avatar || {});
 
-    var initialMessages = Array.isArray(json.initialMessages) ? json.initialMessages.map(function(m) {
+    let initialMessages = Array.isArray(json.initialMessages) ? json.initialMessages.map(function(m) {
       if (typeof m === 'string') return { author: 'ai', content: m };
       return {
         author: m.author || (m.characterId === -1 ? 'user' : m.characterId === -2 ? 'system' : 'ai'),
@@ -237,12 +237,12 @@
     priority: 120,
     test: async function(payload) {
       if (!payload.item || payload.item.kind !== 'character') return false;
-      var file = __accmDecodeBinaryWrapper(payload.content);
+      let file = __accmDecodeBinaryWrapper(payload.content);
       return !!(file && (file.type || '').startsWith('image/') && typeof tryImportingExternalCharacterFileFormat === 'function');
     },
     install: async function(payload) {
-      var file = __accmDecodeBinaryWrapper(payload.content);
-      var r = await tryImportingExternalCharacterFileFormat(file, {});
+      let file = __accmDecodeBinaryWrapper(payload.content);
+      let r = await tryImportingExternalCharacterFileFormat(file, {});
       __aeToast('🏛 Character card import attempted: ' + (payload.item.name || file.name) + ' (' + r + ')', 5000);
       return true;
     }
@@ -256,8 +256,8 @@
       return __accmLooksLikeNativeCharacterJson(__accmTryParseJson(payload.content));
     },
     install: async function(payload) {
-      var json = __accmTryParseJson(payload.content);
-      var character = __accmNormalizeNativeCharacterJson(json);
+      let json = __accmTryParseJson(payload.content);
+      let character = __accmNormalizeNativeCharacterJson(json);
       if (!character.avatar.url) {
         try {
           __aeToast('🏛 Generating AI avatar for ' + character.name + '...', 8000);
@@ -267,7 +267,7 @@
         }
       }
       if (!character.avatar.url) character.avatar.url = __accmGeneratedAvatarDataUrl(character.name || 'Unnamed');
-      var characterObj = await addCharacter(character);
+      let characterObj = await addCharacter(character);
       try { if (typeof renderCharacterList === 'function') await renderCharacterList(); } catch(e) { console.warn('[accm] renderCharacterList failed after character import:', e); }
       __aeToast('🏛 Character added: ' + character.name, 5000);
       return true;
@@ -281,9 +281,9 @@
       return payload.item && payload.item.kind === 'character' && typeof tryImportingExternalCharacterFileFormat === 'function';
     },
     install: async function(payload) {
-      var item = payload.item;
-      var f = new File([payload.content], (item.name || 'character') + '.json', { type: 'application/json' });
-      var r = await tryImportingExternalCharacterFileFormat(f, {});
+      let item = payload.item;
+      let f = new File([payload.content], (item.name || 'character') + '.json', { type: 'application/json' });
+      let r = await tryImportingExternalCharacterFileFormat(f, {});
       __aeToast('🏛 Character import attempted: ' + item.name + ' (' + r + ')', 5000);
       return true;
     }
@@ -296,9 +296,9 @@
       return payload.item && payload.item.kind === 'thread' && typeof tryImportingDexieFile === 'function';
     },
     install: async function(payload) {
-      var item = payload.item;
-      var tf = new File([payload.content], (item.name || 'thread') + '.json', { type: 'application/json' });
-      var tr = await tryImportingDexieFile(tf, {});
+      let item = payload.item;
+      let tf = new File([payload.content], (item.name || 'thread') + '.json', { type: 'application/json' });
+      let tr = await tryImportingDexieFile(tf, {});
       __aeToast('🏛 Thread import attempted: ' + item.name + ' (' + tr + ')', 5000);
       return true;
     }
@@ -311,9 +311,9 @@
       return payload.item && payload.item.kind === 'extension-pack';
     },
     install: async function(payload) {
-      var item = payload.item || {};
-      var json = __accmTryParseJson(payload.content) || {};
-      var pack = Object.assign({}, json, item, {
+      let item = payload.item || {};
+      let json = __accmTryParseJson(payload.content) || {};
+      let pack = Object.assign({}, json, item, {
         id: json.id || item.id || ('workshop.pack.' + Date.now()),
         kind: 'extension-pack',
         source: 'workshop',
@@ -333,7 +333,7 @@
     priority: 900,
     test: async function() { return true; },
     install: async function(payload) {
-      var item = payload.item;
+      let item = payload.item;
       if (ws() && ws().downloadText) {
         ws().downloadText((item.name || item.id || 'workshop-item') + (item.kind === 'generator' || item.kind === 'generator-extension' ? '.js' : '.json'), payload.content, item.kind === 'generator' || item.kind === 'generator-extension' ? 'application/javascript' : 'application/json');
       }

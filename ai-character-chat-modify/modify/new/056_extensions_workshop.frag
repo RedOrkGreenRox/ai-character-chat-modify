@@ -47,7 +47,7 @@
 
   function __aeWsLoad() {
     try {
-      var raw = localStorage.getItem(__AE_WORKSHOP_KEY);
+      let raw = localStorage.getItem(__AE_WORKSHOP_KEY);
       return Object.assign({}, __AE_WORKSHOP_DEFAULTS, raw ? JSON.parse(raw) : {});
     } catch(e) {
       return Object.assign({}, __AE_WORKSHOP_DEFAULTS);
@@ -67,7 +67,7 @@
   }
 
   function __aeWsSetToken(token) {
-    var s = __aeWsLoad();
+    let s = __aeWsLoad();
     s.token = token || '';
     __aeWsSave(s);
   }
@@ -78,22 +78,22 @@
 
   async function __aeWsFetch(path, opts) {
     opts = opts || {};
-    var api = __aeWsApiUrl();
+    let api = __aeWsApiUrl();
     if (!api) throw new Error('Workshop API URL is not configured.');
-    var headers = Object.assign({}, opts.headers || {});
+    let headers = Object.assign({}, opts.headers || {});
     if (opts.json !== undefined) {
       headers['Content-Type'] = 'application/json';
       opts.body = JSON.stringify(opts.json);
     }
-    var token = __aeWsToken();
+    let token = __aeWsToken();
     if (token) headers['Authorization'] = 'Bearer ' + token;
-    var res = await fetch(api + path, Object.assign({}, opts, { headers: headers }));
-    var text = await res.text();
-    var data = null;
+    let res = await fetch(api + path, Object.assign({}, opts, { headers: headers }));
+    let text = await res.text();
+    let data = null;
     try { data = text ? JSON.parse(text) : null; } catch(e) { data = { raw: text }; }
     if (!res.ok) {
-      var msg = (data && (data.message || data.error)) || ('HTTP ' + res.status);
-      var err = new Error(msg);
+      let msg = (data && (data.message || data.error)) || ('HTTP ' + res.status);
+      let err = new Error(msg);
       err.status = res.status;
       err.data = data;
       throw err;
@@ -102,7 +102,7 @@
   }
 
   async function __aeWsFetchText(url) {
-    var res;
+    let res;
     try {
       res = await fetch(url);
       if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -119,22 +119,22 @@
   }
 
   async function __aeWsReadFileAsTextSmart(file) {
-    var buf = await file.arrayBuffer();
-    var bytes = new Uint8Array(buf);
-    var isGzip = bytes.length >= 2 && bytes[0] === 0x1f && bytes[1] === 0x8b;
+    let buf = await file.arrayBuffer();
+    let bytes = new Uint8Array(buf);
+    let isGzip = bytes.length >= 2 && bytes[0] === 0x1f && bytes[1] === 0x8b;
     if (isGzip) {
       // Perchance exports often have .json extension but are actually gzip-compressed Dexie JSON.
       try {
         if (root && typeof root.decompressBlobWithGzip === 'function') {
-          var blob = await root.decompressBlobWithGzip(new Blob([buf]));
+          let blob = await root.decompressBlobWithGzip(new Blob([buf]));
           return await blob.text();
         }
       } catch(e) {
         console.warn('[ae workshop] root.decompressBlobWithGzip failed:', e);
       }
       if (typeof DecompressionStream === 'function') {
-        var ds = new DecompressionStream('gzip');
-        var stream = new Blob([buf]).stream().pipeThrough(ds);
+        let ds = new DecompressionStream('gzip');
+        let stream = new Blob([buf]).stream().pipeThrough(ds);
         return await new Response(stream).text();
       }
       throw new Error('This file is gzip-compressed, but this browser cannot decompress it here. Import it directly or use another browser.');
@@ -143,8 +143,8 @@
   }
 
   function __aeWsIsProbablyTextFile(file) {
-    var name = (file && file.name || '').toLowerCase();
-    var type = file && file.type || '';
+    let name = (file && file.name || '').toLowerCase();
+    let type = file && file.type || '';
     if (type.startsWith('text/')) return true;
     if (/\.(json|md|txt|csv|yaml|yml|xml|html|js|css|log)$/i.test(name)) return true;
     // Perchance exports can be gzip-compressed with a .json extension; readFileAsTextSmart handles that.
@@ -152,10 +152,10 @@
   }
 
   function __aeWsArrayBufferToBase64(buffer) {
-    var bytes = new Uint8Array(buffer);
-    var chunk = 0x8000;
-    var parts = [];
-    for (var i = 0; i < bytes.length; i += chunk) {
+    let bytes = new Uint8Array(buffer);
+    let chunk = 0x8000;
+    let parts = [];
+    for (let i = 0; i < bytes.length; i += chunk) {
       parts.push(String.fromCharCode.apply(null, bytes.subarray(i, i + chunk)));
     }
     return btoa(parts.join(''));
@@ -163,29 +163,29 @@
 
   async function __aeWsReadPublishFile(file) {
     if (__aeWsIsProbablyTextFile(file)) {
-      var text = await __aeWsReadFileAsTextSmart(file);
+      let text = await __aeWsReadFileAsTextSmart(file);
       return { content: text, contentFilename: file.name, detectedKind: __aeWsDetectPublishKind(text, file.name), isBinaryWrapper: false };
     }
-    var base64 = __aeWsArrayBufferToBase64(await file.arrayBuffer());
-    var wrapper = {
+    let base64 = __aeWsArrayBufferToBase64(await file.arrayBuffer());
+    let wrapper = {
       schema: 'accm.binary-file.v1',
       filename: file.name,
       mime: file.type || 'application/octet-stream',
       size: file.size || 0,
       base64: base64
     };
-    var detected = '';
+    let detected = '';
     if (/\.(png|webp|jpe?g)$/i.test(file.name) || (file.type || '').startsWith('image/')) detected = 'character';
     return { content: JSON.stringify(wrapper, null, 2), contentFilename: file.name.replace(/[^a-z0-9_.-]+/gi, '_') + '.accm-binary.json', detectedKind: detected, isBinaryWrapper: true };
   }
 
   function __aeWsDetectPublishKind(text, fileName) {
     fileName = fileName || '';
-    var lower = fileName.toLowerCase();
-    var json = null;
+    let lower = fileName.toLowerCase();
+    let json = null;
     try { json = JSON.parse(text); } catch(e) {}
     if (json && json.formatName === 'dexie') {
-      var tables = ((json.data && json.data.tables) || []).map(function(t) { return t && t.name; });
+      let tables = ((json.data && json.data.tables) || []).map(function(t) { return t && t.name; });
       if (/character|characters|персонаж/i.test(lower)) return 'character';
       if (tables.indexOf('characters') !== -1) return 'character';
       // Thread exports are legacy content in Workshop taxonomy. They should be represented
@@ -201,7 +201,7 @@
 
   function __aeWsIsDexieExportText(text) {
     try {
-      var json = JSON.parse(text);
+      let json = JSON.parse(text);
       return !!(json && json.formatName === 'dexie' && json.data && Array.isArray(json.data.tables));
     } catch(e) {
       return false;
@@ -211,20 +211,20 @@
   function __aeWsOpenPopup(url, expectedTypes) {
     expectedTypes = expectedTypes || [];
     return new Promise(function(resolve, reject) {
-      var done = false;
+      let done = false;
       function cleanup() {
         window.removeEventListener('message', onMessage);
         done = true;
       }
       function onMessage(ev) {
-        var data = ev.data || {};
+        let data = ev.data || {};
         if (!data || typeof data !== 'object') return;
         if (expectedTypes.length && expectedTypes.indexOf(data.type) === -1) return;
         cleanup();
         resolve(data);
       }
       window.addEventListener('message', onMessage);
-      var popup = window.open(url, __AE_WORKSHOP_CONFIG.popupName, __AE_WORKSHOP_CONFIG.popupFeatures);
+      let popup = window.open(url, __AE_WORKSHOP_CONFIG.popupName, __AE_WORKSHOP_CONFIG.popupFeatures);
       if (!popup) {
         cleanup();
         reject(new Error('Popup was blocked. Allow popups for this page and try again.'));
@@ -240,21 +240,21 @@
   }
 
   async function __aeWsLoginDiscord() {
-    var api = __aeWsApiUrl();
+    let api = __aeWsApiUrl();
     if (!api) throw new Error('Set Workshop API URL first.');
-    var msg = await __aeWsOpenPopup(api + '/v1/auth/discord/start', ['workshop.auth.ok']);
+    let msg = await __aeWsOpenPopup(api + '/v1/auth/discord/start', ['workshop.auth.ok']);
     if (msg.token) __aeWsSetToken(msg.token);
     __aeToast('Workshop: logged in.', 2500);
     return msg;
   }
 
   async function __aeWsLinkGithub() {
-    var api = __aeWsApiUrl();
-    var token = __aeWsToken();
+    let api = __aeWsApiUrl();
+    let token = __aeWsToken();
     if (!api) throw new Error('Set Workshop API URL first.');
     if (!token) throw new Error('Login with Discord first.');
-    var url = api + '/v1/auth/github/start?session=' + encodeURIComponent(token);
-    var msg = await __aeWsOpenPopup(url, ['workshop.github.linked']);
+    let url = api + '/v1/auth/github/start?session=' + encodeURIComponent(token);
+    let msg = await __aeWsOpenPopup(url, ['workshop.github.linked']);
     __aeToast('Workshop: GitHub linked' + (msg.github_login ? ' (' + msg.github_login + ')' : '') + '.', 3500);
     return msg;
   }
@@ -269,8 +269,8 @@
   }
 
   function __aeWsDownloadText(filename, content, type) {
-    var blob = new Blob([content], { type: type || 'text/plain;charset=utf-8' });
-    var a = document.createElement('a');
+    let blob = new Blob([content], { type: type || 'text/plain;charset=utf-8' });
+    let a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = filename || 'workshop-item.txt';
     document.body.appendChild(a);
@@ -279,8 +279,8 @@
   }
 
   function __aeWsExtractLoreEntries(text) {
-    var entries = [];
-    var json = null;
+    let entries = [];
+    let json = null;
     try { json = JSON.parse(text); } catch(e) {}
 
     function pushEntry(content, triggers, title) {
@@ -293,7 +293,7 @@
       // SillyTavern World Info: { entries: { "0": { key:[], content:"" } } }
       if (json.entries && typeof json.entries === 'object' && !Array.isArray(json.entries)) {
         Object.keys(json.entries).forEach(function(k) {
-          var e = json.entries[k] || {};
+          let e = json.entries[k] || {};
           if (e.disable === true || e.disabled === true) return;
           pushEntry(e.content || e.text || e.value, [].concat(e.key || [], e.keysecondary || []), e.comment || e.name || k);
         });
@@ -322,10 +322,10 @@
     if (entries.length === 0) {
       // Markdown fallback: split by H2 headings if present, otherwise save whole file/chunks.
       if (/^##\s+/m.test(text)) {
-        var parts = text.split(/^##\s+/m).filter(Boolean);
+        let parts = text.split(/^##\s+/m).filter(Boolean);
         parts.forEach(function(part) {
-          var lines = part.split('\n');
-          var title = lines.shift().trim();
+          let lines = part.split('\n');
+          let title = lines.shift().trim();
           pushEntry(lines.join('\n').trim(), [], title);
         });
       } else {
@@ -339,12 +339,12 @@
     if (typeof activeThreadId !== 'number' || !Number.isFinite(activeThreadId)) {
       throw new Error('Open a chat thread before installing a lorebook.');
     }
-    var entries = __aeWsExtractLoreEntries(content);
+    let entries = __aeWsExtractLoreEntries(content);
     if (!entries.length) throw new Error('No lore entries found.');
-    var added = 0;
-    for (var i = 0; i < entries.length; i++) {
-      var prefix = entries[i].title ? ('[' + entries[i].title + ']\n') : '';
-      var triggerLine = entries[i].triggers && entries[i].triggers.length ? ('Triggers: ' + entries[i].triggers.join(', ') + '\n') : '';
+    let added = 0;
+    for (let i = 0; i < entries.length; i++) {
+      let prefix = entries[i].title ? ('[' + entries[i].title + ']\n') : '';
+      let triggerLine = entries[i].triggers && entries[i].triggers.length ? ('Triggers: ' + entries[i].triggers.join(', ') + '\n') : '';
       added += await __aeAddLoreEntry(prefix + triggerLine + entries[i].text, 'Workshop: ' + item.name + ' #' + (i + 1));
     }
     __aeToast('🏛 Installed lorebook: ' + item.name + ' (' + added + ' lore entries)', 5000);
@@ -353,15 +353,15 @@
 
   async function __aeWsInstallItem(item) {
     if (!item.content_url) {
-      var meta = await __aeWsFetch('/v1/items/' + encodeURIComponent(item.id));
+      let meta = await __aeWsFetch('/v1/items/' + encodeURIComponent(item.id));
       item = Object.assign({}, item, meta || {});
     }
     if (!item.content_url) throw new Error('Item has no content_url.');
 
     __aeToast('Workshop: downloading ' + item.name + '...', 5000);
-    var content = await __aeWsFetchText(item.content_url);
+    let content = await __aeWsFetchText(item.content_url);
 
-    var installed = false;
+    let installed = false;
     if (window.__accm && window.__accm.importers) {
       installed = await window.__accm.importers.install({ item: item, content: content, source: 'workshop' });
     }
@@ -378,11 +378,11 @@
   async function __aeWsRender(win, view, state) {
     state = state || {};
     view = view || 'home';
-    var me = await __aeWsGetMe();
-    var s = __aeWsLoad();
-    var api = __aeWsApiUrl();
+    let me = await __aeWsGetMe();
+    let s = __aeWsLoad();
+    let api = __aeWsApiUrl();
 
-    var html = '';
+    let html = '';
     html += '<div style="padding:.7rem;border-bottom:1px solid rgba(127,127,127,.25);display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;">';
     html += '<button class="__wsHome">Home</button><button class="__wsCatalog">Catalog</button><button class="__wsLibrary">My Library</button><button class="__wsPublish">Publish</button>';
     html += '<span style="margin-left:auto;opacity:.75;font-size:.85rem;">' + (me ? ('Logged in as <b>' + __aeWsEsc(me.handle) + '</b>') : 'Not logged in') + '</span>';
@@ -395,7 +395,7 @@
     win.bodyEl.querySelector('.__wsLibrary').onclick = function() { __aeWsRender(win, 'library'); };
     win.bodyEl.querySelector('.__wsPublish').onclick = function() { __aeWsRender(win, 'publish'); };
 
-    var body = win.bodyEl.querySelector('.__wsBody');
+    let body = win.bodyEl.querySelector('.__wsBody');
 
     if (view === 'home') {
       body.innerHTML = [
@@ -418,8 +418,8 @@
     }
 
     if (view === 'catalog') {
-      var kind = state.kind != null ? state.kind : s.lastKind;
-      var q = state.q || '';
+      let kind = state.kind != null ? state.kind : s.lastKind;
+      let q = state.q || '';
       body.innerHTML = [
         '<h3>Catalog</h3>',
         '<div style="display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:.7rem;">',
@@ -432,22 +432,22 @@
       ].join('');
       body.querySelector('.__wsKind').value = kind || '';
       body.querySelector('.__wsDoSearch').onclick = function() {
-        var st = __aeWsLoad();
+        let st = __aeWsLoad();
         st.lastKind = body.querySelector('.__wsKind').value;
         st.includeNsfw = body.querySelector('.__wsNsfw').checked;
         __aeWsSave(st);
         __aeWsRender(win, 'catalog', { kind: st.lastKind, q: body.querySelector('.__wsQ').value.trim() });
       };
-      var list = body.querySelector('.__wsItems');
+      let list = body.querySelector('.__wsItems');
       try {
-        var params = '?limit=' + encodeURIComponent(__AE_WORKSHOP_CONFIG.defaultCatalogLimit) + '&sort=' + encodeURIComponent(s.sort || 'popular') + (kind ? '&kind=' + encodeURIComponent(kind) : '') + (q ? '&q=' + encodeURIComponent(q) : '') + (s.includeNsfw ? '&nsfw=1' : '');
-        var data = await __aeWsFetch('/v1/catalog' + params);
-        var items = data.items || [];
+        let params = '?limit=' + encodeURIComponent(__AE_WORKSHOP_CONFIG.defaultCatalogLimit) + '&sort=' + encodeURIComponent(s.sort || 'popular') + (kind ? '&kind=' + encodeURIComponent(kind) : '') + (q ? '&q=' + encodeURIComponent(q) : '') + (s.includeNsfw ? '&nsfw=1' : '');
+        let data = await __aeWsFetch('/v1/catalog' + params);
+        let items = data.items || [];
         if (!items.length) {
           list.innerHTML = '<p style="opacity:.75;">No items found.</p>';
         } else {
           list.innerHTML = items.map(function(item, i) {
-            var tags = Array.isArray(item.tags) ? item.tags : [];
+            let tags = Array.isArray(item.tags) ? item.tags : [];
             return '<div class="__wsItem" data-i="' + i + '" style="border:1px solid rgba(127,127,127,.25);border-radius:10px;padding:.65rem;margin-bottom:.55rem;">' +
               '<div style="display:flex;gap:.5rem;align-items:flex-start;"><div style="flex:1;min-width:0;"><b>' + __aeWsEsc(item.name) + '</b> <span style="opacity:.65;">' + __aeWsEsc(item.kind) + ' v' + __aeWsEsc(item.version) + '</span>' +
               '<div style="opacity:.8;margin-top:.25rem;">' + __aeWsEsc(item.summary || '') + '</div>' +
@@ -456,7 +456,7 @@
           }).join('');
           list.querySelectorAll('.__wsItem').forEach(function(row) {
             row.querySelector('.__wsInstall').onclick = async function() {
-              var item = items[Number(row.dataset.i)];
+              let item = items[Number(row.dataset.i)];
               try { await __aeWsInstallItem(item); }
               catch(e) { console.error(e); alert('Install failed: ' + e.message); }
             };
@@ -475,12 +475,12 @@
         return;
       }
       body.innerHTML = '<h3>My Library</h3><div class="__wsLibraryBody">Loading...</div>';
-      var lb = body.querySelector('.__wsLibraryBody');
+      let lb = body.querySelector('.__wsLibraryBody');
       try {
-        var lib = await __aeWsFetch('/v1/me/library');
-        var uploads = lib.uploads || [];
-        var installed = lib.installed || [];
-        var html = '';
+        let lib = await __aeWsFetch('/v1/me/library');
+        let uploads = lib.uploads || [];
+        let installed = lib.installed || [];
+        let html = '';
         html += '<h4>My uploads</h4>';
         if (!uploads.length) html += '<p style="opacity:.75;">No uploads yet.</p>';
         else html += uploads.map(function(item, i) {
@@ -499,7 +499,7 @@
         lb.innerHTML = html;
         lb.querySelectorAll('.__wsUpload').forEach(function(row) {
           row.querySelector('.__wsDeleteUpload').onclick = async function() {
-            var item = uploads[Number(row.dataset.i)];
+            let item = uploads[Number(row.dataset.i)];
             if (!confirm('Delete \"' + item.name + '\" from Workshop?\\n\\nIf you are the author and GitHub is linked, the backend will also try to delete the GitHub Gist.')) return;
             try {
               await __aeWsFetch('/v1/items/' + encodeURIComponent(item.id), { method: 'DELETE' });
@@ -549,11 +549,11 @@
         '</div>'
       ].join('');
       body.querySelector('.__wsPubFile').addEventListener('change', async function() {
-        var file = body.querySelector('.__wsPubFile').files[0];
+        let file = body.querySelector('.__wsPubFile').files[0];
         if (!file) return;
         try {
-          var read = await __aeWsReadPublishFile(file);
-          var textarea = body.querySelector('.__wsPubContent');
+          let read = await __aeWsReadPublishFile(file);
+          let textarea = body.querySelector('.__wsPubContent');
           textarea.value = read.content;
           textarea.dataset.filename = read.contentFilename || file.name;
           if (!body.querySelector('.__wsPubName').value.trim()) body.querySelector('.__wsPubName').value = file.name.replace(/\.[^.]+$/, '');
@@ -566,7 +566,7 @@
       });
       body.querySelector('.__wsSubmitPub').onclick = async function() {
         try {
-          var payload = {
+          let payload = {
             name: body.querySelector('.__wsPubName').value.trim(),
             kind: body.querySelector('.__wsPubKind').value,
             version: body.querySelector('.__wsPubVersion').value.trim() || '1.0.0',
@@ -577,7 +577,7 @@
             content: body.querySelector('.__wsPubContent').value
           };
           if (!payload.name || !payload.content) throw new Error('Name and content are required.');
-          var result = await __aeWsFetch('/v1/items', { method:'POST', json: payload });
+          let result = await __aeWsFetch('/v1/items', { method:'POST', json: payload });
           __aeToast('Published: ' + result.id, 5000);
           alert('Published!\n\nItem id: ' + result.id + '\nGist: ' + result.gist_url);
           __aeWsRender(win, 'catalog');
@@ -591,7 +591,7 @@
   }
 
   function __aeWsOpen(view) {
-    var win = createFloatingWindow({
+    let win = createFloatingWindow({
       header: __AE_WORKSHOP_CONFIG.windowHeader,
       initialWidth: Math.min(__AE_WORKSHOP_CONFIG.windowWidth, window.innerWidth - 30),
       initialHeight: Math.min(__AE_WORKSHOP_CONFIG.windowHeight, window.innerHeight - 40),

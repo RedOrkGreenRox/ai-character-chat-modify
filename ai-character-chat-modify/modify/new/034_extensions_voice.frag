@@ -1,8 +1,8 @@
 // --- Voice messages (Telegram-style hold/toggle recording) ---
 
-var __aeVoiceRecorder = null;
-var __aeVoiceChunks = [];
-var __aeVoiceStream = null;
+let __aeVoiceRecorder = null;
+let __aeVoiceChunks = [];
+let __aeVoiceStream = null;
 
 async function __aeToggleVoiceRecording() {
   if (__aeVoiceRecorder && __aeVoiceRecorder.state === 'recording') {
@@ -22,44 +22,60 @@ async function __aeToggleVoiceRecording() {
     return;
   }
 
-  __aeVoiceStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-  var mimeType = '';
-  if (window.MediaRecorder && MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) mimeType = 'audio/webm;codecs=opus';
-  else if (window.MediaRecorder && MediaRecorder.isTypeSupported('audio/webm')) mimeType = 'audio/webm';
+  let stream = null;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    __aeVoiceStream = stream;
 
-  __aeVoiceChunks = [];
-  __aeVoiceRecorder = new MediaRecorder(__aeVoiceStream, mimeType ? { mimeType: mimeType } : undefined);
-  __aeVoiceRecorder.ondataavailable = function(e) {
-    if (e.data && e.data.size > 0) __aeVoiceChunks.push(e.data);
-  };
-  __aeVoiceRecorder.onstop = async function() {
-    try {
-      if (__aeVoiceStream) __aeVoiceStream.getTracks().forEach(function(t) { t.stop(); });
-      var blob = new Blob(__aeVoiceChunks, { type: mimeType || 'audio/webm' });
-      if (!blob.size) {
-        __aeToast('⚠️ Empty voice recording.', 4000);
-        return;
-      }
-      var file = new File([blob], 'voice-message-' + Date.now() + '.webm', { type: blob.type });
-      await __aeProcessAudioFile(file);
-    } catch(e) {
-      console.error('[ae] Voice processing failed:', e);
-      await __aeAddSystemMessage('❌ Voice message failed: ' + e.message, 'Voice');
-    } finally {
-      __aeVoiceRecorder = null;
-      __aeVoiceChunks = [];
+    let mimeType = '';
+    if (window.MediaRecorder && MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) mimeType = 'audio/webm;codecs=opus';
+    else if (window.MediaRecorder && MediaRecorder.isTypeSupported('audio/webm')) mimeType = 'audio/webm';
+
+    __aeVoiceChunks = [];
+    __aeVoiceRecorder = new MediaRecorder(__aeVoiceStream, mimeType ? { mimeType: mimeType } : undefined);
+    __aeVoiceRecorder.ondataavailable = function(e) {
+      if (e.data && e.data.size > 0) __aeVoiceChunks.push(e.data);
+    };
+    __aeVoiceRecorder.onstop = async function() {
+      let currentStream = __aeVoiceStream;
       __aeVoiceStream = null;
-    }
-  };
-  __aeVoiceRecorder.start();
-  setTimeout(function() {
-    try {
-      if (__aeVoiceRecorder && __aeVoiceRecorder.state === 'recording') {
-        __aeVoiceRecorder.stop();
-        __aeToast('🎙️ Voice recording auto-stopped at ' + Math.round(__AE_MAX_VOICE_RECORDING_MS/1000) + 's.', 5000);
+      try {
+        if (currentStream) currentStream.getTracks().forEach(function(t) { t.stop(); });
+        let blob = new Blob(__aeVoiceChunks, { type: mimeType || 'audio/webm' });
+        if (!blob.size) {
+          __aeToast('⚠️ Empty voice recording.', 4000);
+          return;
+        }
+        let file = new File([blob], 'voice-message-' + Date.now() + '.webm', { type: blob.type });
+        await __aeProcessAudioFile(file);
+      } catch(e) {
+        console.error('[ae] Voice processing failed:', e);
+        await __aeAddSystemMessage('❌ Voice message failed: ' + e.message, 'Voice');
+      } finally {
+        __aeVoiceRecorder = null;
+        __aeVoiceChunks = [];
+        __aeVoiceStream = null;
       }
-    } catch(e) {}
-  }, __AE_MAX_VOICE_RECORDING_MS);
-  __aeToast('🎙️ Recording voice message... click 🎙️ Voice or type /voice again to stop. Max ' + Math.round(__AE_MAX_VOICE_RECORDING_MS/1000) + 's.', 10000);
+    };
+    __aeVoiceRecorder.start();
+    setTimeout(function() {
+      try {
+        if (__aeVoiceRecorder && __aeVoiceRecorder.state === 'recording') {
+          __aeVoiceRecorder.stop();
+          __aeToast('🎙️ Voice recording auto-stopped at ' + Math.round(__AE_MAX_VOICE_RECORDING_MS/1000) + 's.', 5000);
+        }
+      } catch(e) {}
+    }, __AE_MAX_VOICE_RECORDING_MS);
+    __aeToast('🎙️ Recording voice message... click 🎙️ Voice or type /voice again to stop. Max ' + Math.round(__AE_MAX_VOICE_RECORDING_MS/1000) + 's.', 10000);
+  } catch(e) {
+    console.error('[ae] Failed to start voice recording:', e);
+    __aeToast('⚠️ Failed to start recording: ' + e.message, 5000);
+    if (stream) {
+      stream.getTracks().forEach(function(t) { t.stop(); });
+    }
+    __aeVoiceRecorder = null;
+    __aeVoiceChunks = [];
+    __aeVoiceStream = null;
+  }
 }
 

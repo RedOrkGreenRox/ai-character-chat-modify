@@ -14,14 +14,14 @@ async function __aeRenderFileExplorerBody(win, opts) {
   opts.mode = opts.mode || 'files';
   if (opts.includeAllThreads === undefined) opts.includeAllThreads = true;
 
-  var hasActiveThread = typeof activeThreadId === 'number' && Number.isFinite(activeThreadId);
+  let hasActiveThread = typeof activeThreadId === 'number' && Number.isFinite(activeThreadId);
 
   async function renderFiles() {
-    var files = await __aeGetUploadedFiles({ threadId: activeThreadId, includeAllThreads: !!opts.includeAllThreads });
-    var activeFiles = files.filter(function(f) { return f.contextActive !== false; });
-    var totalChars = activeFiles.reduce(function(sum, f) { return sum + (f.contextCharCount || 0); }, 0);
+    let files = await __aeGetUploadedFiles({ threadId: activeThreadId, includeAllThreads: !!opts.includeAllThreads });
+    let activeFiles = files.filter(function(f) { return f.contextActive !== false; });
+    let totalChars = activeFiles.reduce(function(sum, f) { return sum + (f.contextCharCount || 0); }, 0);
 
-    var html = '';
+    let html = '';
     html += '<div style="padding:0.6rem; font-size:0.9rem;">';
     html += '<div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; margin-bottom:0.5rem;">';
     html += '<b>🗂️ Files</b>';
@@ -37,8 +37,8 @@ async function __aeRenderFileExplorerBody(win, opts) {
     } else {
       html += '<div style="display:flex; flex-direction:column; gap:0.45rem;">';
       files.forEach(function(f) {
-        var statusColor = f.status === 'ok' ? '#238636' : f.status === 'buffered-out' ? '#b7791f' : f.status === 'partial' ? '#b7791f' : '#c53030';
-        var sameThread = hasActiveThread && f.threadId === activeThreadId;
+        let statusColor = f.status === 'ok' ? '#238636' : f.status === 'buffered-out' ? '#b7791f' : f.status === 'partial' ? '#b7791f' : '#c53030';
+        let sameThread = hasActiveThread && f.threadId === activeThreadId;
         html += '<div class="__aeFileRow" data-file-id="' + sanitizeHtml(f.id) + '" style="border:1px solid var(--border-color); border-radius:8px; padding:0.5rem; background:rgba(127,127,127,0.06);">';
         html += '<div style="display:flex; justify-content:space-between; gap:0.5rem; align-items:flex-start;">';
         html += '<div style="min-width:0;"><div style="font-weight:600; overflow-wrap:anywhere;">' + sanitizeHtml(f.name) + '</div>';
@@ -60,17 +60,19 @@ async function __aeRenderFileExplorerBody(win, opts) {
   }
 
   async function renderMemory() {
-    var lore = [];
-    var oldMemories = [];
-    var structuredMemories = [];
-    try { lore = await db.lore.toArray(); } catch(e) {}
-    try { oldMemories = await db.memories.toArray(); } catch(e) {}
+    let lore = [];
+    let oldMemories = [];
+    let structuredMemories = [];
+    try { lore = await db.lore.limit(300).toArray(); } catch(e) {}
+    try { oldMemories = await db.memories.limit(300).toArray(); } catch(e) {}
 
     try {
-      var messages = await db.messages.toArray();
+      let messages = await db.messages.filter(function(msg) {
+        return msg.memoriesEndingHere && Object.keys(msg.memoriesEndingHere).length > 0;
+      }).toArray();
       messages.sort(function(a, b) { return (a.threadId - b.threadId) || (a.order - b.order); });
       messages.forEach(function(msg) {
-        var levels = msg.memoriesEndingHere || {};
+        let levels = msg.memoriesEndingHere || {};
         Object.keys(levels).sort(function(a,b){ return Number(a)-Number(b); }).forEach(function(level) {
           (levels[level] || []).forEach(function(mem, index) {
             structuredMemories.push({
@@ -92,8 +94,8 @@ async function __aeRenderFileExplorerBody(win, opts) {
     lore.sort(function(a, b) { return (b.id || 0) - (a.id || 0); });
     oldMemories.sort(function(a, b) { return (b.id || 0) - (a.id || 0); });
 
-    var memoryItems = [];
-    var html = '';
+    let memoryItems = [];
+    let html = '';
     html += '<div style="padding:0.6rem; font-size:0.9rem;">';
     html += '<div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem;"><b>🧠 Memory / Lore</b><button class="__aeRefreshFiles">refresh</button></div>';
     html += '<div style="opacity:.75;margin-bottom:.5rem;">Global memory browser. You can enable/disable or delete lore and generated memories. Disabled items are skipped by retrieval.</div>';
@@ -102,7 +104,7 @@ async function __aeRenderFileExplorerBody(win, opts) {
     html += '<h4>Lore entries (' + lore.length + ')</h4>';
     if (!lore.length) html += '<div style="opacity:.7;">No lore entries.</div>';
     lore.slice(0, 300).forEach(function(e) {
-      var itemIndex = memoryItems.push({ type: 'lore', item: e }) - 1;
+      let itemIndex = memoryItems.push({ type: 'lore', item: e }) - 1;
       html += '<div class="__aeFileRow __aeMemoryRow" data-memory-i="' + itemIndex + '" style="border:1px solid var(--border-color);border-radius:8px;padding:.5rem;margin-bottom:.45rem;background:rgba(127,127,127,0.06);' + (e.disabled ? 'opacity:.55;' : '') + '">';
       html += '<div style="display:flex;gap:.5rem;align-items:flex-start;"><div style="flex:1;min-width:0;">';
       html += '<div style="font-size:.78rem;opacity:.65;">' + (e.disabled ? '🔴 disabled · ' : '🟢 enabled · ') + 'lore #' + sanitizeHtml(e.id) + ' · book ' + sanitizeHtml(e.bookId) + '</div>';
@@ -113,7 +115,7 @@ async function __aeRenderFileExplorerBody(win, opts) {
 
     html += '<h4>Generated memories (' + structuredMemories.length + ')</h4>';
     if (!structuredMemories.length) html += '<div style="opacity:.7;">No generated memories.</div>';
-    var lastThread = null, lastMessage = null;
+    let lastThread = null, lastMessage = null;
     structuredMemories.slice(0, 500).forEach(function(m) {
       if (m.threadId !== lastThread) {
         html += '<div class="__aeFileRow" style="margin:.55rem 0 .25rem;font-weight:700;opacity:.85;">Thread #' + sanitizeHtml(m.threadId) + '</div>';
@@ -124,8 +126,8 @@ async function __aeRenderFileExplorerBody(win, opts) {
         html += '<div class="__aeFileRow" style="margin:.35rem 0 .2rem;padding-left:.8rem;font-weight:600;opacity:.75;">Message #' + sanitizeHtml(m.messageId) + ' · order ' + sanitizeHtml(m.order) + '</div>';
         lastMessage = m.messageId;
       }
-      var itemIndex = memoryItems.push({ type: 'generated-memory', item: m }) - 1;
-      var indent = Math.min(4, Math.max(0, Number(m.level) || 0)) * 1.1 + 1.2;
+      let itemIndex = memoryItems.push({ type: 'generated-memory', item: m }) - 1;
+      let indent = Math.min(4, Math.max(0, Number(m.level) || 0)) * 1.1 + 1.2;
       html += '<div class="__aeFileRow __aeMemoryRow" data-memory-i="' + itemIndex + '" style="border:1px solid var(--border-color);border-radius:8px;padding:.5rem;margin-bottom:.35rem;margin-left:' + indent + 'rem;background:rgba(127,127,127,0.06);' + (m.disabled ? 'opacity:.55;' : '') + '">';
       html += '<div style="display:flex;gap:.5rem;align-items:flex-start;"><div style="flex:1;min-width:0;">';
       html += '<div style="font-size:.78rem;opacity:.65;">' + (m.disabled ? '🔴 disabled · ' : '🟢 enabled · ') + 'memory ' + sanitizeHtml(m.id) + '</div>';
@@ -137,7 +139,7 @@ async function __aeRenderFileExplorerBody(win, opts) {
     html += '<h4>Legacy memory records (' + oldMemories.length + ')</h4>';
     if (!oldMemories.length) html += '<div style="opacity:.7;">No legacy memory records.</div>';
     oldMemories.slice(0, 200).forEach(function(m) {
-      var itemIndex = memoryItems.push({ type: 'legacy-memory', item: m }) - 1;
+      let itemIndex = memoryItems.push({ type: 'legacy-memory', item: m }) - 1;
       html += '<div class="__aeFileRow __aeMemoryRow" data-memory-i="' + itemIndex + '" style="border:1px solid var(--border-color);border-radius:8px;padding:.5rem;margin-bottom:.45rem;background:rgba(127,127,127,0.06);' + (m.disabled ? 'opacity:.55;' : '') + '">';
       html += '<div style="display:flex;gap:.5rem;align-items:flex-start;"><div style="flex:1;min-width:0;">';
       html += '<div style="font-size:.78rem;opacity:.65;">' + (m.disabled ? '🔴 disabled · ' : '🟢 enabled · ') + 'legacy memory #' + sanitizeHtml(m.id) + ' · thread ' + sanitizeHtml(m.threadId) + ' · status ' + sanitizeHtml(m.status || '') + '</div>';
@@ -150,18 +152,18 @@ async function __aeRenderFileExplorerBody(win, opts) {
   }
 
   async function renderObjects() {
-    var lib = window.__accm && window.__accm.library ? await window.__accm.library.load() : { items: [], activations: {} };
-    var characters = [];
+    let lib = window.__accm && window.__accm.library ? await window.__accm.library.load() : { items: [], activations: {} };
+    let characters = [];
     try { characters = await db.characters.toArray(); } catch(e) {}
     characters.sort(function(a,b){ return (b.lastMessageTime || 0) - (a.lastMessageTime || 0); });
-    var modules = (window.__accm && window.__accm.modules && window.__accm.modules.items) ? window.__accm.modules.items : [];
-    var packs = (window.__accm && window.__accm.packs && window.__accm.packs.items) ? window.__accm.packs.items : [];
-    var skillbooks = (window.__accm && window.__accm.skillbooks && window.__accm.skillbooks.items) ? window.__accm.skillbooks.items : [];
-    var threadId = hasActiveThread ? String(activeThreadId) : null;
-    var acts = threadId && lib.activations ? (lib.activations[threadId] || {}) : {};
-    var objectItems = [];
+    let modules = (window.__accm && window.__accm.modules && window.__accm.modules.items) ? window.__accm.modules.items : [];
+    let packs = (window.__accm && window.__accm.packs && window.__accm.packs.items) ? window.__accm.packs.items : [];
+    let skillbooks = (window.__accm && window.__accm.skillbooks && window.__accm.skillbooks.items) ? window.__accm.skillbooks.items : [];
+    let threadId = hasActiveThread ? String(activeThreadId) : null;
+    let acts = threadId && lib.activations ? (lib.activations[threadId] || {}) : {};
+    let objectItems = [];
 
-    var html = '';
+    let html = '';
     html += '<div style="padding:0.6rem;font-size:.9rem;">';
     html += '<div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem;"><b>📦 Objects</b><button class="__aeRefreshFiles">refresh</button></div>';
     html += '<div style="opacity:.75;margin-bottom:.5rem;">Installed Workshop objects, characters, skillbooks, packs, and extension modules. Core modules that power this explorer cannot be disabled here.</div>';
@@ -170,8 +172,8 @@ async function __aeRenderFileExplorerBody(win, opts) {
     html += '<h4>Installed library items (' + lib.items.length + ')</h4>';
     if (!lib.items.length) html += '<div style="opacity:.7;">No installed library items yet.</div>';
     lib.items.forEach(function(item) {
-      var i = objectItems.push({ type: 'library', item: item }) - 1;
-      var active = !!acts[item.id];
+      let i = objectItems.push({ type: 'library', item: item }) - 1;
+      let active = !!acts[item.id];
       html += '<div class="__aeFileRow __aeObjectRow" data-object-i="' + i + '" style="border:1px solid var(--border-color);border-radius:8px;padding:.5rem;margin-bottom:.45rem;background:rgba(127,127,127,.06);">';
       html += '<div style="display:flex;gap:.5rem;align-items:flex-start;"><div style="flex:1;min-width:0;"><b>' + sanitizeHtml(item.name || item.id) + '</b> <span style="opacity:.65;">' + sanitizeHtml(item.kind || 'item') + '</span>';
       html += '<div style="opacity:.65;font-size:.82rem;">' + sanitizeHtml((item.tags || []).join(', ')) + (hasActiveThread ? ' · ' + (active ? '🟢 active here' : '⚪ inactive here') : '') + '</div></div>';
@@ -199,15 +201,15 @@ async function __aeRenderFileExplorerBody(win, opts) {
 
     html += '<h4>Extension modules (' + modules.length + ')</h4>';
     modules.forEach(function(m) {
-      var essential = m.id === 'accm-runtime' || m.id === 'global-explorer';
+      let essential = m.id === 'accm-runtime' || m.id === 'global-explorer';
       html += '<div class="__aeFileRow" style="border:1px solid var(--border-color);border-radius:8px;padding:.5rem;margin-bottom:.35rem;background:rgba(127,127,127,.06);"><b>' + sanitizeHtml(m.title || m.id) + '</b><div style="opacity:.65;font-size:.82rem;">' + sanitizeHtml(m.id) + (essential ? ' · core, cannot be disabled' : '') + '</div></div>';
     });
     html += '</div>';
     return { html: html, files: [], objectItems: objectItems };
   }
 
-  var result = opts.mode === 'memory' ? await renderMemory() : opts.mode === 'objects' ? await renderObjects() : await renderFiles();
-  var top = '';
+  let result = opts.mode === 'memory' ? await renderMemory() : opts.mode === 'objects' ? await renderObjects() : await renderFiles();
+  let top = '';
   top += '<div style="display:flex;gap:.35rem;padding:.55rem .6rem;border-bottom:1px solid rgba(127,127,127,.25);position:sticky;top:0;background:inherit;z-index:2;">';
   top += '<button class="__aeExplorerTab" data-mode="files" ' + (opts.mode === 'files' ? 'disabled' : '') + '>Files</button>';
   top += '<button class="__aeExplorerTab" data-mode="memory" ' + (opts.mode === 'memory' ? 'disabled' : '') + '>Memory</button>';
@@ -230,20 +232,20 @@ async function __aeRenderFileExplorerBody(win, opts) {
     __aeRenderFileExplorerBody(win, opts);
   });
   win.bodyEl.querySelector('.__aeFileFilter')?.addEventListener('input', function(e) {
-    var q = (e.target.value || '').toLowerCase();
+    let q = (e.target.value || '').toLowerCase();
     win.bodyEl.querySelectorAll('.__aeFileRow').forEach(function(row) {
       row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
     });
   });
 
   if (opts.mode === 'objects') {
-    var objectItems = result.objectItems || [];
+    let objectItems = result.objectItems || [];
     win.bodyEl.querySelectorAll('.__aeObjectRow').forEach(function(row) {
-      var ref = objectItems[Number(row.dataset.objectI)];
+      let ref = objectItems[Number(row.dataset.objectI)];
       if (!ref || ref.type !== 'library') return;
       row.querySelector('.__aeToggleObjectInput')?.addEventListener('change', async function(e) {
         if (!hasActiveThread) return;
-        var enabled = !!e.target.checked;
+        let enabled = !!e.target.checked;
         await window.__accm.library.setActive(ref.item.id, activeThreadId, enabled);
         __aeToast((enabled ? 'Enabled here: ' : 'Disabled here: ') + (ref.item.name || ref.item.id), 3000);
         __aeRenderFileExplorerBody(win, opts);
@@ -259,22 +261,22 @@ async function __aeRenderFileExplorerBody(win, opts) {
   }
 
   if (opts.mode === 'memory') {
-    var memoryItems = result.memoryItems || [];
+    let memoryItems = result.memoryItems || [];
 
     async function updateGeneratedMemory(item, patch, doDelete) {
-      var msg = await db.messages.get(item.messageId);
+      let msg = await db.messages.get(item.messageId);
       if (!msg || !msg.memoriesEndingHere || !msg.memoriesEndingHere[item.level]) return;
-      var arr = msg.memoriesEndingHere[item.level];
+      let arr = msg.memoriesEndingHere[item.level];
       if (doDelete) arr.splice(item.index, 1);
       else Object.assign(arr[item.index], patch || {});
       await db.messages.update(item.messageId, { memoriesEndingHere: msg.memoriesEndingHere });
     }
 
     win.bodyEl.querySelectorAll('.__aeMemoryRow').forEach(function(row) {
-      var ref = memoryItems[Number(row.dataset.memoryI)];
+      let ref = memoryItems[Number(row.dataset.memoryI)];
       if (!ref) return;
       row.querySelector('.__aeToggleMemoryInput')?.addEventListener('change', async function(e) {
-        var disabled = !e.target.checked;
+        let disabled = !e.target.checked;
         if (ref.type === 'lore') await db.lore.update(ref.item.id, { disabled: disabled });
         else if (ref.type === 'legacy-memory') await db.memories.update(ref.item.id, { disabled: disabled });
         else if (ref.type === 'generated-memory') await updateGeneratedMemory(ref.item, { disabled: disabled }, false);
@@ -294,15 +296,15 @@ async function __aeRenderFileExplorerBody(win, opts) {
   }
 
   if (opts.mode !== 'files') return;
-  var files = result.files;
+  let files = result.files;
   win.bodyEl.querySelectorAll('.__aeFileRow').forEach(function(row) {
-    var fileId = row.dataset.fileId;
-    var file = files.find(function(f) { return f.id === fileId; });
+    let fileId = row.dataset.fileId;
+    let file = files.find(function(f) { return f.id === fileId; });
     if (!file) return;
 
     row.querySelector('.__aeMentionFile')?.addEventListener('click', function() {
       if (!hasActiveThread) return __aeToast('Open a chat first.', 3000);
-      var mention = '@[' + file.name + ']';
+      let mention = '@[' + file.name + ']';
       $.messageInput.value = ($.messageInput.value ? $.messageInput.value + ' ' : '') + mention;
       $.messageInput.focus();
       __aeToast('Inserted mention: ' + mention, 3000);
@@ -313,8 +315,8 @@ async function __aeRenderFileExplorerBody(win, opts) {
       if (file.threadId === activeThreadId) {
         await __aeReactivateFileContext(file);
       } else if (file.fullText) {
-        var content = __aeBuildAiContextContent(file.kind || 'File', file.name, file.fullText, (file.metaText || '') + ' · recalled from global explorer');
-        var messageId = await __aeAddAiContextMessage(content, 'Global File Recall', { __aeFileContext: true, fileId: file.id, source: 'global-explorer' });
+        let content = __aeBuildAiContextContent(file.kind || 'File', file.name, file.fullText, (file.metaText || '') + ' · recalled from global explorer');
+        let messageId = await __aeAddAiContextMessage(content, 'Global File Recall', { __aeFileContext: true, fileId: file.id, source: 'global-explorer' });
         __aeToast('📎 Recalled file into current chat: ' + file.name, 4000);
       } else {
         __aeToast('Only a preview is stored for this file. Full cross-chat recall for large files is planned.', 6500);
@@ -323,7 +325,7 @@ async function __aeRenderFileExplorerBody(win, opts) {
     });
 
     row.querySelector('.__aePreviewFile')?.addEventListener('click', function() {
-      var preview = file.fullText || file.preview || '(No preview available.)';
+      let preview = file.fullText || file.preview || '(No preview available.)';
       return createFloatingWindow({
         header: 'Preview: ' + sanitizeHtml(file.name),
         initialWidth: Math.min(800, window.innerWidth - 40),
@@ -343,7 +345,7 @@ async function __aeRenderFileExplorerBody(win, opts) {
 
 async function __aeShowFileExplorer(opts) {
   opts = opts || {};
-  var win = createFloatingWindow({
+  let win = createFloatingWindow({
     header: '🗂️ Explorer',
     initialWidth: Math.min(820, window.innerWidth - 40),
     initialHeight: Math.min(680, window.innerHeight - 80),

@@ -130,7 +130,6 @@ def check_worker() -> None:
     print("\n== workshop worker syntax ==")
     candidates = [
         WORKSPACE / "workshop-backend/src/worker.js",
-        WORKSPACE / "fixed-worker.js",
     ]
     checked = 0
     for path in candidates:
@@ -141,6 +140,53 @@ def check_worker() -> None:
         print("worker not found; skipped")
     else:
         print(f"worker files OK: {checked}")
+
+
+def run_security_linter() -> None:
+    print("\n== security & secrets linter ==")
+    failed = False
+    
+    files_to_check = []
+    files_to_check.extend((ROOT / "modify/new").glob("*.frag"))
+    files_to_check.extend((ROOT / "modify/replace").glob("*.frag"))
+    
+    worker_path = ROOT.parent / "workshop-backend/src/worker.js"
+    if worker_path.exists():
+        files_to_check.append(worker_path)
+        
+    for path in files_to_check:
+        try:
+            content = path.read_text(encoding="utf-8")
+        except Exception:
+            continue
+            
+        for line_num, line in enumerate(content.splitlines(), 1):
+            trimmed = line.strip()
+            if trimmed.startswith("//") or trimmed.startswith("/*") or trimmed.startswith("*"):
+                continue
+                
+            if "eval(" in line and "Blocked for security reasons" not in line and "console.warn" not in line:
+                if not re.search(r'//.*eval\(', line):
+                    print(f"  [SEC FAIL] {path.relative_to(ROOT.parent)}:{line_num} - Found 'eval()' call: {trimmed}")
+                    failed = True
+                    
+            if "postMessage" in line and '"*"' in line and not re.search(r'//.*postMessage', line):
+                print(f"  [SEC FAIL] {path.relative_to(ROOT.parent)}:{line_num} - Found wildcard postMessage(\"*\") call: {trimmed}")
+                failed = True
+                
+            if "fallback-seed" in line and not re.search(r'//.*fallback-seed', line):
+                print(f"  [SEC FAIL] {path.relative_to(ROOT.parent)}:{line_num} - Found hardcoded 'fallback-seed' secret fallback: {trimmed}")
+                failed = True
+                
+            if re.search(r'\bsk-[A-Za-z0-9]{32,}\b', line):
+                print(f"  [SEC FAIL] {path.relative_to(ROOT.parent)}:{line_num} - Found potential hardcoded OpenAI API key.")
+                failed = True
+                
+    if failed:
+        print("\n❌ SECURITY LINTER FAILED: Vulnerabilities or hardcoded secrets found!")
+        raise SystemExit(1)
+    else:
+        print("security linter OK: No vulnerabilities or hardcoded secrets found.")
 
 
 def main() -> int:
@@ -160,6 +206,11 @@ def main() -> int:
     check_inline_scripts()
     if not args.skip_worker:
       check_worker()
+
+    print("\n== frontend utility unit tests ==")
+    run(["node", "tools/test_frontend_utils.mjs"])
+
+    run_security_linter()
 
     print("\nREGRESSION OK")
     return 0

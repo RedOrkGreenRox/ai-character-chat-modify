@@ -1,6 +1,6 @@
 // --- Toggle / Status ---
 
-var __aeFeatureMap = {
+let __aeFeatureMap = {
   'file': 'fileUpload', 'files': 'fileUpload', 'upload': 'fileUpload',
   'pdf': 'pdfExtract',
   'docx': 'docxExtract',
@@ -15,8 +15,8 @@ var __aeFeatureMap = {
 };
 
 async function __aeToggle(feature) {
-  var settings = __aeLoadSettings();
-  var key = __aeFeatureMap[(feature || '').toLowerCase()];
+  let settings = __aeLoadSettings();
+  let key = __aeFeatureMap[(feature || '').toLowerCase()];
 
   if (!key) {
     await __aeAddSystemMessage(
@@ -30,7 +30,7 @@ async function __aeToggle(feature) {
   settings[key] = !settings[key];
   __aeSaveSettings(settings);
 
-  var label = key.replace(/([A-Z])/g, ' $1').trim();
+  let label = key.replace(/([A-Z])/g, ' $1').trim();
   await __aeAddSystemMessage(
     '⚙️ **' + label + '** is now **' + (settings[key] ? 'ON ✅' : 'OFF ❌') + '**',
     'Extensions'
@@ -39,7 +39,7 @@ async function __aeToggle(feature) {
 
   // Refresh shortcut buttons for active thread
   if (typeof activeThreadId === 'number' && Number.isFinite(activeThreadId)) {
-    var thread = await db.threads.get(activeThreadId);
+    let thread = await db.threads.get(activeThreadId);
     if (thread) {
       await __aeEnsureShortcutButtons(thread);
       renderShortcutButtons(thread);
@@ -49,8 +49,8 @@ async function __aeToggle(feature) {
 }
 
 async function __aeShowStatus() {
-  var s = __aeLoadSettings();
-  var lines = [
+  let s = __aeLoadSettings();
+  let lines = [
     '## ⚙️ Extension Status (v' + __AE_VERSION + ')',
     '',
     '| Feature | Status | Toggle |',
@@ -79,7 +79,7 @@ async function __aeShowStatus() {
 
 // --- File Input UI ---
 
-var __aeFileInput = null;
+let __aeFileInput = null;
 
 function __aeCreateFileInput() {
   if (__aeFileInput) return;
@@ -91,10 +91,10 @@ function __aeCreateFileInput() {
   document.body.appendChild(__aeFileInput);
 
   __aeFileInput.addEventListener('change', async function() {
-    var files = __aeFileInput.files;
+    let files = __aeFileInput.files;
     if (!files || files.length === 0) return;
     __aeResetProcessingCancel();
-    for (var i = 0; i < files.length; i++) {
+    for (let i = 0; i < files.length; i++) {
       if (__aeProcessingCancelled) break;
       await __aeProcessFile(files[i]);
     }
@@ -104,14 +104,14 @@ function __aeCreateFileInput() {
 
 // --- Drag & Drop ---
 
-var __aeDragDropInstalled = false;
+let __aeDragDropInstalled = false;
 
 function __aeSetupDragDrop() {
   if (__aeDragDropInstalled) return;
   __aeDragDropInstalled = true;
 
-  var dragCounter = 0;
-  var dropOverlay = null;
+  let dragCounter = 0;
+  let dropOverlay = null;
 
   window.addEventListener('dragenter', function(e) {
     e.preventDefault();
@@ -155,9 +155,9 @@ function __aeSetupDragDrop() {
 
     if (!e.dataTransfer || !e.dataTransfer.files || e.dataTransfer.files.length === 0) return;
 
-    var files = e.dataTransfer.files;
+    let files = e.dataTransfer.files;
     __aeResetProcessingCancel();
-    for (var i = 0; i < files.length; i++) {
+    for (let i = 0; i < files.length; i++) {
       if (__aeProcessingCancelled) break;
       await __aeProcessFile(files[i]);
     }
@@ -167,23 +167,23 @@ function __aeSetupDragDrop() {
 
 // --- Paste files from clipboard ---
 
-var __aePasteInstalled = false;
+let __aePasteInstalled = false;
 
 function __aeSetupPasteUpload() {
   if (__aePasteInstalled) return;
   __aePasteInstalled = true;
 
   $.messageInput.addEventListener('paste', async function(e) {
-    var files = [];
+    let files = [];
     if (e.clipboardData) {
       if (e.clipboardData.files && e.clipboardData.files.length > 0) {
-        for (var i = 0; i < e.clipboardData.files.length; i++) files.push(e.clipboardData.files[i]);
+        for (let i = 0; i < e.clipboardData.files.length; i++) files.push(e.clipboardData.files[i]);
       }
       if (e.clipboardData.items && e.clipboardData.items.length > 0) {
-        for (var j = 0; j < e.clipboardData.items.length; j++) {
-          var item = e.clipboardData.items[j];
+        for (let j = 0; j < e.clipboardData.items.length; j++) {
+          let item = e.clipboardData.items[j];
           if (item.kind === 'file') {
-            var f = item.getAsFile();
+            let f = item.getAsFile();
             if (f && files.indexOf(f) === -1) files.push(f);
           }
         }
@@ -200,7 +200,7 @@ function __aeSetupPasteUpload() {
 
     __aeToast('📋 Processing pasted file(s): ' + files.length, 4000);
     __aeResetProcessingCancel();
-    for (var k = 0; k < files.length; k++) {
+    for (let k = 0; k < files.length; k++) {
       if (__aeProcessingCancelled) break;
       await __aeProcessFile(files[k]);
     }

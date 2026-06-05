@@ -108,27 +108,7 @@
       yield buffer;
     }
   }
-  // async function readFirstLineOfTextBlob(file) {
-  //   const reader = file.stream().getReader();
-  //   const decoder = new TextDecoder("utf-8");
-  //   let { value: chunk, done: readerDone } = await reader.read();
-  //   let buffer = '';
-  //   while (!readerDone) {
-  //     buffer += decoder.decode(chunk, { stream: true });
-  //     let lines = buffer.split('\n');
-  //     if (lines.length > 1) {
-  //       return lines[0];
-  //     }
-  //     ({ value: chunk, done: readerDone } = await reader.read());
-  //   }
-  //   // Handle the case where the first line is the only line
-  //   buffer += decoder.decode();
-  //   if (buffer) {
-  //     return buffer.split('\n')[0];
-  //   }
-  //   // Return an empty string if no content
-  //   return '';
-  // }
+
 
   async function tryImportingRawDbExport(file, opts={}) {
     try {
@@ -152,12 +132,7 @@
         return "finished";
       }
 
-      // Note: This is commented out because it causes Chrome to crash (probably memory issues)
-      // let storePromises = Object.entries(data.stores).map(async ([storeName, rows]) => {
-      //   await db[storeName].clear(); // Clear existing data
-      //   await db[storeName].bulkAdd(rows);
-      // });
-      // await Promise.all(storePromises);
+
 
       try {
 
@@ -254,24 +229,7 @@
         }
       }
 
-      // if(!successReadingJsonAsDexie) {
-      //   // parsing as "first line is JSON, subsequent lines are row objects" format
-      //   json = undefined; // <-- just to be safe in case of bugs introduced above
-      //   try {
-      //     for await (let line of readTextBlobLineByLine(file)) {
-      //       if(!line.trim()) continue;
-      //       if(!json) { // first line is the dexie JSON without any rows in the tables
-      //         json = JSON.parse(line.trim());
-      //         if(json.formatName !== "dexie") return "fail";
-      //       } else { // subsequent lines are row objects that have the table name before a "|", and the row JSON after it
-      //         let type = line.slice(0, line.indexOf("|"));
-      //         let row = JSON.parse(line.slice(line.indexOf("|")+1));
-      //         json.data.data.find(d => d.tableName === type).rows.push(row);
-      //       }
-      //     }
-      //     successReadingJsonAsDexie = true;
-      //   } catch(e) {}
-      // }
+
 
       if(!successReadingJsonAsDexie) {
         if(json && typeof json.format === "string" && json.format.startsWith("perchance-ai-chat-v")) {
@@ -287,6 +245,15 @@
       // let json = JSON.parse(await new Blob([file]).text());
 
       if(!json.data || !json.data.data) return "fail"; // it's not a dexie file
+
+      // Pre-validation of crucial tables before doing any destructive operations (such as db.delete())
+      let importedCharactersVal = json.data.data.find(d => d.tableName === "characters")?.rows;
+      let importedThreadsVal = json.data.data.find(d => d.tableName === "threads")?.rows;
+      let importedMessagesVal = json.data.data.find(d => d.tableName === "messages")?.rows;
+      if (!importedCharactersVal || !importedThreadsVal || !importedMessagesVal) {
+        alert("Import aborted: Crucial tables (characters, threads, or messages) are missing or corrupted in the import file.");
+        return "fail";
+      }
 
       if(options.keepExistingData === "no") {
         await db.delete();
@@ -1081,7 +1048,7 @@
 
   let customPostPageLoadMainThreadCode = (await db.misc.get("customPostPageLoadMainThreadCode"))?.value || "";
   if(customPostPageLoadMainThreadCode.trim()) {
-    eval(customPostPageLoadMainThreadCode);
+    console.warn("[ACCM Security] Custom post page load code execution blocked for security reasons.");
   }
 
   console.log("load log: after custom post page load main thread code", Date.now()-window.pageLoadStartTime);

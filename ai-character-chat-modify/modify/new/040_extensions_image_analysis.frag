@@ -8,14 +8,14 @@
 
 async function __aeAdvancedAnalyzeImage(file) {
   __aeAssertNotCancelled();
-  var dataUrl = await __aeReadAndNormalizeImageDataUrl(file);
-  var transformers = await __aeLoadTransformers();
-  var lines = ['[Image: ' + file.name + ']'];
+  let dataUrl = await __aeReadAndNormalizeImageDataUrl(file);
+  let transformers = await __aeLoadTransformers();
+  let lines = ['[Image: ' + file.name + ']'];
 
   try {
     __aeToast('🧠 Advanced image caption...', 6000);
-    var captioner = await transformers.pipeline('image-to-text', 'Xenova/vit-gpt2-image-captioning');
-    var cap = await captioner(dataUrl, { max_new_tokens: 64, max_length: 64 });
+    let captioner = await transformers.pipeline('image-to-text', 'Xenova/vit-gpt2-image-captioning');
+    let cap = await captioner(dataUrl, { max_new_tokens: 64, max_length: 64 });
     if (cap && cap[0]) lines.push('Caption: ' + (cap[0].generated_text || cap[0].caption || '').trim());
   } catch(e) {
     console.warn('[ae] advanced caption failed:', e);
@@ -25,8 +25,8 @@ async function __aeAdvancedAnalyzeImage(file) {
   try {
     __aeAssertNotCancelled();
     __aeToast('🧠 Detecting objects...', 6000);
-    var detector = await transformers.pipeline('object-detection', 'Xenova/detr-resnet-50');
-    var objects = await detector(dataUrl, { threshold: 0.75, percentage: true });
+    let detector = await transformers.pipeline('object-detection', 'Xenova/detr-resnet-50');
+    let objects = await detector(dataUrl, { threshold: 0.75, percentage: true });
     if (objects && objects.length) {
       lines.push('Objects: ' + objects.slice(0, 12).map(function(o) {
         return (o.label || o.class || 'object') + (o.score ? ' (' + Math.round(o.score * 100) + '%)' : '');
@@ -39,20 +39,20 @@ async function __aeAdvancedAnalyzeImage(file) {
   try {
     __aeAssertNotCancelled();
     __aeToast('🧠 Checking visual hypotheses...', 6000);
-    var zeroShot = await transformers.pipeline('zero-shot-image-classification', 'Xenova/clip-vit-base-patch32');
-    var labels = [
+    let zeroShot = await transformers.pipeline('zero-shot-image-classification', 'Xenova/clip-vit-base-patch32');
+    let labels = [
       'damaged car', 'broken car', 'car accident', 'traffic accident', 'vehicle collision',
       'car crash scene', 'broken bumper', 'dented vehicle', 'emergency road scene',
       'normal parked car', 'undamaged car', 'person portrait', 'document screenshot',
       'table or spreadsheet', 'handwritten text', 'printed text'
     ];
-    var zs = await zeroShot(dataUrl, labels);
+    let zs = await zeroShot(dataUrl, labels);
     if (zs && zs.length) {
       zs.sort(function(a,b) { return (b.score || 0) - (a.score || 0); });
       lines.push('Visual hypothesis scores: ' + zs.slice(0, 8).map(function(x) {
         return (x.label || 'label') + ' (' + Math.round((x.score || 0) * 100) + '%)';
       }).join(', '));
-      var accidentScore = zs.filter(function(x) { return /damaged|broken|accident|collision|crash|bumper|dented/i.test(x.label || ''); })
+      let accidentScore = zs.filter(function(x) { return /damaged|broken|accident|collision|crash|bumper|dented/i.test(x.label || ''); })
         .reduce(function(max, x) { return Math.max(max, x.score || 0); }, 0);
       if (accidentScore > 0.18) lines.push('Damage/accident hint: possible vehicle damage or accident context detected; treat as uncertain and verify with user if important.');
     }
@@ -63,22 +63,22 @@ async function __aeAdvancedAnalyzeImage(file) {
   try {
     __aeAssertNotCancelled();
     __aeToast('🧠 OCR attempt...', 6000);
-    var ocr = await transformers.pipeline('image-to-text', 'Xenova/trocr-small-printed');
-    var out = await ocr(dataUrl, { max_new_tokens: 128 });
-    var text = out && out[0] ? (out[0].generated_text || '').trim() : '';
+    let ocr = await transformers.pipeline('image-to-text', 'Xenova/trocr-small-printed');
+    let out = await ocr(dataUrl, { max_new_tokens: 128 });
+    let text = out && out[0] ? (out[0].generated_text || '').trim() : '';
     if (text && text.length > 2) lines.push('OCR text: ' + text);
   } catch(e) {
     console.warn('[ae] OCR failed:', e);
   }
 
-  var analysis = lines.filter(Boolean).join('\n');
+  let analysis = lines.filter(Boolean).join('\n');
   await __aeRememberExtractedContent('Image Analysis', file.name, analysis, 'advanced image analysis');
   __aeToast('🧠 Image analysis saved: ' + file.name, 4000);
 }
 
-var __aeOriginalProcessImageFileForAdvanced = __aeProcessImageFile;
+let __aeOriginalProcessImageFileForAdvanced = __aeProcessImageFile;
 __aeProcessImageFile = async function(file) {
-  var settings = __aeLoadSettings();
+  let settings = __aeLoadSettings();
   if (!settings.advancedImageAnalysis) return __aeOriginalProcessImageFileForAdvanced.apply(this, arguments);
   try {
     return await __aeAdvancedAnalyzeImage(file);

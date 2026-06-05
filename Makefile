@@ -14,7 +14,6 @@ indexes:
 
 worker-check:
 	node --check workshop-backend/src/worker.js
-	node --check fixed-worker.js
 	cd workshop-backend && npm test
 
 package-backend:

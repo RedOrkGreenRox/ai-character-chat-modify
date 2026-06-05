@@ -29,7 +29,7 @@
   const scheduledElements = new WeakSet();
   const revealedContainerKeys = window.__accmRevealedContainerKeys;
 
-  var style = document.createElement('style');
+  let style = document.createElement('style');
   style.textContent = `
     @keyframes accmWholeMessageFadeIn {
       from { opacity: 0; transform: translateY(4px); filter: blur(2px); }
@@ -47,8 +47,8 @@
   function revealMessageContainer(messageEl) {
     if (!messageEl || !(messageEl instanceof HTMLElement)) return;
     if (!isEnabled()) return;
-    var id = messageEl.dataset && messageEl.dataset.id;
-    var key = id && id !== 'undefined' && id !== 'null' && id !== 'NaN' ? 'id:' + id : null;
+    let id = messageEl.dataset && messageEl.dataset.id;
+    let key = id && id !== 'undefined' && id !== 'null' && id !== 'NaN' ? 'id:' + id : null;
     if (key && revealedContainerKeys.has(key)) return;
     if (key) revealedContainerKeys.add(key);
     messageEl.classList.add('accm-whole-message-reveal');
@@ -58,7 +58,7 @@
 
   function loadSettings() {
     try {
-      var raw = localStorage.getItem(REVEAL_CONFIG.storageKey);
+      let raw = localStorage.getItem(REVEAL_CONFIG.storageKey);
       return Object.assign({ enabled: REVEAL_CONFIG.defaultEnabled }, raw ? JSON.parse(raw) : {});
     } catch(e) {
       return { enabled: REVEAL_CONFIG.defaultEnabled };
@@ -74,48 +74,62 @@
   }
 
   function setEnabled(value) {
-    var s = loadSettings();
+    let s = loadSettings();
     s.enabled = !!value;
     saveSettings(s);
     if (typeof __aeToast === 'function') __aeToast('Gradual text reveal: ' + (s.enabled ? 'ON' : 'OFF'), 2200);
   }
 
   function collectTextNodes(root) {
-    var nodes = [];
-    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    let nodes = [];
+    let walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
       acceptNode: function(node) {
         if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
-        var parent = node.parentElement;
+        let parent = node.parentElement;
         if (!parent) return NodeFilter.FILTER_REJECT;
         if (parent.closest('script,style,noscript')) return NodeFilter.FILTER_REJECT;
         return NodeFilter.FILTER_ACCEPT;
       }
     });
-    var n;
+    let n;
     while ((n = walker.nextNode())) nodes.push(n);
     return nodes;
   }
 
   function getMessageKey(el) {
-    var msg = el && el.closest && el.closest('.message');
+    let msg = el && el.closest && el.closest('.message');
     if (!msg || !msg.dataset) return null;
-    var id = msg.dataset.id;
+    let id = msg.dataset.id;
     if (id && id !== 'undefined' && id !== 'null' && id !== 'NaN') return 'id:' + id;
     return null;
   }
 
   function isCurrentlyStreaming(el) {
-    var msg = el && el.closest && el.closest('.message');
+    let msg = el && el.closest && el.closest('.message');
     return !!(msg && msg.dataset && msg.dataset.currentlyStreaming);
   }
 
+  const pendingRevealElements = new Set();
+  let revealRafId = null;
+
   function scheduleReveal(el, delay) {
-    if (!el || scheduledElements.has(el)) return;
-    scheduledElements.add(el);
-    setTimeout(function() {
-      scheduledElements.delete(el);
-      revealMessageText(el);
-    }, delay == null ? 40 : delay);
+    if (!el) return;
+    if (delay) {
+      setTimeout(function() {
+        revealMessageText(el);
+      }, delay);
+      return;
+    }
+    pendingRevealElements.add(el);
+    if (revealRafId) return;
+    revealRafId = requestAnimationFrame(function() {
+      revealRafId = null;
+      let list = Array.from(pendingRevealElements);
+      pendingRevealElements.clear();
+      list.forEach(function(element) {
+        revealMessageText(element);
+      });
+    });
   }
 
   function revealMessageText(el) {
@@ -128,17 +142,17 @@
       return;
     }
 
-    var messageKey = getMessageKey(el);
+    let messageKey = getMessageKey(el);
     if (messageKey && revealedMessageKeys.has(messageKey)) {
       el.dataset.accmRevealDone = '1';
       return;
     }
 
-    var textNodes = collectTextNodes(el);
+    let textNodes = collectTextNodes(el);
     if (!textNodes.length) return;
 
-    var originals = textNodes.map(function(n) { return n.nodeValue; });
-    var totalChars = originals.reduce(function(sum, t) { return sum + t.length; }, 0);
+    let originals = textNodes.map(function(n) { return n.nodeValue; });
+    let totalChars = originals.reduce(function(sum, t) { return sum + t.length; }, 0);
     if (!totalChars) return;
     if (totalChars > REVEAL_CONFIG.maxChars) {
       el.dataset.accmRevealDone = '1';
@@ -151,14 +165,14 @@
 
     textNodes.forEach(function(n) { n.nodeValue = ''; });
 
-    var duration = Math.max(REVEAL_CONFIG.minDurationMs, Math.min(REVEAL_CONFIG.maxDurationMs, totalChars / REVEAL_CONFIG.charsPerSecond * 1000));
-    var start = performance.now();
-    var finished = false;
+    let duration = Math.max(REVEAL_CONFIG.minDurationMs, Math.min(REVEAL_CONFIG.maxDurationMs, totalChars / REVEAL_CONFIG.charsPerSecond * 1000));
+    let start = performance.now();
+    let finished = false;
 
     function render(count) {
-      var remaining = count;
-      for (var i = 0; i < textNodes.length; i++) {
-        var t = originals[i];
+      let remaining = count;
+      for (let i = 0; i < textNodes.length; i++) {
+        let t = originals[i];
         if (remaining >= t.length) {
           textNodes[i].nodeValue = t;
           remaining -= t.length;
@@ -181,8 +195,8 @@
     function tick(now) {
       if (finished) return;
       if (!el.isConnected) return;
-      var progress = Math.min(1, (now - start) / duration);
-      var eased = 1 - Math.pow(1 - progress, 2);
+      let progress = Math.min(1, (now - start) / duration);
+      let eased = 1 - Math.pow(1 - progress, 2);
       render(Math.floor(totalChars * eased));
       if (progress < 1) requestAnimationFrame(tick);
       else finish();
@@ -196,7 +210,7 @@
     document.querySelectorAll('.messageText:not([data-accm-reveal-done="1"])').forEach(function(el) {
       // Avoid animating a huge backlog immediately after page load: if it has a stable id
       // and is already in the set, mark it done. Otherwise schedule normally.
-      var key = getMessageKey(el);
+      let key = getMessageKey(el);
       if (key && revealedMessageKeys.has(key)) {
         el.dataset.accmRevealDone = '1';
       } else {
@@ -205,19 +219,19 @@
     });
   }
 
-  var observer = new MutationObserver(function(records) {
+  let observer = new MutationObserver(function(records) {
     records.forEach(function(record) {
       if (record.type === 'attributes') {
-        var msg = record.target;
+        let msg = record.target;
         if (msg instanceof HTMLElement && msg.classList.contains('message')) {
-          var textEl = msg.querySelector('.messageText');
+          let textEl = msg.querySelector('.messageText');
           if (textEl && !isCurrentlyStreaming(textEl)) scheduleReveal(textEl, 20);
         }
         return;
       }
       if (record.type === 'characterData') {
-        var parent = record.target && record.target.parentElement;
-        var textEl = parent && parent.closest && parent.closest('.messageText');
+        let parent = record.target && record.target.parentElement;
+        let textEl = parent && parent.closest && parent.closest('.messageText');
         if (textEl) scheduleReveal(textEl, 80);
         return;
       }
@@ -232,11 +246,11 @@
   });
 
   function start() {
-    var root = document.querySelector('#messageFeed') || document.body;
+    let root = document.querySelector('#messageFeed') || document.body;
     observer.observe(root, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['data-currently-streaming'] });
     // Mark messages that existed before the plugin as done to avoid replaying an old backlog.
     document.querySelectorAll('.messageText').forEach(function(el) {
-      var key = getMessageKey(el);
+      let key = getMessageKey(el);
       if (key) {
         revealedMessageKeys.add(key);
         revealedContainerKeys.add(key);

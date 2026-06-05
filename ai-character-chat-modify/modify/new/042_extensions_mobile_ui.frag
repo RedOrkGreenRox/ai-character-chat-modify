@@ -19,8 +19,8 @@
   // ---------- helpers ----------
   function __aeIsMobile() {
     try {
-      var narrow = Math.min(window.innerWidth, window.innerHeight) < 600;
-      var ua = /Mobi|Android|iPhone|iPad|iPod|Phone/i.test(navigator.userAgent || '');
+      let narrow = Math.min(window.innerWidth, window.innerHeight) < 600;
+      let ua = /Mobi|Android|iPhone|iPad|iPod|Phone/i.test(navigator.userAgent || '');
       return narrow || ua;
     } catch(e) { return false; }
   }
@@ -28,20 +28,20 @@
 
   // ---------- (1) patch createFloatingWindow for touch + mobile fullscreen ----------
   if (typeof window.createFloatingWindow === 'function') {
-    var __aeOriginalCFW = window.createFloatingWindow;
+    let __aeOriginalCFW = window.createFloatingWindow;
     window.createFloatingWindow = function(opts) {
       opts = opts || {};
-      var mobile = __aeIsMobile();
+      let mobile = __aeIsMobile();
       if (mobile) {
         // On phones, make the window fullscreen, predictable and finger-friendly.
         opts.initialWidth = window.innerWidth;
         opts.initialHeight = window.innerHeight;
         opts.top = 0;
       }
-      var win = __aeOriginalCFW(opts);
+      let win = __aeOriginalCFW(opts);
 
       try {
-        var el = win.ctn;
+        let el = win.ctn;
         if (mobile) {
           // Force fullscreen positioning regardless of inline styles set by the original.
           el.style.left = '0px';
@@ -52,23 +52,23 @@
           el.style.maxHeight = '100vh';
           el.style.borderRadius = '0';
           // Hide resize handles — they don't make sense fullscreen and they steal taps.
-          var rh = el.querySelectorAll('.cornerResizeHandle,.leftResizeBar,.rightResizeBar');
+          let rh = el.querySelectorAll('.cornerResizeHandle,.leftResizeBar,.rightResizeBar');
           rh.forEach(function(r) { r.style.display = 'none'; });
           // Bigger close button on mobile.
-          var closeBtn = el.querySelector('.closeButton');
+          let closeBtn = el.querySelector('.closeButton');
           if (closeBtn) {
             closeBtn.style.minWidth = '2.4rem';
             closeBtn.style.minHeight = '2.4rem';
             closeBtn.style.fontSize = '1.2rem';
             closeBtn.setAttribute('aria-label', 'Close');
           }
-          var header = el.querySelector('.header');
+          let header = el.querySelector('.header');
           if (header) {
             header.style.padding = '0.6rem 0.5rem';
             header.style.fontSize = '1.05rem';
             header.style.cursor = 'default'; // no dragging on mobile
           }
-          var body = el.querySelector('.body');
+          let body = el.querySelector('.body');
           if (body) {
             body.style.WebkitOverflowScrolling = 'touch';
             body.style.overscrollBehavior = 'contain';
@@ -76,13 +76,13 @@
         } else {
           // On desktop: add touch support via Pointer Events so the window
           // is still usable on touch laptops / tablets with mouse.
-          var header = el.querySelector('.header');
-          var corner = el.querySelector('.cornerResizeHandle');
-          var leftB = el.querySelector('.leftResizeBar');
-          var rightB = el.querySelector('.rightResizeBar');
+          let header = el.querySelector('.header');
+          let corner = el.querySelector('.cornerResizeHandle');
+          let leftB = el.querySelector('.leftResizeBar');
+          let rightB = el.querySelector('.rightResizeBar');
 
-          var drag = null;
-          var resize = null;
+          let drag = null;
+          let resize = null;
 
           function onPointerDownHeader(e) {
             if (e.pointerType !== 'touch' && e.pointerType !== 'pen') return;
@@ -92,9 +92,9 @@
           }
           function onPointerMoveHeader(e) {
             if (!drag) return;
-            var dx = e.clientX - drag.x, dy = e.clientY - drag.y;
-            var newTop  = Math.max(0, Math.min(parseInt(el.style.top)+dy,  window.innerHeight - el.offsetHeight));
-            var newLeft = Math.max(0, Math.min(parseInt(el.style.left)+dx, window.innerWidth  - el.offsetWidth));
+            let dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+            let newTop  = Math.max(0, Math.min(parseInt(el.style.top)+dy,  window.innerHeight - el.offsetHeight));
+            let newLeft = Math.max(0, Math.min(parseInt(el.style.left)+dx, window.innerWidth  - el.offsetWidth));
             el.style.top  = newTop  + 'px';
             el.style.left = newLeft + 'px';
             drag.x = e.clientX; drag.y = e.clientY;
@@ -114,18 +114,18 @@
           }
           function onResizeMove(e) {
             if (!resize) return;
-            var dx = e.clientX - resize.startX, dy = e.clientY - resize.startY;
+            let dx = e.clientX - resize.startX, dy = e.clientY - resize.startY;
             if (resize.side === 'corner') {
-              var nw = Math.max(220, Math.min(resize.startW + dx, window.innerWidth  - resize.startL));
-              var nh = Math.max(220, Math.min(resize.startH + dy, window.innerHeight - resize.startT));
+              let nw = Math.max(220, Math.min(resize.startW + dx, window.innerWidth  - resize.startL));
+              let nh = Math.max(220, Math.min(resize.startH + dy, window.innerHeight - resize.startT));
               el.style.width  = nw + 'px';
               el.style.height = nh + 'px';
             } else if (resize.side === 'right') {
-              var nw2 = Math.max(220, Math.min(resize.startW + dx, window.innerWidth - resize.startL));
+              let nw2 = Math.max(220, Math.min(resize.startW + dx, window.innerWidth - resize.startL));
               el.style.width = nw2 + 'px';
             } else if (resize.side === 'left') {
-              var nw3 = Math.max(220, resize.startW - dx);
-              var nl3 = resize.startL + (resize.startW - nw3);
+              let nw3 = Math.max(220, resize.startW - dx);
+              let nl3 = resize.startL + (resize.startW - nw3);
               if (nl3 >= 0) { el.style.width = nw3 + 'px'; el.style.left = nl3 + 'px'; }
             }
             e.preventDefault();
@@ -151,9 +151,9 @@
   }
 
   // ---------- (2) view-stack /menu ----------
-  var __aeMenuWin = null;
-  var __aeMenuStack = [];   // [{ view, params }]
-  var __aeMenuViews = {};   // name -> async function(win, params)
+  let __aeMenuWin = null;
+  let __aeMenuStack = [];   // [{ view, params }]
+  let __aeMenuViews = {};   // name -> async function(win, params)
 
   function __aeMenuPath() {
     return __aeMenuStack.map(function(s){ return s.view; }).join(' › ');
@@ -161,13 +161,13 @@
 
   async function __aeMenuRender() {
     if (!__aeMenuWin) return;
-    var top = __aeMenuStack[__aeMenuStack.length - 1];
+    let top = __aeMenuStack[__aeMenuStack.length - 1];
     if (!top || !__aeMenuViews[top.view]) {
       __aeMenuWin.bodyEl.innerHTML = '<div style="padding:1rem;">View not found: ' + (top && top.view) + '</div>';
       return;
     }
     // Header with back button and breadcrumbs.
-    var canGoBack = __aeMenuStack.length > 1;
+    let canGoBack = __aeMenuStack.length > 1;
     __aeMenuWin.bodyEl.innerHTML =
       '<div class="__aeMenuTopBar" style="display:flex;align-items:center;gap:.5rem;padding:.5rem .6rem;border-bottom:1px solid var(--border-color,#ccc);position:sticky;top:0;background:inherit;z-index:2;">' +
         (canGoBack ? '<button class="__aeMenuBackBtn" style="min-width:2.6rem;min-height:2.6rem;font-size:1.1rem;">‹</button>' : '') +
@@ -177,7 +177,7 @@
     if (canGoBack) {
       __aeMenuWin.bodyEl.querySelector('.__aeMenuBackBtn').addEventListener('click', function(){ __aeMenuBack(); });
     }
-    var slot = __aeMenuWin.bodyEl.querySelector('.__aeMenuViewSlot');
+    let slot = __aeMenuWin.bodyEl.querySelector('.__aeMenuViewSlot');
     await __aeMenuViews[top.view]({ slot: slot, win: __aeMenuWin, params: top.params || {} });
   }
 
@@ -203,11 +203,11 @@
 
   // ---------- (3) HOME view (re-implementation of __aeShowExtensionsMenu) ----------
   __aeMenuViews['Menu'] = async function(ctx) {
-    var slot = ctx.slot;
-    var s = __aeLoadSettings();
+    let slot = ctx.slot;
+    let s = __aeLoadSettings();
 
-    var activeFiles = [];
-    var totalChars = 0;
+    let activeFiles = [];
+    let totalChars = 0;
     try {
       if (typeof __aeGetUploadedFiles === 'function') {
         activeFiles = await __aeGetUploadedFiles({ threadId: activeThreadId });
@@ -216,7 +216,7 @@
       }
     } catch(e) {}
 
-    var featureRows = [
+    let featureRows = [
       ['fileUpload', '📎 Text/file upload', 'file'],
       ['pdfExtract', '📄 PDF extract', 'pdf'],
       ['docxExtract', '📝 DOCX extract', 'docx'],
@@ -230,7 +230,7 @@
       ['webSearch', '🌐 Web search + auto-search', 'search']
     ];
 
-    var html = '';
+    let html = '';
     html += '<div style="padding:.75rem;font-size:0.95rem;">';
     html += '<div style="margin-bottom:.75rem;opacity:.8;">File context buffer: <b>' + totalChars + '</b> / ' + __AE_FILE_CONTEXT_BUFFER_CHARS + ' chars · files in thread: <b>' + activeFiles.length + '</b></div>';
 
@@ -250,7 +250,7 @@
     html += '<div style="font-weight:600;margin:0.5rem 0;">Features</div>';
     html += '<div style="display:grid;grid-template-columns:1fr auto;gap:.45rem .75rem;align-items:center;">';
     featureRows.forEach(function(row) {
-      var key = row[0], label = row[1], alias = row[2];
+      let key = row[0], label = row[1], alias = row[2];
       html += '<label for="__aeToggle_' + key + '" style="line-height:1.2;">' + label +
               '<div style="font-size:.78rem;opacity:.65;">/toggle ' + alias + '</div></label>';
       html += '<input id="__aeToggle_' + key + '" class="__aeMenuToggle" data-key="' + key + '" type="checkbox" ' +
@@ -263,12 +263,12 @@
     // Wire toggles.
     slot.querySelectorAll('.__aeMenuToggle').forEach(function(input) {
       input.addEventListener('change', async function() {
-        var settings = __aeLoadSettings();
+        let settings = __aeLoadSettings();
         settings[input.dataset.key] = input.checked;
         __aeSaveSettings(settings);
         if (typeof __aeToast === 'function') __aeToast('⚙️ ' + input.dataset.key + ': ' + (input.checked ? 'ON' : 'OFF'), 2200);
         if (typeof activeThreadId === 'number' && Number.isFinite(activeThreadId) && typeof __aeEnsureShortcutButtons === 'function') {
-          var thread = await db.threads.get(activeThreadId);
+          let thread = await db.threads.get(activeThreadId);
           if (thread) {
             await __aeEnsureShortcutButtons(thread);
             renderShortcutButtons(thread);
@@ -307,21 +307,21 @@
 
   // ---------- (4) Policy view (replaces prompt2 modal) ----------
   __aeMenuViews['Policy'] = async function(ctx) {
-    var slot = ctx.slot;
+    let slot = ctx.slot;
     if (typeof activeThreadId !== 'number' || !Number.isFinite(activeThreadId)) {
       slot.innerHTML = '<div style="padding:1rem;opacity:.8;">Open a chat thread first.</div>';
       return;
     }
-    var current = typeof __aeGetThreadBasePolicy === 'function'
+    let current = typeof __aeGetThreadBasePolicy === 'function'
         ? await __aeGetThreadBasePolicy(activeThreadId)
         : { allowedLanguagePacks: ['accm.lang.en'], primaryLanguagePack: 'accm.lang.en' };
 
-    var packs = (typeof __aeGetAvailableLanguagePacks === 'function')
+    let packs = (typeof __aeGetAvailableLanguagePacks === 'function')
         ? __aeGetAvailableLanguagePacks()
         : [{ id: 'accm.lang.en', code: 'en', label: 'English', name: 'English' }];
-    var allowed = new Set(current.allowedLanguagePacks || []);
+    let allowed = new Set(current.allowedLanguagePacks || []);
 
-    var html = '';
+    let html = '';
     html += '<div style="padding:.85rem;font-size:.95rem;">';
     html += '<div style="opacity:.85;margin-bottom:.6rem;">Base Policy is a persistent per-chat directive inserted before every reply. Select allowed languages. Changes are saved automatically; uncheck all languages to turn the policy off. Default is English.</div>';
     html += '<div style="display:grid;grid-template-columns:1fr auto;gap:.5rem .8rem;align-items:center;">';
@@ -335,12 +335,12 @@
     slot.innerHTML = html;
 
     async function savePolicyAutomatically() {
-      var allowedIds = Array.from(slot.querySelectorAll('.__aePolicyLangToggle')).filter(function(x) { return x.checked; }).map(function(x) { return x.dataset.id; });
-      var primary = allowedIds[0] || 'accm.lang.en';
+      let allowedIds = Array.from(slot.querySelectorAll('.__aePolicyLangToggle')).filter(function(x) { return x.checked; }).map(function(x) { return x.dataset.id; });
+      let primary = allowedIds[0] || 'accm.lang.en';
       if (typeof __aeSetThreadBasePolicy === 'function') {
-        var policy = await __aeSetThreadBasePolicy(activeThreadId, { allowedLanguagePacks: allowedIds, primaryLanguagePack: primary, fallbackLanguagePack: primary, language: allowedIds.length ? undefined : 'off' });
+        let policy = await __aeSetThreadBasePolicy(activeThreadId, { allowedLanguagePacks: allowedIds, primaryLanguagePack: primary, fallbackLanguagePack: primary, language: allowedIds.length ? undefined : 'off' });
         current = policy;
-        var names = (policy.allowedLanguagePacks || []).map(function(id) { return packs.find(function(p) { return p.id === id; }); }).filter(Boolean).map(function(p) { return p.label; });
+        let names = (policy.allowedLanguagePacks || []).map(function(id) { return packs.find(function(p) { return p.id === id; }); }).filter(Boolean).map(function(p) { return p.label; });
         if (typeof __aeToast === 'function') __aeToast('🧭 Base Policy: ' + (names.join(', ') || 'Off'), 2200);
       }
     }
@@ -352,7 +352,7 @@
   // Override the existing __aeShowBasePolicyModal so it now navigates inside the menu
   // instead of spawning a second modal on top of /menu. Direct /policy command still
   // works: it just opens the menu at the Policy view directly.
-  var __aeMobileShowBasePolicyModal = async function() {
+  let __aeMobileShowBasePolicyModal = async function() {
     if (!__aeMenuWin || !__aeMenuWin.ctn || !__aeMenuWin.ctn.isConnected) {
       __aeOpenMenu('Policy');
     } else {
@@ -364,14 +364,14 @@
 
   // ---------- (5) Files view (re-uses existing renderer if present) ----------
   __aeMenuViews['Files'] = async function(ctx) {
-    var slot = ctx.slot;
+    let slot = ctx.slot;
     if (typeof activeThreadId !== 'number' || !Number.isFinite(activeThreadId)) {
       slot.innerHTML = '<div style="padding:1rem;opacity:.8;">Open a chat thread first.</div>';
       return;
     }
     if (typeof __aeRenderFileExplorerBody === 'function') {
       // Fake a "win" object whose bodyEl is our slot so the existing renderer works unchanged.
-      var fakeWin = { bodyEl: slot };
+      let fakeWin = { bodyEl: slot };
       await __aeRenderFileExplorerBody(fakeWin, ctx.params || {});
     } else {
       slot.innerHTML = '<div style="padding:1rem;">File explorer module is not loaded.</div>';
@@ -380,8 +380,8 @@
 
   // ---------- (6) Search view ----------
   __aeMenuViews['Search'] = async function(ctx) {
-    var slot = ctx.slot;
-    var html = '';
+    let slot = ctx.slot;
+    let html = '';
     html += '<div style="padding:.85rem;">';
     html += '<label style="display:block;margin-bottom:.4rem;font-weight:600;">Web search query:</label>';
     html += '<textarea class="__aeSearchInput" placeholder="What do you want to look up?" style="width:100%;min-height:5rem;padding:.6rem;font-size:1rem;box-sizing:border-box;"></textarea>';
@@ -396,17 +396,17 @@
     html += '</div>';
     slot.innerHTML = html;
 
-    var current = __aeLoadSettings();
-    var deepCb = slot.querySelector('.__aeSearchDeep');
+    let current = __aeLoadSettings();
+    let deepCb = slot.querySelector('.__aeSearchDeep');
     deepCb.checked = !!current.deepWebSearch;
 
     slot.querySelector('.__aeSearchCancel').addEventListener('click', function(){ __aeMenuBack(); });
     slot.querySelector('.__aeSearchGo').addEventListener('click', async function() {
-      var q = slot.querySelector('.__aeSearchInput').value.trim();
+      let q = slot.querySelector('.__aeSearchInput').value.trim();
       if (!q) return;
       // Temporarily honour the deep checkbox without permanently flipping the setting.
-      var settings = __aeLoadSettings();
-      var prev = settings.deepWebSearch;
+      let settings = __aeLoadSettings();
+      let prev = settings.deepWebSearch;
       settings.deepWebSearch = deepCb.checked;
       __aeSaveSettings(settings);
       try {
@@ -421,8 +421,8 @@
 
   // ---------- (7) Commands view ----------
   __aeMenuViews['Commands'] = async function(ctx) {
-    var slot = ctx.slot;
-    var cmds = [
+    let slot = ctx.slot;
+    let cmds = [
       ['/menu',         'Open this menu'],
       ['/file',         'Pick file(s) to upload'],
       ['/files',        'Open file explorer'],
@@ -433,7 +433,7 @@
       ['/language <c>', 'Set language code directly (en, ru, es, …)'],
       ['/extensions',   'Show extension status in chat']
     ];
-    var html = '<div style="padding:.85rem;font-size:.95rem;">';
+    let html = '<div style="padding:.85rem;font-size:.95rem;">';
     html += '<table style="width:100%;border-collapse:collapse;">';
     cmds.forEach(function(row) {
       html += '<tr style="border-bottom:1px solid rgba(127,127,127,0.15);">';
@@ -448,7 +448,7 @@
   // ---------- open helper ----------
   function __aeOpenMenu(initialView) {
     initialView = initialView || 'Menu';
-    var alreadyOpen = __aeMenuWin && __aeMenuWin.ctn && __aeMenuWin.ctn.isConnected;
+    let alreadyOpen = __aeMenuWin && __aeMenuWin.ctn && __aeMenuWin.ctn.isConnected;
     if (alreadyOpen) {
       // Already open → just navigate.
       __aeMenuStack = [];
@@ -491,7 +491,7 @@
   // ---------- override existing entry points ----------
   // The original __aeShowExtensionsMenu used a one-shot floating window with hard-coded
   // sub-actions calling prompt2 / new windows. Replace it with the view-stack version.
-  var __aeMobileShowExtensionsMenu = function() { return __aeOpenMenu('Menu'); };
+  let __aeMobileShowExtensionsMenu = function() { return __aeOpenMenu('Menu'); };
   try { __aeShowExtensionsMenu = __aeMobileShowExtensionsMenu; } catch(e) { window.__aeShowExtensionsMenu = __aeMobileShowExtensionsMenu; }
   window.__aeShowExtensionsMenu = __aeMobileShowExtensionsMenu;
 

@@ -11,5 +11,4 @@ docker run --rm -v "$ROOT_DIR:/workspace" "$IMAGE" bash -lc '
   python3 tools/regression.py
   cd /workspace
   node --check workshop-backend/src/worker.js
-  node --check fixed-worker.js
 '
