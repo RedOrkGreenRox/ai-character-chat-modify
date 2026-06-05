@@ -42,7 +42,7 @@ Optional secrets if you do not want client IDs in GitHub Variables:
 
 ```text
 DISCORD_CLIENT_ID
-GITHUB_CLIENT_ID
+WORKSHOP_GITHUB_CLIENT_ID
 BOOTSTRAP_ADMIN_DISCORD_UID
 ```
 
@@ -58,11 +58,9 @@ Recommended non-secret variables:
 
 ```text
 DISCORD_CLIENT_ID              Discord OAuth client id
-GITHUB_CLIENT_ID               GitHub OAuth client id
+WORKSHOP_GITHUB_CLIENT_ID      GitHub OAuth client id (GitHub variables cannot start with GITHUB_)
 PUBLIC_URL                     https://<your-worker>.<your-subdomain>.workers.dev or custom domain
 ALLOWED_ORIGINS                https://perchance.org
-DAILY_PUBLISH_LIMIT_NEW        3
-DAILY_PUBLISH_LIMIT_TRUSTED    50
 BOOTSTRAP_ADMIN_DISCORD_UID    optional Discord user id for first admin
 ```
 
@@ -125,6 +123,9 @@ npx wrangler secret put TOKEN_ENCRYPTION_KEY
 npx wrangler d1 execute workshop-db --remote --file=schema.sql
 npx wrangler deploy
 ```
+
+
+Daily publish limits are intentionally not required as GitHub variables. The committed `wrangler.toml` defaults are used unless you decide to manage them separately in Cloudflare.
 
 ## 8. Notes
 

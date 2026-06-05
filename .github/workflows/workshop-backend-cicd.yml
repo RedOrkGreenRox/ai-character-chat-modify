@@ -72,11 +72,11 @@ jobs:
       # Prefer GitHub repository/environment Variables for non-secrets.
       # Secrets with the same names also work if you prefer to keep client IDs private.
       DISCORD_CLIENT_ID: ${{ vars.DISCORD_CLIENT_ID || secrets.DISCORD_CLIENT_ID }}
-      GITHUB_CLIENT_ID: ${{ vars.GITHUB_CLIENT_ID || secrets.GITHUB_CLIENT_ID }}
+      # GitHub repository variables/secrets cannot use the reserved GITHUB_ prefix.
+      # This CI name is rendered into Cloudflare's runtime GITHUB_CLIENT_ID var below.
+      WORKSHOP_GITHUB_CLIENT_ID: ${{ vars.WORKSHOP_GITHUB_CLIENT_ID || secrets.WORKSHOP_GITHUB_CLIENT_ID }}
       PUBLIC_URL: ${{ vars.PUBLIC_URL }}
       ALLOWED_ORIGINS: ${{ vars.ALLOWED_ORIGINS }}
-      DAILY_PUBLISH_LIMIT_NEW: ${{ vars.DAILY_PUBLISH_LIMIT_NEW }}
-      DAILY_PUBLISH_LIMIT_TRUSTED: ${{ vars.DAILY_PUBLISH_LIMIT_TRUSTED }}
       BOOTSTRAP_ADMIN_DISCORD_UID: ${{ vars.BOOTSTRAP_ADMIN_DISCORD_UID || secrets.BOOTSTRAP_ADMIN_DISCORD_UID }}
 
       # Optional: if set, CI will sync Cloudflare Worker secrets before deploy.
@@ -99,7 +99,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          required=(CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_D1_DATABASE_ID DISCORD_CLIENT_ID GITHUB_CLIENT_ID PUBLIC_URL)
+          required=(CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_D1_DATABASE_ID DISCORD_CLIENT_ID WORKSHOP_GITHUB_CLIENT_ID PUBLIC_URL)
           for key in "${required[@]}"; do
             if [ -z "${!key:-}" ]; then
               echo "::error::$key is required for Cloudflare deploy"
@@ -120,7 +120,7 @@ jobs:
           replacements = {
               'PUT_DATABASE_ID_HERE': os.environ['CLOUDFLARE_D1_DATABASE_ID'],
               'PUT_DISCORD_CLIENT_ID_HERE': os.environ['DISCORD_CLIENT_ID'],
-              'PUT_GITHUB_CLIENT_ID_HERE': os.environ['GITHUB_CLIENT_ID'],
+              'PUT_GITHUB_CLIENT_ID_HERE': os.environ['WORKSHOP_GITHUB_CLIENT_ID'],
               'https://accm-workshop.accm.workers.dev': os.environ['PUBLIC_URL'],
           }
           for old, new in replacements.items():
@@ -145,8 +145,6 @@ jobs:
               return '\n'.join(out) + '\n'
 
           text = set_var(text, 'ALLOWED_ORIGINS', os.environ.get('ALLOWED_ORIGINS') or 'https://perchance.org')
-          text = set_var(text, 'DAILY_PUBLISH_LIMIT_NEW', os.environ.get('DAILY_PUBLISH_LIMIT_NEW') or '3')
-          text = set_var(text, 'DAILY_PUBLISH_LIMIT_TRUSTED', os.environ.get('DAILY_PUBLISH_LIMIT_TRUSTED') or '50')
           text = set_var(text, 'BOOTSTRAP_ADMIN_DISCORD_UID', os.environ.get('BOOTSTRAP_ADMIN_DISCORD_UID') or '')
           path.write_text(text)
           PY
