@@ -1,6 +1,6 @@
 # Commented original code catalog
 
-> **Status note (2026-06-03):** This document is still useful for understanding the original/base Perchance app and the exact decomposition. For the current ACCM overlay architecture, registries, Workshop, Explorer, skillbooks, backend, and active replace patches, read `docs/16_current_accm_architecture.md` first.
+> **Status note (2026-06-05):** This document is still useful for understanding the original/base Perchance app and the exact decomposition. For the current ACCM overlay architecture, registries, Workshop, Explorer, skillbooks, backend, and active replace patches, read `docs/16_current_accm_architecture.md` first.
 
 Каталог комментариев и закомментированных кусков, извлечённых из `original/` без изменения текста. Особенно полезен каталог `code_like_line_comment_runs/` — там собраны длинные `//`-блоки, похожие на выключенный код, старые фичи, альтернативные реализации и экспериментальные персонажи.
 

@@ -1,6 +1,6 @@
 # 16. Current ACCM architecture
 
-Updated: 2026-06-03  
+Updated: 2026-06-05  
 Scope: current state of the modified fork after ACCM runtime, Workshop, global Explorer, skillbooks, Base Policy language packs, gradual reveal, and Worker backend changes.
 
 This is the main orientation document for future human/AI maintainers. Older docs `01`-`14` remain useful for understanding the original Perchance `ai-character-chat` app and the exact-fragment decomposition, but this file is the current source of truth for the ACCM extension layer.
@@ -28,7 +28,7 @@ and rebuilds the modified result into:
 
 ```text
 output/ai-character-chat-html.txt
-bfa619eca18547c954a069b4197a984ac805f7b78a8430b67a9d86cd2f30c421
+739bf7b7d2a6f180c254293138f0947b77c4116f434b50d9cf2a9fcf89fc7559
 ```
 
 Current policy:
@@ -82,13 +82,13 @@ At the time of this document:
 
 ```text
 output/ai-character-chat-html.txt
-bfa619eca18547c954a069b4197a984ac805f7b78a8430b67a9d86cd2f30c421
+739bf7b7d2a6f180c254293138f0947b77c4116f434b50d9cf2a9fcf89fc7559
 
 output/ai-character-chat-list.txt
-47df59075725c8e798371693c43be121bf021c4795e2455a479afc8abd2c1b29
+10d622471dac2f3de0e86cf4217f211408b6741b33677fecbaf0371ce93497a1
 ```
 
-The list output is currently byte-identical to original. Earlier experiments imported `typewriter-plugin`, but that was removed. The gradual reveal is custom JavaScript now.
+The list output is intentionally modified by `replace/004_named_characters_and_meta.frag` so the generator has ACCM-specific `$meta` title/description values instead of sharing the original `ai-character-chat` metadata. Earlier experiments imported `typewriter-plugin`, but that was removed. The gradual reveal is custom JavaScript now.
 
 ---
 
@@ -104,6 +104,7 @@ modify/replace/   # patched original/base fragments
 Current replace fragments:
 
 ```text
+modify/replace/004_named_characters_and_meta.frag
 modify/replace/019_module_character_catalog_and_crud.frag
 modify/replace/023_module_reply_generation_pipeline.frag
 modify/replace/029_module_import_hash_startup.frag
@@ -111,6 +112,7 @@ modify/replace/029_module_import_hash_startup.frag
 
 Why they exist:
 
+- `004`: replace original `ai-character-chat` `$meta` title/description with ACCM-specific branding and feature-focused metadata.
 - `019`: fix deletion of old/system/extension messages missing diagnostic arrays like `messageIdsUsed`.
 - `023`: filter disabled lore/generated memories from retrieval; implement streaming gradual reveal in the original streaming function.
 - `029`: sniff gzip magic bytes for Perchance/Dexie exports even when browser reports `application/json`.
@@ -135,7 +137,7 @@ Current modules:
 | `033_extensions_controls_io.frag` | Feature toggles, status, hidden file input, drag/drop, paste upload. |
 | `034_extensions_voice.frag` | Original voice recording implementation. |
 | `035_extensions_shortcuts_commands_init.frag` | Core command interception, send button wrapper, showThread shortcut normalization; old extension shortcut buttons are removed here. |
-| `044_accm_runtime.frag` | ACCM SDK foundation: commands, shortcuts, importers, packs, skillbooks, library, global sidebar buttons, UI registry. |
+| `044_accm_runtime.frag` | ACCM SDK foundation: commands, shortcuts, importers, packs, skillbooks, library, always-available fixed ACCM launcher, UI registry. |
 | `045_accm_gradual_message_reveal.frag` | Custom gradual reveal settings/toggle and post-render reveal support. Streaming reveal is implemented in replace/023. |
 | `036_extensions_file_explorer.frag` | Global Explorer: Files, Memory, Objects tabs; enable/disable/delete for lore/memory; global files view. |
 | `037_extensions_file_mentions.frag` | `@[filename]` mention context hook. |
@@ -253,15 +255,17 @@ Used currently for skillbooks.
 
 ---
 
-## 7. Global sidebar
+## 7. Global ACCM launcher
 
-The left sidebar now contains a collapsible ACCM section:
+ACCM navigation is now an always-available fixed launcher at the middle-left edge of the viewport:
 
 ```text
 ▶ ACCM
 ```
 
-When expanded:
+It is mounted directly on `document.body`, not inside the original left sidebar, so it remains clickable on chat pages, catalog/import screens, mobile layouts, and other app states where `#leftColumn` may be hidden or unavailable.
+
+When expanded it opens a compact floating panel:
 
 ```text
 🏛 Workshop
@@ -270,9 +274,9 @@ When expanded:
 ✨ Effects
 ```
 
-The arrow rotates when opened. The list and nested panels scroll when they exceed available height.
+The panel and nested sub-panels scroll when they exceed available height. A close button collapses the launcher without changing the current page.
 
-`Menu` expands nested actions inline, including:
+`Menu` expands nested actions, including:
 
 - choose files;
 - Explorer;
@@ -466,9 +470,13 @@ If no avatar is supplied:
 1. try AI avatar generation with `root.textToImagePlugin` from the character description;
 2. fallback to deterministic SVG initials avatar.
 
-### Skillbooks
+Binary image files uploaded through Workshop publish are wrapped as `accm.binary-file.v1` JSON. PNG/WebP/JPEG character-card wrappers are installed by `workshop.binary-character-card` via the existing external character-card importer.
+
+### Skillbooks and extension packs
 
 `kind: skillbook` installs into `__accm.library` and is enabled in the current chat if a chat is active.
+
+`kind: extension-pack` installs through `workshop.extension-pack`, registers metadata/content in `__accm.packs`, and is also stored in `__accm.library` for Explorer/Object management.
 
 ---
 
@@ -478,7 +486,6 @@ Location:
 
 ```text
 ../workshop-backend/src/worker.js
-../fixed-worker.js
 ```
 
 Architecture:
@@ -488,6 +495,14 @@ Architecture:
 - Discord OAuth for identity;
 - GitHub OAuth for publishing;
 - GitHub Gists for author-owned content storage.
+
+Current auth/session behaviour:
+
+- Discord login sets `accm_ws_session` as `HttpOnly; Secure; SameSite=None` cookie;
+- the frontend uses `fetch(..., { credentials: 'include' })` and no longer persists session tokens in `localStorage`;
+- in-memory bearer support remains only as a legacy fallback;
+- GitHub linking starts with `POST /v1/auth/github/start`, authenticated by cookie/bearer, and no longer passes session tokens in the URL;
+- D1 stores SHA-256 hashes of session tokens, not raw session tokens.
 
 Gist visibility:
 
@@ -591,20 +606,20 @@ Current key state:
 
 Known limitations:
 
-- binary publish for Tavern PNG cards is not implemented yet;
 - Workshop moderation UI is still primitive/backend-only;
 - Global Explorer UI is functional but visually rough;
 - Skillbook activation exists, but UX is early;
-- extension-pack installation flow is not fully implemented;
+- extension-pack installation exists, but pack-specific behaviour is still minimal and needs per-pack capability handlers;
+- binary publish uses JSON wrappers; this works for character-card image imports, but broader binary asset UX still needs polish;
 - streaming reveal uses plain text during generation and final markdown after completion.
 
 Recommended next engineering steps:
 
 1. Continue moving wrappers into registries.
-2. Add proper `extension-pack` installer flow.
-3. Add binary/base64 publish path for Tavern cards.
+2. Add richer `extension-pack` capability handlers and permission metadata.
+3. Improve binary asset UX beyond the current `accm.binary-file.v1` wrapper path.
 4. Improve Explorer UI into type-specific tabs: Characters, Lorebooks, Skillbooks, Extension packs, Disabled.
-5. Add one-time GitHub link token instead of passing session in query string.
-6. Add dedicated `TOKEN_ENCRYPTION_KEY` for GitHub token encryption.
-7. Hash session tokens in D1.
-8. Add Gist healthcheck scheduled Worker.
+5. Add a dedicated `TOKEN_ENCRYPTION_KEY` in production instead of relying on the Discord secret fallback.
+6. Add Gist healthcheck scheduled Worker.
+7. Split the monolithic Worker into route/helper modules when moving away from Dashboard copy-paste deployment.
+8. Add a unified safe-render layer to reduce raw `innerHTML` usage in extension UI.

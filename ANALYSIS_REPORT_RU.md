@@ -1,6 +1,6 @@
 # Актуальный отчёт по `ai-character-chat-modify`
 
-Дата актуализации: 2026-06-03
+Дата актуализации: 2026-06-05
 
 Этот файл заменяет старый исторический отчёт. Главный подробный документ по текущей архитектуре:
 
@@ -29,7 +29,7 @@ analysis/exact_components/
 
 ```text
 modify/new/      # функциональные overlay-модули
-modify/replace/  # точечные замены оригинальных компонентов
+modify/replace/  # точечные замены оригинальных компонентов, включая ACCM-specific $meta
 ```
 
 Собранный результат:
@@ -120,6 +120,7 @@ __accm.ui.globalButtons
 ## 5. Текущие replace-патчи оригинала
 
 ```text
+modify/replace/004_named_characters_and_meta.frag
 modify/replace/019_module_character_catalog_and_crud.frag
 modify/replace/023_module_reply_generation_pipeline.frag
 modify/replace/029_module_import_hash_startup.frag
@@ -127,6 +128,7 @@ modify/replace/029_module_import_hash_startup.frag
 
 Назначение:
 
+- `004` — ACCM-specific `$meta` title/description вместо оригинальных `ai-character-chat` metadata.
 - `019` — безопасное удаление сообщений без `messageIdsUsed`.
 - `023` — фильтрация disabled lore/memories; streaming gradual reveal.
 - `029` — gzip sniffing для Dexie JSON exports с ошибочным `.json`/`application/json`.
@@ -146,15 +148,16 @@ Backend:
 
 ```text
 ../workshop-backend/src/worker.js
-../fixed-worker.js
 ```
 
 Backend stack:
 
 - Cloudflare Worker;
 - D1 metadata DB;
-- Discord OAuth identity;
-- GitHub OAuth publish;
+- Discord OAuth identity with HttpOnly session cookie;
+- GitHub OAuth publish started via authenticated POST flow, without session tokens in query strings;
+- SHA-256 hashed session tokens in D1;
+- encrypted GitHub OAuth tokens at rest;
 - user-owned GitHub Gists for content.
 
 Gists are currently created as secret/unlisted:
@@ -312,8 +315,9 @@ docs/FUTURE_WORK_RU.md
 Important planned items:
 
 - cleaner Explorer UI;
-- true extension-pack installation flow;
-- binary/base64 publish for Tavern cards;
-- Worker hardening: token encryption key, hashed sessions, one-time GitHub link token;
+- richer extension-pack capability/permission flow beyond the current basic installer;
+- improved binary asset UX beyond the current `accm.binary-file.v1` wrapper path;
+- Worker hardening: require dedicated `TOKEN_ENCRYPTION_KEY` in production and keep improving publish safety checks;
 - Gist healthcheck;
+- modular Worker refactor when Dashboard copy-paste deployment is no longer required;
 - more registry migrations away from wrappers.

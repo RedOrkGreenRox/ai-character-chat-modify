@@ -7,7 +7,7 @@
 // Provides:
 //   /workshop
 //   /ws
-//   shortcut button: 🏛 Workshop
+//   ACCM sidebar/global button: 🏛 Workshop
 //
 // Backend expected:
 //   Cloudflare Worker from workshop-backend/src/worker.js
@@ -269,9 +269,10 @@
 
   async function __aeWsLinkGithub() {
     let api = __aeWsApiUrl();
-    let token = __aeWsToken();
     if (!api) throw new Error('Set Workshop API URL first.');
-    if (!token) throw new Error('Login with Discord first.');
+    // Current auth is cookie-first: the Worker reads the HttpOnly session cookie
+    // set by Discord login. A legacy in-memory bearer may also be sent by
+    // __aeWsFetch(), but GitHub linking must not depend on a persisted token.
     let msg = await __aeWsOpenPopup(async function() {
       let started = await __aeWsFetch('/v1/auth/github/start', { method: 'POST' });
       return started && started.url;
@@ -281,7 +282,8 @@
   }
 
   async function __aeWsGetMe() {
-    if (!__aeWsToken()) return null;
+    // Do not pre-check __aeWsToken(): modern sessions are HttpOnly cookies.
+    // credentials:'include' in __aeWsFetch lets the Worker authenticate them.
     try { return await __aeWsFetch('/v1/me'); }
     catch(e) {
       if (e.status === 401) __aeWsSetToken('');
@@ -643,7 +645,7 @@
     });
   }
 
-  // Register command/shortcut through the ACCM runtime when available.
+  // Register command and global UI entry through the ACCM runtime when available.
   if (window.__accm && window.__accm.commands) {
     window.__accm.commands.register({
       id: 'workshop.open',

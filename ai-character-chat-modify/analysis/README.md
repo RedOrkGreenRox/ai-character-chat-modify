@@ -1,6 +1,6 @@
 # Analysis indexes
 
-Updated: 2026-06-03
+Updated: 2026-06-05
 
 This directory contains both original/base app analysis and current ACCM extension indexes.
 

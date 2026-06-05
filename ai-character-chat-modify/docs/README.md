@@ -1,6 +1,6 @@
 # Documentation index
 
-Updated: 2026-06-03
+Updated: 2026-06-05
 
 ## Start here
 
@@ -10,6 +10,7 @@ If you are a future AI/human maintainer, read these first:
 docs/16_current_accm_architecture.md   # current source of truth for the modified fork
 docs/BASELINE_CURRENT.md               # current hashes, checks, key files
 docs/FUTURE_WORK_RU.md                 # roadmap/backlog and design ideas
+../../DOCS_SYNC_REPORT_2026-06-05_RU.md # latest documentation/comment synchronization notes
 analysis/extension_wrapper_chains.md   # current wrapper chains
 analysis/extension_module_manifest.json # machine-readable extension index
 ```

@@ -1,6 +1,8 @@
 # AI Character Chat Workshop — backend
 
-Cloudflare Worker + D1 backend for the future in-generator Workshop UI.
+Cloudflare Worker + D1 backend for the in-generator Workshop UI.
+
+Updated: 2026-06-05
 
 This is the **GitHub-Gist edition**:
 
@@ -136,7 +138,7 @@ Add plain text variables:
 | `DISCORD_CLIENT_ID` | Discord Client ID |
 | `GITHUB_CLIENT_ID` | GitHub Client ID |
 | `PUBLIC_URL` | your Worker URL, e.g. `https://accm-workshop.accm.workers.dev` |
-| `ALLOWED_ORIGINS` | `*` for testing, later `https://perchance.org` |
+| `ALLOWED_ORIGINS` | `https://perchance.org` for production; comma-separated list if you need additional trusted origins during testing |
 | `DAILY_PUBLISH_LIMIT_NEW` | `3` |
 | `DAILY_PUBLISH_LIMIT_TRUSTED` | `50` |
 | `BOOTSTRAP_ADMIN_DISCORD_UID` | your Discord user id, optional but recommended |
@@ -147,6 +149,9 @@ Add encrypted secrets:
 |---|---|
 | `DISCORD_CLIENT_SECRET` | Discord Client Secret |
 | `GITHUB_CLIENT_SECRET` | GitHub Client Secret |
+| `TOKEN_ENCRYPTION_KEY` | Strong random secret used to encrypt GitHub tokens at rest; recommended for production |
+
+`TOKEN_ENCRYPTION_KEY` is strongly recommended. The Worker can fall back to `DISCORD_CLIENT_SECRET` for compatibility, but production deployments should use a separate value.
 
 Save and deploy.
 
@@ -196,13 +201,20 @@ If `BOOTSTRAP_ADMIN_DISCORD_UID` matched your Discord id, role should be `admin`
 
 ## 8. GitHub linking note
 
-The GitHub link endpoint requires an existing Workshop session. A frontend popup should open:
+The GitHub link endpoint requires an existing Workshop session. Current frontend flow is cookie-first:
+
+1. Discord login sets `accm_ws_session` as an HttpOnly cookie.
+2. The frontend calls:
 
 ```text
-https://accm-workshop.accm.workers.dev/v1/auth/github/start?session=<WORKSHOP_SESSION_TOKEN>
+POST https://accm-workshop.accm.workers.dev/v1/auth/github/start
 ```
 
-This is intentional: `window.open()` cannot send an `Authorization` header.
+with `credentials: 'include'`.
+3. The Worker returns a GitHub authorize URL.
+4. The frontend opens that returned URL in a popup.
+
+Do **not** pass Workshop session tokens in query strings. `GET /v1/auth/github/start` remains available for cookie-authenticated popup/redirect compatibility, but it must be authenticated by cookie/bearer, not by `?session=`.
 
 ## API summary
 
@@ -211,7 +223,8 @@ Important endpoints:
 ```text
 GET  /v1/auth/discord/start
 GET  /v1/auth/discord/callback
-GET  /v1/auth/github/start?session=<token>
+POST /v1/auth/github/start
+GET  /v1/auth/github/start
 GET  /v1/auth/github/callback
 POST /v1/me/accept-tos
 GET  /v1/me
@@ -246,7 +259,11 @@ npm run deploy
 
 ## Important security notes
 
-- Never publish Discord/GitHub client secrets.
-- GitHub OAuth token is encrypted with AES-GCM before storage in D1.
+- Never publish Discord/GitHub client secrets or `TOKEN_ENCRYPTION_KEY`.
+- Workshop sessions are stored as HttpOnly cookies in the browser and as SHA-256 token hashes in D1.
+- GitHub linking must not put session tokens in URLs; use authenticated `POST /v1/auth/github/start` plus the returned authorize URL.
+- GitHub OAuth tokens are encrypted with AES-GCM before storage in D1.
+- Published executable kinds are statically checked for obvious high-risk APIs before Gist creation.
 - Authors own their Gists and can delete/edit them on GitHub.
+- Secret/unlisted Gists are accessible by link; they are not true private access-controlled storage.
 - Workshop is a directory, not a content host. See `docs/TOS-template.md` and `docs/PRIVACY-template.md` before going public.

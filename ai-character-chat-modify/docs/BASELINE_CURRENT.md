@@ -1,6 +1,6 @@
 # Current baseline
 
-Date: 2026-06-03
+Date: 2026-06-05
 
 ## State
 
@@ -68,13 +68,17 @@ This baseline records the current restored working state after adding:
 - Character PNG/WebP/JPEG binary wrappers can be installed via Workshop binary character-card importer
 - Extension-pack Workshop importer added; extension packs register in __accm.packs and __accm.library
 - Mini-library now includes extension-pack examples
+- ACCM launcher moved to an always-available fixed mid-left button/panel mounted on `document.body`
+- `$meta` title/description replaced with ACCM-specific metadata via `modify/replace/004_named_characters_and_meta.frag`
 
 ## Key files
 
 ```text
 modify/new/042_extensions_mobile_ui.frag
 modify/new/043_extensions_voice_widget.frag
+modify/new/044_accm_runtime.frag
 modify/new/056_extensions_workshop.frag
+modify/replace/004_named_characters_and_meta.frag
 modify/replace/019_module_character_catalog_and_crud.frag
 modify/replace/029_module_import_hash_startup.frag
 tools/regression.py
@@ -137,17 +141,26 @@ After latest assembly:
 
 ```text
 output/ai-character-chat-html.txt
-bfa619eca18547c954a069b4197a984ac805f7b78a8430b67a9d86cd2f30c421
+739bf7b7d2a6f180c254293138f0947b77c4116f434b50d9cf2a9fcf89fc7559
 
 output/ai-character-chat-list.txt
-47df59075725c8e798371693c43be121bf021c4795e2455a479afc8abd2c1b29
+10d622471dac2f3de0e86cf4217f211408b6741b33677fecbaf0371ce93497a1
 ```
+
+## Current security/auth baseline
+
+- Workshop sessions are cookie-first: Discord login sets `accm_ws_session` as `HttpOnly; Secure; SameSite=None`.
+- Frontend requests include credentials; in-memory bearer is only a legacy fallback and is not persisted in `localStorage`.
+- GitHub linking starts via authenticated `POST /v1/auth/github/start`; session tokens are not passed in query strings.
+- D1 stores SHA-256 hashes of session tokens.
+- GitHub tokens are encrypted at rest with AES-GCM using `TOKEN_ENCRYPTION_KEY` when configured, falling back to `DISCORD_CLIENT_SECRET` for compatibility.
+- Executable Workshop content has a static safety gate that blocks obvious high-risk APIs (`eval`, `new Function`, dynamic import, cookie/storage/network APIs, `<script>`).
 
 ## Known limitations
 
-- Workshop publish handles text/json/js well; binary Tavern PNG support still needs a base64/binary publish path.
+- Workshop publish handles text/json/js and binary files via `accm.binary-file.v1` wrappers; PNG/WebP/JPEG character-card wrappers can be installed, but broader binary asset UX still needs polish.
 - Workshop delete UI exists in My Library for own uploads, but moderation UI is still backend-only.
 - Workshop ToS text is now visible in shortened form, but not yet a full legal page/view.
-- Global Workshop button is not implemented yet; current access is command/shortcut.
-- Global File/Memory Explorer is not implemented yet.
-- Extension modules still use wrapper chains; registry-based SDK is planned next.
+- Global Workshop and Explorer buttons exist in the ACCM sidebar, but their UI polish is still early.
+- Global File/Memory/Object Explorer exists; type-specific tabs and richer object management are still future work.
+- Extension modules still use some wrapper chains; registry migration is in progress, not complete.

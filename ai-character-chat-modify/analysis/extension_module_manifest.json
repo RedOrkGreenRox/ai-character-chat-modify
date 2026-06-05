@@ -5,8 +5,8 @@
     "030_extensions_core.frag": {
       "title": "030 extensions core",
       "file": "modify/new/030_extensions_core.frag",
-      "lines": 644,
-      "bytes": 25299,
+      "lines": 661,
+      "bytes": 25885,
       "provides": [
         "__AE_BEFORE_BOT_REPLY_HOOKS",
         "__AE_CHUNK_WORDS",
@@ -43,7 +43,7 @@
         "__aeForgetUploadedFile",
         "__aeGetActiveFileContextCharCount",
         "__aeGetUploadedFiles",
-        "__aeJsZipReady",
+        "__aeIdSequence",
         "__aeLoadFileRegistry",
         "__aeLoadJsZip",
         "__aeLoadMammoth",
@@ -53,12 +53,12 @@
         "__aeLoadSettings",
         "__aeLoadTransformers",
         "__aeLoadXlsx",
-        "__aeMammothReady",
+        "__aeMakeLRU",
         "__aeNormalizeFileName",
         "__aeOriginalGetBotReply",
-        "__aePdfJsReady",
         "__aeProcessingCancelled",
         "__aeProcessingTaskSeq",
+        "__aePromises",
         "__aeReactivateFileContext",
         "__aeRegisterBeforeBotReplyHook",
         "__aeRegisterUploadedFile",
@@ -70,11 +70,9 @@
         "__aeSetContextMessageActive",
         "__aeTaskPanelEl",
         "__aeToast",
-        "__aeTransformersReady",
         "__aeTransientMessageIdCounter",
         "__aeUpdateTask",
         "__aeUpdateUploadedFile",
-        "__aeXlsxReady",
         "window.__aeTransformers"
       ],
       "wraps": [
@@ -125,8 +123,8 @@
     "032_extensions_web_search.frag": {
       "title": "032 extensions web search",
       "file": "modify/new/032_extensions_web_search.frag",
-      "lines": 360,
-      "bytes": 14203,
+      "lines": 376,
+      "bytes": 14601,
       "provides": [
         "__aeBuildSearchContext",
         "__aeDecideIfShouldSearch",
@@ -190,8 +188,8 @@
     "034_extensions_voice.frag": {
       "title": "034 extensions voice",
       "file": "modify/new/034_extensions_voice.frag",
-      "lines": 66,
-      "bytes": 2597,
+      "lines": 82,
+      "bytes": 3115,
       "provides": [
         "__aeToggleVoiceRecording",
         "__aeVoiceChunks",
@@ -275,8 +273,8 @@
     "036_extensions_file_explorer.frag": {
       "title": "036 extensions file explorer",
       "file": "modify/new/036_extensions_file_explorer.frag",
-      "lines": 384,
-      "bytes": 25571,
+      "lines": 386,
+      "bytes": 25714,
       "provides": [
         "__aeRenderFileExplorerBody",
         "__aeShowFileExplorer"
@@ -354,8 +352,8 @@
     "039_extensions_deep_web_search.frag": {
       "title": "039 extensions deep web search",
       "file": "modify/new/039_extensions_deep_web_search.frag",
-      "lines": 122,
-      "bytes": 4669,
+      "lines": 133,
+      "bytes": 4940,
       "provides": [
         "__aeChunkByChars",
         "__aeDeepSearchWeb",
@@ -456,8 +454,8 @@
     "043_extensions_voice_widget.frag": {
       "title": "043 extensions voice widget",
       "file": "modify/new/043_extensions_voice_widget.frag",
-      "lines": 251,
-      "bytes": 11134,
+      "lines": 271,
+      "bytes": 11856,
       "provides": [
         "window.__aeToggleVoiceRecording",
         "window.__aeVoiceWidgetInstalled"
@@ -481,8 +479,8 @@
     "044_accm_runtime.frag": {
       "title": "044 accm runtime",
       "file": "modify/new/044_accm_runtime.frag",
-      "lines": 426,
-      "bytes": 22935,
+      "lines": 489,
+      "bytes": 24485,
       "provides": [
         "window.__accm",
         "window.__aeRegisterMenuView"
@@ -509,8 +507,8 @@
     "045_accm_gradual_message_reveal.frag": {
       "title": "045 accm gradual message reveal",
       "file": "modify/new/045_accm_gradual_message_reveal.frag",
-      "lines": 277,
-      "bytes": 9774,
+      "lines": 291,
+      "bytes": 10095,
       "provides": [
         "window.__accmGradualMessageRevealInstalled",
         "window.__accmRevealedContainerKeys",
@@ -527,8 +525,8 @@
     "056_extensions_workshop.frag": {
       "title": "056 extensions workshop",
       "file": "modify/new/056_extensions_workshop.frag",
-      "lines": 666,
-      "bytes": 33068,
+      "lines": 689,
+      "bytes": 34353,
       "provides": [
         "window.__aeRegisterMenuView",
         "window.__aeShowWorkshop",

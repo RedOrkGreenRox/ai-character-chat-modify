@@ -1,6 +1,6 @@
 # Exact component map
 
-> **Status note (2026-06-03):** This document is still useful for understanding the original/base Perchance app and the exact decomposition. For the current ACCM overlay architecture, registries, Workshop, Explorer, skillbooks, backend, and active replace patches, read `docs/16_current_accm_architecture.md` first.
+> **Status note (2026-06-05):** This document is still useful for understanding the original/base Perchance app and the exact decomposition. For the current ACCM overlay architecture, registries, Workshop, Explorer, skillbooks, backend, and active replace patches, read `docs/16_current_accm_architecture.md` first.
 
 Ниже — каноническое разбиение `original/ai-character-chat-html.txt` и `original/ai-character-chat-list.txt` на непересекающиеся точные фрагменты. Каждый фрагмент извлечён verbatim и может быть обратно собран без изменения байтов.
 

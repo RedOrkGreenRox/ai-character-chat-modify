@@ -1,6 +1,6 @@
 # 15. Extension modules — current state
 
-Updated: 2026-06-03
+Updated: 2026-06-05
 
 For the complete current architecture, see:
 
@@ -43,6 +43,7 @@ This file is a short operational summary of the current extension layer.
 ### Patched original/base fragments
 
 ```text
+modify/replace/004_named_characters_and_meta.frag
 modify/replace/019_module_character_catalog_and_crud.frag
 modify/replace/023_module_reply_generation_pipeline.frag
 modify/replace/029_module_import_hash_startup.frag
@@ -96,9 +97,9 @@ Extension navigation is no longer added as per-thread shortcut buttons. It lives
 
 `__aeEnsureShortcutButtons` is wrapped only by `044_accm_runtime.frag`, which can apply registered shortcuts if any future module uses them.
 
-## Global sidebar
+## Global ACCM launcher
 
-The left sidebar contains collapsible ACCM controls:
+ACCM controls are exposed through a fixed mid-left launcher that is mounted on `document.body`, so it remains clickable even when the original left sidebar is hidden or the user is not inside a normal chat view:
 
 ```text
 ▶ ACCM
@@ -108,7 +109,7 @@ The left sidebar contains collapsible ACCM controls:
   ✨ Effects
 ```
 
-The arrow rotates on expand/collapse. The main list and nested panels scroll when too tall.
+The arrow rotates on expand/collapse. The floating panel and nested panels scroll when too tall.
 
 ## Explorer
 
@@ -196,13 +197,14 @@ Backend is in:
 
 ```text
 ../workshop-backend/src/worker.js
-../fixed-worker.js
 ```
 
-Current storage model:
+Current storage/auth model:
 
-- D1 stores metadata;
-- Discord OAuth identifies users;
+- D1 stores metadata and SHA-256 hashes of session tokens;
+- Discord OAuth identifies users and sets an HttpOnly session cookie;
+- frontend requests use `credentials: 'include'`, with in-memory bearer support kept only as a legacy fallback;
+- GitHub OAuth linking starts through authenticated `POST /v1/auth/github/start`, so session tokens are not placed in query strings;
 - GitHub OAuth publishes content as user-owned Gists;
 - `GITHUB_GIST_PUBLIC: false`, meaning secret/unlisted Gists accessible by link.
 

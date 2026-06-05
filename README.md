@@ -4,6 +4,8 @@ Modification workstation for Perchance `ai-character-chat`.
 
 ## Current state
 
+Updated: 2026-06-05
+
 The repository contains:
 
 - exact original Perchance HTML/list sources in `original/`;
@@ -25,6 +27,12 @@ analysis/extension_module_manifest.json
 
 Older reports are historical. The current source of truth is `docs/16_current_accm_architecture.md`.
 
+Latest documentation/comment sync notes:
+
+```text
+DOCS_SYNC_REPORT_2026-06-05_RU.md
+```
+
 ## Build and verify
 
 ```bash
@@ -45,7 +53,7 @@ output/ai-character-chat-html.txt
 output/ai-character-chat-list.txt
 ```
 
-Currently the list output is identical to original; the HTML output contains ACCM overlays.
+The HTML output contains ACCM overlays. The list output is also modified: `$meta` now uses ACCM-specific title/description metadata instead of the original generator metadata.
 
 ## Backend and sample library
 

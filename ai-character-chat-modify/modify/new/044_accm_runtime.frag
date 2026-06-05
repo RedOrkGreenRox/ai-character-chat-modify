@@ -247,110 +247,155 @@
     return button;
   };
   ae.ui.globalButtons.render = ae.ui.globalButtons.render || function() {
-    let leftColumn = document.querySelector('#leftColumn');
-    let mount = null;
-    let sidebarMode = false;
-    if (leftColumn) {
-      mount = document.querySelector('#__accmSidebar');
-      if (!mount) {
-        mount = document.createElement('div');
-        mount.id = '__accmSidebar';
-        mount.style.cssText = 'margin-top:.5rem;border:1px solid rgba(127,127,127,.25);border-radius:10px;background:rgba(127,127,127,.06);overflow:auto;max-height:calc(100vh - 1rem);overscroll-behavior:contain;flex:0 0 auto;';
-        let firstRow = leftColumn.firstElementChild;
-        if (firstRow && firstRow.nextSibling) leftColumn.insertBefore(mount, firstRow.nextSibling);
-        else leftColumn.prepend(mount);
-      }
-      sidebarMode = true;
-    } else {
-      mount = document.querySelector('#__accmGlobalButtons');
-      if (!mount) {
-        mount = document.createElement('div');
-        mount.id = '__accmGlobalButtons';
-        mount.style.cssText = 'position:fixed;right:12px;top:72px;z-index:999998;display:flex;flex-direction:column;gap:6px;pointer-events:none;';
-        document.body.appendChild(mount);
-      }
+    // Global fixed launcher: always available, even when the original left
+    // column/sidebar is hidden, not yet rendered, or the user is on a non-chat
+    // page. It is placed at mid-left instead of bottom-left so it does not
+    // cover Perchance/original bottom toolbar buttons.
+    let mount = document.querySelector('#__accmGlobalButtons');
+    if (!mount) {
+      mount = document.createElement('div');
+      mount.id = '__accmGlobalButtons';
+      document.body.appendChild(mount);
     }
+    mount.style.cssText = [
+      'position:fixed',
+      'left:max(10px, env(safe-area-inset-left))',
+      'top:50%',
+      'transform:translateY(-50%)',
+      'z-index:999998',
+      'display:flex',
+      'flex-direction:column-reverse',
+      'align-items:flex-start',
+      'gap:8px',
+      'pointer-events:none',
+      'font:13px/1.35 system-ui,-apple-system,Segoe UI,Roboto,sans-serif'
+    ].join(';') + ';';
 
     mount.innerHTML = '';
-    if (sidebarMode) {
-      let header = document.createElement('button');
-      header.innerHTML = '<span class="__accmSidebarArrow" style="display:inline-block;transition:transform .18s ease;transform:' + (ae.ui.globalButtons.expanded ? 'rotate(90deg)' : 'rotate(0deg)') + ';">▶</span> <span>ACCM</span>';
-      header.style.cssText = 'width:100%;min-height:2.2rem;text-align:left;padding:.35rem .55rem;border:0;background:transparent;color:inherit;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:.35rem;';
-      header.onclick = function() { ae.ui.globalButtons.expanded = !ae.ui.globalButtons.expanded; ae.ui.globalButtons.render(); };
-      mount.appendChild(header);
-      if (!ae.ui.globalButtons.expanded) return;
 
+    let header = document.createElement('button');
+    header.innerHTML = '<span class="__accmSidebarArrow" style="display:inline-block;transition:transform .18s ease;transform:' + (ae.ui.globalButtons.expanded ? 'rotate(90deg)' : 'rotate(0deg)') + ';">▶</span> <span>ACCM</span>';
+    header.title = 'Open ACCM tools';
+    header.setAttribute('aria-expanded', ae.ui.globalButtons.expanded ? 'true' : 'false');
+    header.style.cssText = [
+      'pointer-events:auto',
+      'min-height:42px',
+      'min-width:96px',
+      'padding:8px 13px',
+      'border-radius:999px',
+      'border:1px solid rgba(255,255,255,.22)',
+      'background:linear-gradient(135deg, rgba(41,45,62,.96), rgba(18,20,28,.96))',
+      'color:#fff',
+      'box-shadow:0 8px 28px rgba(0,0,0,.38)',
+      'font-weight:800',
+      'letter-spacing:.02em',
+      'cursor:pointer',
+      'display:flex',
+      'align-items:center',
+      'justify-content:center',
+      'gap:.45rem',
+      'backdrop-filter:blur(10px)',
+      '-webkit-backdrop-filter:blur(10px)'
+    ].join(';') + ';';
+    header.onclick = function(e) {
+      e.preventDefault(); e.stopPropagation();
+      ae.ui.globalButtons.expanded = !ae.ui.globalButtons.expanded;
+      ae.ui.globalButtons.render();
+    };
+    mount.appendChild(header);
 
-      let list = document.createElement('div');
-      list.style.cssText = 'display:grid;gap:.35rem;padding:.45rem;max-height:calc(100vh - 8rem);overflow-y:auto;overscroll-behavior:contain;min-height:0;';
-      list.addEventListener('wheel', function(e) { e.stopPropagation(); }, { passive: true });
-      mount.appendChild(list);
-      ae.ui.globalButtons.items.forEach(function(btn) {
-        let el = document.createElement('button');
-        el.textContent = btn.label || btn.id;
-        el.title = btn.title || btn.label || btn.id;
-        el.style.cssText = 'min-height:2.2rem;text-align:left;padding:.35rem .55rem;border-radius:8px;border:1px solid rgba(127,127,127,.25);background:var(--button-bg);color:inherit;cursor:pointer;';
-        el.addEventListener('click', function(e) {
-          e.preventDefault(); e.stopPropagation();
-          try {
-            if (Array.isArray(btn.panelItems) && btn.panelItems.length) {
-              ae.ui.globalButtons.openPanelId = ae.ui.globalButtons.openPanelId === btn.id ? null : btn.id;
-              ae.ui.globalButtons.render();
-            } else {
-              btn.onClick(e);
-            }
-          } catch(err) { console.error('[accm] global sidebar button failed:', btn.id, err); if (typeof __aeToast === 'function') __aeToast('Button failed: ' + btn.id + ': ' + err.message, 5000); }
-        });
-        list.appendChild(el);
-        if (ae.ui.globalButtons.openPanelId === btn.id && Array.isArray(btn.panelItems)) {
-          let panel = document.createElement('div');
-          panel.style.cssText = 'display:grid;gap:.3rem;margin-left:.8rem;margin-top:-.15rem;margin-bottom:.35rem;padding-left:.45rem;border-left:2px solid rgba(127,127,127,.25);max-height:min(42vh,360px);overflow-y:auto;overscroll-behavior:contain;min-height:0;';
-          panel.addEventListener('wheel', function(e) { e.stopPropagation(); }, { passive: true });
-          btn.panelItems.forEach(function(item) {
-            if (item.type === 'toggle') {
-              let label = document.createElement('label');
-              label.style.cssText = 'min-height:2rem;display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.3rem .5rem;border-radius:7px;border:1px solid rgba(127,127,127,.2);background:rgba(127,127,127,.08);color:inherit;cursor:pointer;';
-              let span = document.createElement('span');
-              span.textContent = item.label || item.id;
-              let input = document.createElement('input');
-              input.type = 'checkbox';
-              input.style.cssText = 'transform:scale(1.25);';
-              try { input.checked = !!item.getValue(); } catch(e) { input.checked = false; }
-              input.onchange = function(ev) {
-                ev.stopPropagation();
-                try { item.setValue(input.checked); } catch(err) { console.error('[accm] sidebar toggle failed:', item.id, err); if (typeof __aeToast === 'function') __aeToast('Toggle failed: ' + (item.label || item.id) + ': ' + err.message, 5000); }
-              };
-              label.appendChild(span);
-              label.appendChild(input);
-              panel.appendChild(label);
-            } else {
-              let sub = document.createElement('button');
-              sub.textContent = item.label || item.id;
-              sub.title = item.title || item.label || item.id;
-              sub.style.cssText = 'min-height:2rem;text-align:left;padding:.3rem .5rem;border-radius:7px;border:1px solid rgba(127,127,127,.2);background:rgba(127,127,127,.08);color:inherit;cursor:pointer;';
-              sub.onclick = function(ev) {
-                ev.preventDefault(); ev.stopPropagation();
-                try { item.onClick(ev); } catch(err) { console.error('[accm] sidebar panel item failed:', item.id, err); if (typeof __aeToast === 'function') __aeToast('Menu item failed: ' + (item.label || item.id) + ': ' + err.message, 5000); }
-              };
-              panel.appendChild(sub);
-            }
-          });
-          list.appendChild(panel);
-        }
+    if (!ae.ui.globalButtons.expanded) return;
+
+    let panel = document.createElement('div');
+    panel.style.cssText = [
+      'pointer-events:auto',
+      'width:min(280px, calc(100vw - 24px))',
+      'max-height:min(70vh, 560px)',
+      'overflow-y:auto',
+      'overscroll-behavior:contain',
+      'padding:9px',
+      'border-radius:14px',
+      'border:1px solid rgba(255,255,255,.18)',
+      'background:rgba(22,24,32,.96)',
+      'color:#fff',
+      'box-shadow:0 14px 44px rgba(0,0,0,.45)',
+      'backdrop-filter:blur(12px)',
+      '-webkit-backdrop-filter:blur(12px)'
+    ].join(';') + ';';
+    panel.addEventListener('wheel', function(e) { e.stopPropagation(); }, { passive: true });
+    mount.appendChild(panel);
+
+    let title = document.createElement('div');
+    title.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin:0 0 .45rem 0;padding:.1rem .1rem .35rem .1rem;border-bottom:1px solid rgba(255,255,255,.12);';
+    let titleText = document.createElement('div');
+    titleText.textContent = 'ACCM tools';
+    titleText.style.cssText = 'font-weight:800;opacity:.95;';
+    let close = document.createElement('button');
+    close.textContent = '×';
+    close.title = 'Close ACCM tools';
+    close.style.cssText = 'border:0;background:rgba(255,255,255,.08);color:inherit;border-radius:999px;min-width:28px;min-height:28px;cursor:pointer;font-size:18px;line-height:1;';
+    close.onclick = function(e) { e.preventDefault(); e.stopPropagation(); ae.ui.globalButtons.expanded = false; ae.ui.globalButtons.openPanelId = null; ae.ui.globalButtons.render(); };
+    title.appendChild(titleText);
+    title.appendChild(close);
+    panel.appendChild(title);
+
+    let list = document.createElement('div');
+    list.style.cssText = 'display:grid;gap:.4rem;';
+    panel.appendChild(list);
+
+    ae.ui.globalButtons.items.forEach(function(btn) {
+      let el = document.createElement('button');
+      el.textContent = btn.label || btn.id;
+      el.title = btn.title || btn.label || btn.id;
+      el.style.cssText = 'min-height:38px;text-align:left;padding:.45rem .6rem;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:inherit;cursor:pointer;font-weight:650;';
+      el.addEventListener('click', function(e) {
+        e.preventDefault(); e.stopPropagation();
+        try {
+          if (Array.isArray(btn.panelItems) && btn.panelItems.length) {
+            ae.ui.globalButtons.openPanelId = ae.ui.globalButtons.openPanelId === btn.id ? null : btn.id;
+            ae.ui.globalButtons.render();
+          } else {
+            btn.onClick(e);
+          }
+        } catch(err) { console.error('[accm] global button failed:', btn.id, err); if (typeof __aeToast === 'function') __aeToast('Button failed: ' + btn.id + ': ' + err.message, 5000); }
       });
-    } else {
-      ae.ui.globalButtons.items.forEach(function(btn) {
-        let el = document.createElement('button');
-        el.textContent = btn.label || btn.id;
-        el.title = btn.title || btn.label || btn.id;
-        el.style.cssText = 'pointer-events:auto;min-height:34px;padding:6px 10px;border-radius:999px;border:1px solid rgba(127,127,127,.35);background:rgba(25,25,25,.88);color:#fff;box-shadow:0 4px 18px rgba(0,0,0,.28);font-weight:600;backdrop-filter:blur(8px);';
-        el.addEventListener('click', function(e) {
-          e.preventDefault(); e.stopPropagation();
-          try { btn.onClick(e); } catch(err) { console.error('[accm] global button failed:', btn.id, err); if (typeof __aeToast === 'function') __aeToast('Button failed: ' + btn.id + ': ' + err.message, 5000); }
+      list.appendChild(el);
+      if (ae.ui.globalButtons.openPanelId === btn.id && Array.isArray(btn.panelItems)) {
+        let subPanel = document.createElement('div');
+        subPanel.style.cssText = 'display:grid;gap:.32rem;margin:-.15rem 0 .35rem .65rem;padding-left:.55rem;border-left:2px solid rgba(255,255,255,.16);max-height:min(44vh,360px);overflow-y:auto;overscroll-behavior:contain;';
+        subPanel.addEventListener('wheel', function(e) { e.stopPropagation(); }, { passive: true });
+        btn.panelItems.forEach(function(item) {
+          if (item.type === 'toggle') {
+            let label = document.createElement('label');
+            label.style.cssText = 'min-height:34px;display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.38rem .55rem;border-radius:9px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:inherit;cursor:pointer;';
+            let span = document.createElement('span');
+            span.textContent = item.label || item.id;
+            let input = document.createElement('input');
+            input.type = 'checkbox';
+            input.style.cssText = 'transform:scale(1.2);';
+            try { input.checked = !!item.getValue(); } catch(e) { input.checked = false; }
+            input.onchange = function(ev) {
+              ev.stopPropagation();
+              try { item.setValue(input.checked); } catch(err) { console.error('[accm] launcher toggle failed:', item.id, err); if (typeof __aeToast === 'function') __aeToast('Toggle failed: ' + (item.label || item.id) + ': ' + err.message, 5000); }
+            };
+            label.appendChild(span);
+            label.appendChild(input);
+            subPanel.appendChild(label);
+          } else {
+            let sub = document.createElement('button');
+            sub.textContent = item.label || item.id;
+            sub.title = item.title || item.label || item.id;
+            sub.style.cssText = 'min-height:34px;text-align:left;padding:.38rem .55rem;border-radius:9px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:inherit;cursor:pointer;';
+            sub.onclick = function(ev) {
+              ev.preventDefault(); ev.stopPropagation();
+              try { item.onClick(ev); } catch(err) { console.error('[accm] launcher panel item failed:', item.id, err); if (typeof __aeToast === 'function') __aeToast('Menu item failed: ' + (item.label || item.id) + ': ' + err.message, 5000); }
+            };
+            subPanel.appendChild(sub);
+          }
         });
-        mount.appendChild(el);
-      });
-    }
+        list.appendChild(subPanel);
+      }
+    });
   };
 
   // ---------- installed library + per-thread activations ----------

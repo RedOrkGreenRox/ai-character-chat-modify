@@ -91,7 +91,7 @@ Risk notes:
 
 ## `030_extensions_core.frag`
 
-- lines: 644
+- lines: 661
 
 - storage: `db.lore`, `db.messages`, `db.misc`, `db.threads`
 
@@ -101,7 +101,7 @@ Risk notes:
 
 ## `032_extensions_web_search.frag`
 
-- lines: 360
+- lines: 376
 
 - hooks: `autoWebSearch`
 
@@ -115,7 +115,7 @@ Risk notes:
 
 ## `034_extensions_voice.frag`
 
-- lines: 66
+- lines: 82
 
 ## `035_extensions_shortcuts_commands_init.frag`
 
@@ -127,7 +127,7 @@ Risk notes:
 
 ## `036_extensions_file_explorer.frag`
 
-- lines: 384
+- lines: 386
 
 - commands/literals: `/explorer`, `/files`
 
@@ -153,7 +153,7 @@ Risk notes:
 
 ## `039_extensions_deep_web_search.frag`
 
-- lines: 122
+- lines: 133
 
 - root APIs: `root.aiTextPlugin`, `root.superFetch`
 
@@ -175,13 +175,13 @@ Risk notes:
 
 ## `043_extensions_voice_widget.frag`
 
-- lines: 251
+- lines: 271
 
 - root APIs: `root.className`, `root.innerHTML`, `root.style`
 
 ## `044_accm_runtime.frag`
 
-- lines: 426
+- lines: 489
 
 - hooks: `accmLibrarySkillbooks`
 
@@ -189,11 +189,11 @@ Risk notes:
 
 ## `045_accm_gradual_message_reveal.frag`
 
-- lines: 277
+- lines: 291
 
 ## `056_extensions_workshop.frag`
 
-- lines: 666
+- lines: 689
 
 - commands/literals: `/install`, `/workshop`, `/ws`
 

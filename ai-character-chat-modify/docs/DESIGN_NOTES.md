@@ -1,6 +1,6 @@
 # Design notes
 
-Updated: 2026-06-03
+Updated: 2026-06-05
 
 This document records design decisions and tradeoffs. For the operational current architecture, read `docs/16_current_accm_architecture.md`.
 
@@ -15,7 +15,9 @@ Current direction:
 ```text
 Perchance ai-character-chat
   + exact fragment workstation
+  + ACCM-specific metadata/branding
   + ACCM runtime registries
+  + always-available fixed ACCM launcher
   + Workshop
   + Global Explorer
   + skillbooks / extension-packs
@@ -165,9 +167,11 @@ Workshop frontend should remain usable entirely inside the Perchance generator U
 Current publish/install state:
 
 - text/json/md/js publish works;
+- non-text files are published as `accm.binary-file.v1` JSON wrappers;
 - native character JSON import works;
+- PNG/WebP/JPEG character-card binary wrappers can be installed through the existing external character-card importer;
 - skillbooks install into `__accm.library` and can be activated per chat;
-- binary Tavern PNG publish is not implemented yet.
+- extension packs install into `__accm.packs` and `__accm.library`, though pack-specific capability handlers are still minimal.
 
 ---
 
@@ -268,10 +272,13 @@ Known tradeoff:
 Current replace patches:
 
 ```text
+004_named_characters_and_meta.frag
 019_module_character_catalog_and_crud.frag
 023_module_reply_generation_pipeline.frag
 029_module_import_hash_startup.frag
 ```
+
+`004_named_characters_and_meta.frag` exists so ACCM does not publish/share the same `$meta` title and description as the original generator or ordinary forks. Default, assistant, and character-specific fallback metadata all use ACCM-specific wording.
 
 Use replace patches when fixing original/base behaviour.
 
@@ -286,16 +293,24 @@ If many compatibility fixes are genuinely needed and cannot be patched in source
 
 ---
 
-## 10. Backend hardening still planned
+## 10. Backend hardening state and remaining work
 
-Not implemented yet:
+Implemented in the current backend:
 
-- dedicated `TOKEN_ENCRYPTION_KEY` instead of deriving from Discord secret;
-- session token hashing in D1;
-- one-time GitHub link token instead of query `?session=`;
+- session tokens are stored in D1 as SHA-256 hashes;
+- Discord login sets an HttpOnly cookie instead of returning a persistent frontend token;
+- GitHub linking no longer uses `?session=` query parameters; the frontend requests an authorize URL with authenticated `POST /v1/auth/github/start`;
+- CORS defaults to `https://perchance.org` and supports credentials;
+- GitHub tokens are encrypted with AES-GCM, using `TOKEN_ENCRYPTION_KEY` if configured and `DISCORD_CLIENT_SECRET` as compatibility fallback;
+- publish-time static safety checks block obvious executable-content hazards.
+
+Still planned:
+
+- require/configure a dedicated `TOKEN_ENCRYPTION_KEY` in production documentation rather than relying on fallback;
 - Gist healthcheck scheduled Worker;
 - tags table / FTS for large catalogs;
-- binary publish path for Tavern PNG cards.
+- modularize the monolithic Dashboard-copy-paste Worker when a bundling/deploy pipeline is accepted;
+- richer permission/capability metadata for executable extensions and extension packs.
 
 ---
 

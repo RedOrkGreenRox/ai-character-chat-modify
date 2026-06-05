@@ -17,7 +17,7 @@
 //   - DISCORD_CLIENT_ID      (plain text var)
 //   - GITHUB_CLIENT_ID       (plain text var)
 //   - PUBLIC_URL             (plain text var, URL Worker'а)
-//   - ALLOWED_ORIGINS        (plain text var: '*' или 'https://perchance.org')
+//   - ALLOWED_ORIGINS        (plain text var: comma-separated allowed origins; default/recommended: 'https://perchance.org')
 //   - BOOTSTRAP_ADMIN_DISCORD_UID  (plain text var, можно пустой)
 //   - DAILY_PUBLISH_LIMIT_NEW      (plain text var, опц., default '3')
 //   - DAILY_PUBLISH_LIMIT_TRUSTED  (plain text var, опц., default '50')
